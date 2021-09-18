@@ -6,73 +6,89 @@ import org.bukkit.Bukkit;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
+import xuan.cat.syncstaticmapview.api.branch.BranchMapConversion;
+import xuan.cat.syncstaticmapview.api.branch.BranchMapColor;
+import xuan.cat.syncstaticmapview.api.branch.BranchMinecraft;
+import xuan.cat.syncstaticmapview.api.branch.BranchPacket;
+import xuan.cat.syncstaticmapview.code.branch.CodeBranchMapConversion;
+import xuan.cat.syncstaticmapview.code.branch.CodeBranchMapColor;
+import xuan.cat.syncstaticmapview.code.branch.CodeBranchMinecraft;
+import xuan.cat.syncstaticmapview.code.branch.CodeBranchPacket;
+import xuan.cat.syncstaticmapview.code.command.Command;
+import xuan.cat.syncstaticmapview.code.command.CommandSuggest;
+import xuan.cat.syncstaticmapview.code.data.ConfigData;
 
 import java.io.*;
 
 public class Index extends JavaPlugin {
 
-    private static ProtocolManager protocolManager;
-    private static Plugin           plugin;
-//    private static ChunkServer      chunkServer;
-//    private static ConfigData       configData;
-//    private static BranchPacket     branchPacket;
-//    private static BranchMinecraft  branchMinecraft;
+    private static ProtocolManager      protocolManager;
+    private static Plugin               plugin;
+    private static MapServer            mapServer;
+    private static ConfigData           configData;
+    private static MapDatabase          mapDatabase;
+    private static BranchMapConversion  branchMapConversion;
+    private static BranchMapColor       branchMapColor;
+    private static BranchMinecraft      branchMinecraft;
+    private static BranchPacket         branchPacket;
 
     @Override
     public void onEnable() {
         plugin          = this;
 
+        try {
+            // 檢測版本
+            String bukkitVersion = Bukkit.getBukkitVersion();
+            if        (bukkitVersion.matches("1\\.17.*\\-R0\\.1.*")) {
+                // 1.17
+                branchMapColor      = new CodeBranchMapColor();
+                branchMapConversion = new CodeBranchMapConversion(branchMapColor, branchMapConversion);
+                branchMinecraft     = new CodeBranchMinecraft();
+                branchPacket        = new CodeBranchPacket();
+            } else {
+                throw new NullPointerException("Unsupported MC version");
+            }
 
-        // 檢測版本
-        String bukkitVersion = Bukkit.getBukkitVersion();
-        if        (bukkitVersion.matches("1\\.17.*\\-R0\\.1.*")) {
-            // 1.17
-//            branchPacket    = new CodeBranchPacket();
-//            branchMinecraft = new CodeBranchMinecraft();
-        } else {
-            throw new NullPointerException("Unsupported MC version");
-        }
+            protocolManager = ProtocolLibrary.getProtocolManager();
 
-
-        protocolManager = ProtocolLibrary.getProtocolManager();
-
-        Bukkit.getMap(Integer.MAX_VALUE);
-        
-
-//        saveDefaultConfig();
+            saveDefaultConfig();
 //        saveResource("config_en.yml",       false);
 //        saveResource("config_zh-tw.yml",    false);
 //        saveResource("config_zh-cn.yml",    false);
 
-//        configData      = new ConfigData(this, getConfig());
-//        chunkServer     = new ChunkServer(configData, this, branchMinecraft, branchPacket);
-//
-//        Bukkit.getPluginManager().registerEvents(new ChunkEvent(chunkServer, branchPacket), this);
-//        protocolManager.addPacketListener(new ChunkPacketEvent(plugin, chunkServer));
-//
-//        // 指令
-//        PluginCommand command = getCommand("viewdistance");
-//        if (command != null) {
-//            command.setExecutor(new Command(chunkServer, configData));
-//            command.setTabCompleter(new CommandSuggest(chunkServer, configData));
-//        }
+            configData      = new ConfigData(this, getConfig());
+            mapDatabase     = new MapDatabase(configData, branchMapConversion, branchMapColor);
+            mapServer       = new MapServer(this, configData, mapDatabase, branchMapConversion, branchMapColor, branchMinecraft, branchPacket);
+
+        Bukkit.getPluginManager().registerEvents(new MapEvent(this, mapServer), this);
+        protocolManager.addPacketListener(new MapPacketEvent(plugin, mapServer));
+
+        // 指令
+        PluginCommand command = getCommand("map");
+        if (command != null) {
+            command.setExecutor(new Command(plugin, mapDatabase, mapServer, configData, branchMapConversion, branchMinecraft));
+            command.setTabCompleter(new CommandSuggest(mapServer, configData));
+        }
+        } catch (Exception exception) {
+            exception.printStackTrace();
+            throw new NullPointerException("onEnable error");
+        }
     }
 
-//    public static ChunkServer getChunkServer() {
-//        return chunkServer;
-//    }
-//
-//    public static ConfigData getConfigData() {
-//        return configData;
-//    }
+    public static MapServer getMapServer() {
+        return mapServer;
+    }
+
+    public static ConfigData getConfigData() {
+        return configData;
+    }
 
     public static Plugin getPlugin() {
         return plugin;
     }
 
-    @Override
     public void onDisable() {
-//        chunkServer.close();
+        mapServer.close();
     }
 
     @Override

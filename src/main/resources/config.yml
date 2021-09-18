@@ -1,0 +1,21 @@
+database:
+  ip: "127.0.0.1"
+  port: 3306
+  database: "!! YOUR_DATABASE_NAME !!"
+  user: "!! YOUR_USER_NAME !!"
+  password: "!! YOUR_USER_PASSWORD !!"
+cache-vitality-time: 60000
+languages:
+  no_permission: "No permission"
+  missing_parameters: "Missing parameters"
+  reread_configuration_successfully: "Reread configuration successfully"
+  reread_configuration_error: "Reread configuration an error occurred"
+  unknown_parameter_type: "Unknown parameter type"
+  only_be_used_by_player: "This command can only be executed as a player"
+  parameter_not_url: "The parameter entered is not a URL"
+  image_download_failed: "Image download failed: "
+  image_read_failed: "Image read failed: "
+  database_error: "Database error"
+  created_successfully: "Created successfully, map number: "
+  not_filled_map_on_hand: "Not filled map on hand"
+  map_no_original_data: "This map has no original data"
