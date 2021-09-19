@@ -241,7 +241,7 @@ public final class Command implements CommandExecutor {
                                             // 重定向清單
                                             sender.sendMessage(ChatColor.YELLOW + configData.getLanguage("redirect_list"));
                                             for (MapRedirectEntry redirect : redirectEntries) {
-                                                sender.sendMessage(" - " + ChatColor.YELLOW + redirect.getRedirectId() + ": " + redirect.getPermission() + " => " + redirect.getRedirectId());
+                                                sender.sendMessage(" - " + ChatColor.YELLOW + redirect.getPriority() + ": " + redirect.getPermission() + " => " + redirect.getRedirectId());
                                             }
                                         }
                                     }
