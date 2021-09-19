@@ -19,3 +19,6 @@ languages:
   created_successfully: "Created successfully, map number: "
   not_filled_map_on_hand: "Not filled map on hand"
   map_no_original_data: "This map has no original data"
+  parameter_not_number: "Parameter is not a number"
+  given: "Given"
+  map_data_not_exist: "Map data does not exist"

@@ -85,7 +85,6 @@ public final class MapServer {
             // 發送地圖資料
             queueShowMapId.forEach((player, mapIds) -> mapIds.removeIf(mapId -> {
                 MapDataCache mapDataCache = mapDataCaches.get(mapId);
-                System.out.println(Integer.MAX_VALUE - mapId);
                 if (mapDataCache == null) {
                     // 讀取
                     try {

@@ -77,6 +77,14 @@ public final class MapDatabase {
         }
     }
 
+    public boolean existMapData(int mapId) throws SQLException {
+        SQL sql = TABLE.table_MapData.selectData()
+                .select(TABLE.MAP_DATA.field_SaveTime)
+                .where(w -> w.and(TABLE.MAP_DATA.field_MapID, (long) mapId))
+                .limit(1)
+                .callSQL(configData.getDatabaseConnection());
+        return sql.QC();
+    }
 
     public boolean saveMapData(int mapId, MapData mapData) throws SQLException {
         SQL sql = TABLE.table_MapData.updateData()

@@ -25,6 +25,9 @@ public final class CommandSuggest implements TabCompleter {
             if (sender.hasPermission("command.map.*") || sender.hasPermission("command.map.reload")) {
                 list.add("reload");
             }
+            if (sender.hasPermission("command.map.*") || sender.hasPermission("command.map.get")) {
+                list.add("get");
+            }
             if (sender.hasPermission("command.map.*") || sender.hasPermission("command.map.create.*") || sender.hasPermission("command.map.create.url") || sender.hasPermission("command.map.create.file") || sender.hasPermission("command.map.create.hand")) {
                 list.add("create");
             }
@@ -40,6 +43,9 @@ public final class CommandSuggest implements TabCompleter {
                     if (sender.hasPermission("command.map.*") || sender.hasPermission("command.map.create.*") || sender.hasPermission("command.map.create.hand")) {
                         list.add("hand");
                     }
+                    break;
+                case "get":
+                    list.add("1");
                     break;
             }
         } else if (parameters.length == 3) {

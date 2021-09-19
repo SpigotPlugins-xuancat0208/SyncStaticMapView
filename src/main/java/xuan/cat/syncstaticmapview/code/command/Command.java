@@ -8,6 +8,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.MapMeta;
+import org.bukkit.map.MapView;
 import org.bukkit.plugin.Plugin;
 import xuan.cat.syncstaticmapview.api.branch.BranchMapConversion;
 import xuan.cat.syncstaticmapview.api.branch.BranchMinecraft;
@@ -59,6 +60,42 @@ public final class Command implements CommandExecutor {
                             ex.printStackTrace();
                             // 重新讀取設定時發生錯誤
                             sender.sendMessage(ChatColor.RED + configData.getLanguage("reread_configuration_error"));
+                        }
+                    }
+                    break;
+
+                case "get":
+                    // 重新讀取配置文件
+                    if (!sender.hasPermission("command.map.*") && !sender.hasPermission("command.map.get")) {
+                        // 無權限
+                        sender.sendMessage(ChatColor.RED + configData.getLanguage("no_permission"));
+                    } else if (!(sender instanceof Player)) {
+                        // 只能以玩家身分執行此指令
+                        sender.sendMessage(ChatColor.RED + configData.getLanguage("only_be_used_by_player"));
+                    } else {
+                        Player player = (Player) sender;
+                        if (parameters.length >= 2) {
+                            try {
+                                int mapId = Integer.parseInt(parameters[1]);
+                                if (mapDatabase.existMapData(mapId)) {
+                                    giveMapItem(player, mapId);
+                                    // 已給予
+                                    sender.sendMessage(ChatColor.YELLOW + configData.getLanguage("given"));
+                                } else {
+                                    // 地圖資料不存在
+                                    sender.sendMessage(ChatColor.RED + configData.getLanguage("map_data_not_exist"));
+                                }
+                            } catch (NumberFormatException exception) {
+                                // 參數不是數字
+                                sender.sendMessage(ChatColor.RED + configData.getLanguage("parameter_not_number"));
+                            } catch (SQLException exception) {
+                                // 資料庫錯誤
+                                sender.sendMessage(ChatColor.RED + configData.getLanguage("database_error"));
+                                exception.printStackTrace();
+                            }
+                        } else {
+                            // 缺少參數
+                            sender.sendMessage(ChatColor.RED + configData.getLanguage("missing_parameters"));
                         }
                     }
                     break;
@@ -147,11 +184,12 @@ public final class Command implements CommandExecutor {
                                 } else {
                                     Player player = (Player) sender;
                                     ItemStack item = player.getInventory().getItemInMainHand();
-                                    if (item.getType() != Material.FILLED_MAP) {
+                                    if (item.getType() == Material.FILLED_MAP) {
                                         try {
                                             MapMeta mapMeta = (MapMeta) item.getItemMeta();
-                                            if (mapMeta.hasMapView()) {
-                                                int mapId = mapDatabase.addMapData(branchMapConversion.ofBukkit(mapMeta.getMapView()));
+                                            MapView mapView = mapMeta.hasMapView() ? mapMeta.getMapView() : null;
+                                            if (mapView != null) {
+                                                int mapId = mapDatabase.addMapData(branchMapConversion.ofBukkit(mapView));
                                                 // 創建完畢, 資料庫地圖編號為:
                                                 sender.sendMessage(ChatColor.YELLOW + configData.getLanguage("created_successfully") + mapId);
                                                 giveMapItem(player, mapId);
