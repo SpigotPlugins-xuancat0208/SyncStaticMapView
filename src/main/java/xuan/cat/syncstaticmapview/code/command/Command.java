@@ -258,6 +258,7 @@ public final class Command implements CommandExecutor {
                                                 mapDatabase.removeMapRedirect(mapId, redirect.getPermission());
                                                 mapDatabase.removeMapRedirect(mapId, redirect.getPriority());
                                                 mapDatabase.addMapRedirects(mapId, redirect);
+                                                mapServer.createCache(mapId);
                                                 mapDatabase.markMapUpdate(mapId);
                                                 // 重導向設置成功
                                                 sender.sendMessage(ChatColor.YELLOW + configData.getLanguage("redirect_set_successfully"));
@@ -279,6 +280,7 @@ public final class Command implements CommandExecutor {
                                     } else {
                                         if (parameters.length >= 4) {
                                             mapDatabase.removeMapRedirect(mapId, parameters[3]);
+                                            mapServer.createCache(mapId);
                                             mapDatabase.markMapUpdate(mapId);
                                             // 重導向刪除成功
                                             sender.sendMessage(ChatColor.YELLOW + configData.getLanguage("redirect_delete_successfully"));
@@ -295,6 +297,7 @@ public final class Command implements CommandExecutor {
                                         sender.sendMessage(ChatColor.RED + configData.getLanguage("no_permission"));
                                     } else {
                                         mapDatabase.removeMapRedirect(mapId);
+                                        mapServer.createCache(mapId);
                                         mapDatabase.markMapUpdate(mapId);
                                         // 重導向刪除成功
                                         sender.sendMessage(ChatColor.YELLOW + configData.getLanguage("redirect_delete_successfully"));

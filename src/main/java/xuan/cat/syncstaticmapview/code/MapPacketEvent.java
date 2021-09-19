@@ -12,7 +12,7 @@ public class MapPacketEvent extends PacketAdapter {
 
 
     public MapPacketEvent(Plugin plugin, MapServer mapServer) {
-        super(plugin, ListenerPriority.HIGHEST, PacketType.Play.Server.SPAWN_ENTITY, PacketType.Play.Server.REMOVE_ENTITY_EFFECT);
+        super(plugin, ListenerPriority.HIGHEST, PacketType.Play.Server.SPAWN_ENTITY);
         this.mapServer    = mapServer;
     }
 

@@ -197,6 +197,10 @@ public final class MapServer {
     }
 
 
+    public void createCache(int mapId) {
+        mapRedirectsCaches.remove(mapId);
+    }
+
 
     /**
      * 關閉視圖伺服器
