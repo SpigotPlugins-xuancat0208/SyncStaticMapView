@@ -12,9 +12,9 @@ public interface WhereBrackets extends Where {
     WhereBrackets and(Consumer<WhereBrackets> consumer);
 
     <T> WhereBrackets or(Field<T> field, WhereJudge judge);
-    <T> WhereBrackets or(Field<T> field, T value);
+
     <T> WhereBrackets or(Field<T> field, WhereJudge judge, T value);
-    <T> WhereBrackets or(Field<T> field, Field<T> value);
+
     <T> WhereBrackets or(Field<T> field, WhereJudge judge, Field<T> value);
     WhereBrackets or(WhereBrackets whereBrackets);
     WhereBrackets or(Consumer<WhereBrackets> consumer);

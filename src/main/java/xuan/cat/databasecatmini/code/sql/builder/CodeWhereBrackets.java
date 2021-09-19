@@ -63,15 +63,11 @@ public final class CodeWhereBrackets extends CodeWhere implements WhereBrackets 
     public <T> CodeWhereBrackets or(Field<T> field , WhereJudge judge) {
         return (CodeWhereBrackets) super.or(field, judge);
     }
-    public <T> CodeWhereBrackets or(Field<T> field, T value) {
-        return or(field, WhereJudge.EQUAL, value);
-    }
+
     public <T> CodeWhereBrackets or(Field<T> field , WhereJudge judge, Field<T> value) {
         return (CodeWhereBrackets) super.or(field, judge, value);
     }
-    public <T> CodeWhereBrackets or(Field<T> field, Field<T> value) {
-        return or(field, WhereJudge.EQUAL, value);
-    }
+
     public <T> CodeWhereBrackets or(Field<T> field , WhereJudge judge, T value) {
         return (CodeWhereBrackets) super.or(field, judge, value);
     }

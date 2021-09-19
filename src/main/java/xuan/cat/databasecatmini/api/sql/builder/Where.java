@@ -12,9 +12,9 @@ public interface Where {
     Where and(Consumer<WhereBrackets> consumer);
 
     <T> Where or(Field<T> field, WhereJudge judge);
-    <T> Where or(Field<T> field, T value);
+
     <T> Where or(Field<T> field, WhereJudge judge, T value);
-    <T> Where or(Field<T> field, Field<T> value);
+
     <T> Where or(Field<T> field, WhereJudge judge, Field<T> value);
     Where or(WhereBrackets whereBrackets);
     Where or(Consumer<WhereBrackets> consumer);

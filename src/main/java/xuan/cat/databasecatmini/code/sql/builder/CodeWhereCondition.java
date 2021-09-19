@@ -48,9 +48,7 @@ public abstract class CodeWhereCondition<T> implements CodeSQLPart {
         public Value(Field<T> field, WhereJudge judge) {
             this(field, judge, null);
         }
-        public Value(Field<T> field, T value) {
-            this(field, WhereJudge.EQUAL, value);
-        }
+
         public Value(Field<T> field, WhereJudge judge, T value) {
             this(field, judge, value, false);
         }
@@ -79,12 +77,6 @@ public abstract class CodeWhereCondition<T> implements CodeSQLPart {
     public static final class Relatively<T> extends CodeWhereCondition<T> {
         private final Field<T>  value;
 
-        public Relatively(Field<T> field, WhereJudge judge) {
-            this(field, judge, null);
-        }
-        public Relatively(Field<T> field, Field<T> value) {
-            this(field, WhereJudge.EQUAL, value);
-        }
         public Relatively(Field<T> field, WhereJudge judge, Field<T> value) {
             this(field, judge, value, false);
         }

@@ -117,15 +117,11 @@ public class CodeWhere implements CodeSQLPart, Where {
     public <T> CodeWhere or(Field<T> field, WhereJudge judge) {
         return or(new CodeWhereCondition.Value<>(field, judge));
     }
-    public <T> CodeWhere or(Field<T> field, T value) {
-        return or(field, WhereJudge.EQUAL, value);
-    }
+
     public <T> CodeWhere or(Field<T> field, WhereJudge judge, T value) {
         return or(new CodeWhereCondition.Value<>(field, judge, value));
     }
-    public <T> CodeWhere or(Field<T> field, Field<T> value) {
-        return or(field, WhereJudge.EQUAL, value);
-    }
+
     public <T> CodeWhere or(Field<T> field, WhereJudge judge, Field<T> value) {
         return or(new CodeWhereCondition.Relatively<>(field, judge, value));
     }

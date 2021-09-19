@@ -2,7 +2,6 @@ package xuan.cat.databasecatmini.code.sql.builder;
 
 import xuan.cat.databasecatmini.api.sql.DatabaseTable;
 import xuan.cat.databasecatmini.api.sql.builder.DeleteData;
-import xuan.cat.databasecatmini.api.sql.builder.Order;
 import xuan.cat.databasecatmini.api.sql.builder.Where;
 import xuan.cat.databasecatmini.api.sql.builder.WhereBrackets;
 import xuan.cat.databasecatmini.code.sql.CodeSQLBuilder;
@@ -18,7 +17,6 @@ public final class CodeDeleteData implements CodeSQLBuilder, DeleteData {
     private       CodeWhere where   = null;
     private       Integer   limit   = null;
     private       Integer   offset  = null;
-    private       CodeOrder order   = null;
 
 
     public CodeDeleteData(DatabaseTable table) {
@@ -29,7 +27,6 @@ public final class CodeDeleteData implements CodeSQLBuilder, DeleteData {
         this.where      = CodeFunction.tryClone(deleteData.where);
         this.limit      = CodeFunction.tryClone(deleteData.limit);
         this.offset     = CodeFunction.tryClone(deleteData.offset);
-        this.order      = CodeFunction.tryClone(deleteData.order);
     }
 
 
@@ -42,9 +39,6 @@ public final class CodeDeleteData implements CodeSQLBuilder, DeleteData {
 
         if (where != null)
             builder.append(where.part());
-
-        if (order != null)
-            builder.append(order.part());
 
         if (limit != null) {
             builder.append(" LIMIT ");
@@ -66,22 +60,6 @@ public final class CodeDeleteData implements CodeSQLBuilder, DeleteData {
 
     public CodeDeleteData limit(Integer limit) {
         this.limit = limit;
-        return this;
-    }
-
-    public CodeDeleteData offset(Integer offset) {
-        this.offset = offset;
-        return this;
-    }
-
-    public CodeDeleteData order(Order order) {
-        this.order = (CodeOrder) order;
-        return this;
-    }
-    public CodeDeleteData order(Consumer<Order> consumer) {
-        if (this.order == null)
-            this.order = new CodeOrder();
-        consumer.accept(this.order);
         return this;
     }
 
@@ -119,15 +97,4 @@ public final class CodeDeleteData implements CodeSQLBuilder, DeleteData {
         return name;
     }
 
-    public CodeOrder order() {
-        return order;
-    }
-
-    public Integer limit() {
-        return limit;
-    }
-
-    public Integer offset() {
-        return offset;
-    }
 }

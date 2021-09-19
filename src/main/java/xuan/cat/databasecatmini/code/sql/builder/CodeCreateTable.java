@@ -96,11 +96,6 @@ public final class CodeCreateTable implements CodeSQLBuilder, CreateTable {
     }
 
 
-    public CodeCreateTable comment(String comment) {
-        this.comment = comment;
-        return this;
-    }
-
     public CodeCreateTable collate(Collate collate) {
         this.collate = collate;
         return this;
@@ -121,20 +116,6 @@ public final class CodeCreateTable implements CodeSQLBuilder, CreateTable {
         return this;
     }
 
-    public CodeCreateTable foreign(ForeignKey foreignKey) {
-        this.foreignList.add((CodeForeignKey) foreignKey);
-        return this;
-    }
-
-    public CodeCreateTable autoIncrement(Integer autoIncrement) {
-        this.autoIncrement = autoIncrement != null ? (long) autoIncrement : null;
-        return this;
-    }
-    public CodeCreateTable autoIncrement(Long autoIncrement) {
-        this.autoIncrement = autoIncrement;
-        return this;
-    }
-
     public <T> CodeCreateTable partition(TablePartition<T> partition) {
         this.partition = partition;
         return this;
@@ -144,16 +125,8 @@ public final class CodeCreateTable implements CodeSQLBuilder, CreateTable {
         return name;
     }
 
-    public String comment() {
-        return comment;
-    }
-
     public Collate collate() {
         return collate;
-    }
-
-    public DatabaseEngine engine() {
-        return engine;
     }
 
     public Set<Field> field() {

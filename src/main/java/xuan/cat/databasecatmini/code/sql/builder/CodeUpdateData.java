@@ -17,12 +17,11 @@ public final class CodeUpdateData implements CodeSQLBuilder, UpdateData {
     private       CodeWhere                 where       = null;
     private       Integer                   limit       = null;
     private       Integer                   offset      = null;
-    private       CodeOrder                 order       = null;
     private final Map<Field, Change>        updates;           // 欄位對應值清單
     private       boolean                   lowPriority = false;
 
 
-    private static class Change<T> {
+    private static class Change {
         Change(Field field, Object value, UpdateAlgorithm algorithm) {
             this.field      = field;
             this.value      = value;
@@ -44,7 +43,6 @@ public final class CodeUpdateData implements CodeSQLBuilder, UpdateData {
         this.where          = CodeFunction.tryClone(updateData.where);
         this.limit          = CodeFunction.tryClone(updateData.limit);
         this.offset         = CodeFunction.tryClone(updateData.offset);
-        this.order          = CodeFunction.tryClone(updateData.order);
         this.updates        = CodeFunction.tryClone(updateData.updates);
         this.lowPriority    = CodeFunction.tryClone(updateData.lowPriority);
     }
@@ -89,9 +87,6 @@ public final class CodeUpdateData implements CodeSQLBuilder, UpdateData {
         if (where != null)
             builder.append(where.part());
 
-        if (order != null)
-            builder.append(order.part());
-
         if (limit != null) {
             builder.append(" LIMIT ");
             builder.append(limit);
@@ -133,21 +128,6 @@ public final class CodeUpdateData implements CodeSQLBuilder, UpdateData {
         return where(brackets);
     }
 
-    public CodeUpdateData order(Order order) {
-        this.order = (CodeOrder) order;
-        return this;
-    }
-    public CodeUpdateData order(Consumer<Order> consumer) {
-        if (this.order == null)
-            this.order = new CodeOrder();
-        consumer.accept(this.order);
-        return this;
-    }
-
-    public CodeUpdateData offset(Integer offset) {
-        this.offset = offset;
-        return this;
-    }
 
     public CodeUpdateData limit(Integer limit) {
         this.limit = limit;
@@ -158,31 +138,10 @@ public final class CodeUpdateData implements CodeSQLBuilder, UpdateData {
     public <T> CodeUpdateData updates(Field<T> field, T value) {
         return updates(field, value, UpdateAlgorithm.EQUAL);
     }
-    public <T extends Number> CodeUpdateData updatesAddition(Field<T> field, T value) {
-        return updates(field, value, UpdateAlgorithm.ADDITION);
-    }
-    public <T extends Number> CodeUpdateData updatesSubtraction(Field<T> field, T value) {
-        return updates(field, value, UpdateAlgorithm.SUBTRACTION);
-    }
+
     public <T> CodeUpdateData updates(Field<T> field, T value, UpdateAlgorithm algorithm) {
-        updates.put(field, new Change<>(field, value, algorithm));
+        updates.put(field, new Change(field, value, algorithm));
         return this;
-    }
-
-
-    public CodeUpdateData lowPriority(boolean lowPriority) {
-        this.lowPriority = lowPriority;
-        return this;
-    }
-
-    public boolean lowPriority() {
-        return lowPriority;
-    }
-
-
-
-    public CodeOrder order() {
-        return order;
     }
 
     public String name() {
@@ -193,11 +152,4 @@ public final class CodeUpdateData implements CodeSQLBuilder, UpdateData {
         return where;
     }
 
-    public Integer offset() {
-        return offset;
-    }
-
-    public Integer limit() {
-        return limit;
-    }
 }

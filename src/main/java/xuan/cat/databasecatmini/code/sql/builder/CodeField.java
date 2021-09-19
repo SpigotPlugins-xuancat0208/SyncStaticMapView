@@ -99,30 +99,10 @@ public final class CodeField<T> implements CodeSQLPart, Field<T> {
         return new CodeField<>(this);
     }
 
-    /**
-     * @param rename 更改名稱, 僅在 AlterTable 的 CHANGE 時生效
-     */
-    public CodeField<T> rename(Enum<?> rename) {
-        return rename(rename.name());
-    }
-    public CodeField<T> rename(String rename) {
-        this.rename = rename;
-        return this;
-    }
-
-    public CodeField<T> atAfter(Enum<?> atAfter) {
-        return atAfter(atAfter.name());
-    }
-    public CodeField<T> atAfter(String atAfter) {
+    public void atAfter(String atAfter) {
         this.atAfter = atAfter;
         if (atAfter != null)
             isFirst(false);
-        return this;
-    }
-
-    public CodeField<T> canNull(boolean canNull) {
-        this.canNull = canNull;
-        return this;
     }
 
     public CodeField<T> autoIncrement(boolean autoIncrement) {
@@ -139,23 +119,16 @@ public final class CodeField<T> implements CodeSQLPart, Field<T> {
         return this;
     }
 
-    public CodeField<T> comment(String comment) {
-        this.comment = comment;
-        return this;
-    }
-
-    public CodeField<T> defaultValue(T defaultValue) {
+    public void defaultValue(T defaultValue) {
         this.defaultValue = defaultValue;
         if (defaultValue != null)
             autoIncrement(false);
-        return this;
     }
 
-    public CodeField<T> isFirst(boolean isFirst) {
+    public void isFirst(boolean isFirst) {
         this.isFirst = isFirst;
         if (isFirst)
             atAfter((String) null);
-        return this;
     }
 
     public CodeField<T> length(Integer length) {
@@ -178,22 +151,6 @@ public final class CodeField<T> implements CodeSQLPart, Field<T> {
         return collate;
     }
 
-    public Integer length() {
-        return length;
-    }
-
-    public T defaultValue() {
-        return defaultValue;
-    }
-
-    public String atAfter() {
-        return atAfter;
-    }
-
-    public String comment() {
-        return comment;
-    }
-
     public String name() {
         return name;
     }
@@ -203,42 +160,15 @@ public final class CodeField<T> implements CodeSQLPart, Field<T> {
         return style;
     }
 
-    public boolean autoIncrement() {
-        return autoIncrement;
-    }
-
-    public boolean canNull() {
-        return canNull;
-    }
-
-    public boolean isFirst() {
-        return isFirst;
-    }
-
-
 
     public FieldIndex index() {
         return new CodeFieldIndex(this);
     }
-    public ForeignKey foreign() {
-        return new CodeForeignKey(this);
-    }
 
 
-
-    public TablePartition.Hash<T> partitionHash() {
-        return (CodeTablePartition.CodeHash<T>) new CodeTablePartition.CodeHash(this);
-    }
     public TablePartition.Key<T> partitionKey() {
         return (CodeTablePartition.CodeKey<T>) new CodeTablePartition.CodeKey(this);
     }
-    public TablePartition.Range<T> partitionRange() {
-        return (CodeTablePartition.CodeRange<T>) new CodeTablePartition.CodeRange(this);
-    }
-    public TablePartition.List<T> partitionList() {
-        return (CodeTablePartition.CodeList<T>) new CodeTablePartition.CodeList(this);
-    }
-
 
 
     public T get(SQL sql) throws SQLException {

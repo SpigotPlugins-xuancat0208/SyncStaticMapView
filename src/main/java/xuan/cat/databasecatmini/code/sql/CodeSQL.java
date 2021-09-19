@@ -39,42 +39,18 @@ public final class CodeSQL implements SQL {
         C();
         return r;
     }
-    public boolean QL() throws SQLException {
-        boolean r = question();
-        if (r)
-            L();
-        return r;
-    }
+
     public boolean Q(SQLBuilder sqlBuilder) throws SQLException {
         sql = sqlBuilder.asString();
         return question();
     }
-    public boolean QC(String sqlCmd) throws SQLException {
-        sql = sqlCmd;
-        return QC();
-    }
+
     public boolean QC(SQLBuilder sqlBuilder) throws SQLException {
         sql = sqlBuilder.asString();
         return QC();
     }
-    public boolean QL(String sqlCmd) throws SQLException {
-        sql = sqlCmd;
-        return QL();
-    }
-    public boolean QL(SQLBuilder sqlBuilder) throws SQLException {
-        sql = sqlBuilder.asString();
-        return QL();
-    }
 
 
-    public boolean question(String sqlCmd) throws SQLException {
-        sql = sqlCmd;
-        return question();
-    }
-    public boolean question(SQLBuilder sqlBuilder) throws SQLException {
-        sql = sqlBuilder.asString();
-        return question();
-    }
     public boolean question() throws SQLException {
         try {
             if (sql         == null)
@@ -102,53 +78,21 @@ public final class CodeSQL implements SQL {
     }
 
 
-    public int U(SQLBuilder sqlBuilder) throws SQLException {
-        sql = sqlBuilder.asString();
-        return update();
-    }
-    public int U(String sqlCmd) throws SQLException {
-        sql = sqlCmd;
-        return update();
-    }
-    public int U() throws SQLException {
-        return update();
+    public void U() throws SQLException {
+        update();
     }
     public int UC() throws SQLException {
         int r = update();
         C();
         return r;
     }
-    public int UL() throws SQLException {
-        int r = update();
-        L();
-        return r;
-    }
-    public int UC(String sqlCmd) throws SQLException {
+
+    public void UC(String sqlCmd) throws SQLException {
         sql = sqlCmd;
-        return UC();
-    }
-    public int UC(SQLBuilder sqlBuilder) throws SQLException {
-        sql = sqlBuilder.asString();
-        return UC();
-    }
-    public int UL(String sqlCmd) throws SQLException {
-        sql = sqlCmd;
-        return UL();
-    }
-    public int UL(SQLBuilder sqlBuilder) throws SQLException {
-        sql = sqlBuilder.asString();
-        return UL();
+        UC();
     }
 
 
-    public int update(SQLBuilder sqlBuilder) throws SQLException {
-        sql = sqlBuilder.asString();
-        return update();
-    }
-    public int update(String sqlCmd) throws SQLException {
-        sql = sqlCmd;
-        return update();
-    }
     public int update() throws SQLException {
         try {
             if (sql       == null)
@@ -170,22 +114,6 @@ public final class CodeSQL implements SQL {
     }
 
 
-    public ResultSet R() {
-        return result();
-    }
-    public ResultSet result() {
-        return resultSet;
-    }
-
-
-    public int A() {
-        return amount();
-    }
-    public int amount() {
-        return amount;
-    }
-
-
     public boolean N() throws SQLException {
         return next();
     }
@@ -196,22 +124,6 @@ public final class CodeSQL implements SQL {
     }
 
 
-    public void B() throws SQLException {
-        before();
-    }
-    public void before() throws SQLException {
-        if (resultSet == null)
-            return; // 不能為空值
-        resultSet.beforeFirst(); // 回歸初始行數
-    }
-
-
-    public <T> T G(Field<T> table) throws SQLException {
-        return get(table);
-    }
-    public <T> T G(Field<T> table, T def) throws SQLException {
-        return get(table, def);
-    }
     public <T> T get(Field<T> table) throws SQLException {
         return table.get(this);
     }
@@ -220,17 +132,8 @@ public final class CodeSQL implements SQL {
     }
 
 
-    public <T> T GC(Field<T> table) throws SQLException {
-        return getThenClose(table);
-    }
-    public <T> T GC(Field<T> table, T def) throws SQLException {
-        return getThenClose(table, def);
-    }
     public <T> T getThenClose(Field<T> table) throws SQLException {
         return table.getThenClose(this);
-    }
-    public <T> T getThenClose(Field<T> table, T def) throws SQLException {
-        return table.getThenClose(this, def);
     }
 
 
@@ -360,19 +263,7 @@ public final class CodeSQL implements SQL {
         if (statement != null && !statement.isClosed())
             statement.close(); // 關閉連線
     }
-    
 
-    public void L() {
-        liberate();
-    }
-    public void liberate() {
-        try {
-            if ( resultSet != null ) resultSet.close(); // 關閉查詢
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-    }
-    
 
     public void CR() throws SQLException {
         closeResultSet();
@@ -392,18 +283,6 @@ public final class CodeSQL implements SQL {
         }
         return null;
     }
-    public Long getAutoIncrementLong() throws SQLException {
-        if (statement != null) {
-            ResultSet generatedKeys = statement.getGeneratedKeys();
-            if (generatedKeys != null && generatedKeys.next())
-                return generatedKeys.getLong(1);
-        }
-        return null;
-    }
 
-
-    public boolean isAvailable() throws SQLException {
-        return !statement.isClosed();
-    }
 
 }

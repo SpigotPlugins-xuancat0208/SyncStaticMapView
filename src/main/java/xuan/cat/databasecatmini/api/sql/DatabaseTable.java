@@ -19,28 +19,9 @@ public interface DatabaseTable {
     boolean existTable(DatabaseConnection database) throws SQLException;
 
     /**
-     * @return 最後一次自動遞增
-     */
-    long lastInsertIDByLong(DatabaseConnection database) throws SQLException;
-    /**
-     * @return 最後一次自動遞增
-     */
-    int lastInsertIDByInt(DatabaseConnection database) throws SQLException;
-
-    /**
-     * @return 更改資料表
-     */
-    AlterTable alterTable();
-
-    /**
      * @return 創建資料表
      */
     CreateTable createTable();
-
-    /**
-     * @return 刪除資料表
-     */
-    DeleteTable deleteTable();
 
     /**
      * @return 刪除資料

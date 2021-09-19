@@ -1,8 +1,6 @@
 package xuan.cat.databasecatmini.code.sql;
 
 import xuan.cat.databasecatmini.api.sql.DatabaseConnection;
-import xuan.cat.databasecatmini.code.sql.builder.CodeCreateDatabase;
-import xuan.cat.databasecatmini.code.sql.builder.CodeDeleteDatabase;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -54,13 +52,5 @@ public final class CodeDatabaseConnection implements DatabaseConnection {
         return name;
     }
 
-
-    public CodeCreateDatabase createDatabase() {
-        return new CodeCreateDatabase(getName());
-    }
-
-    public CodeDeleteDatabase deleteDatabase() {
-        return new CodeDeleteDatabase(getName());
-    }
 
 }

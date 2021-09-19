@@ -129,29 +129,13 @@ public final class CodeInsertData implements CodeSQLBuilder, InsertData {
     public <T> CodeInsertData updates(Field<T> field, T value) {
         return updates(field, value, UpdateAlgorithm.EQUAL);
     }
-    public <T extends Number> CodeInsertData updatesAddition(Field<T> field, T value) {
-        return updates(field, value, UpdateAlgorithm.ADDITION);
-    }
-    public <T extends Number> CodeInsertData updatesSubtraction(Field<T> field, T value) {
-        return updates(field, value, UpdateAlgorithm.SUBTRACTION);
-    }
+
     public <T> CodeInsertData updates(Field<T> field, T value, UpdateAlgorithm algorithm) {
         insert(field, value);
         updates.put(field, new Change<>(field, value, algorithm));
         return this;
     }
 
-    public CodeInsertData lowPriority(boolean lowPriority) {
-        this.lowPriority = lowPriority;
-        return this;
-    }
-
-
-
-
-    public boolean lowPriority() {
-        return lowPriority;
-    }
 
     public String name() {
         return name;

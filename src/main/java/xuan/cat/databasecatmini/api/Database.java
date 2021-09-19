@@ -4,12 +4,9 @@ import xuan.cat.databasecatmini.api.sql.DatabaseTable;
 import xuan.cat.databasecatmini.api.sql.MySQL;
 import xuan.cat.databasecatmini.api.sql.builder.Field;
 import xuan.cat.databasecatmini.api.sql.builder.FieldStyle;
-import xuan.cat.databasecatmini.api.sql.builder.InformationSchema;
-import xuan.cat.databasecatmini.api.sql.builder.SelectData;
 import xuan.cat.databasecatmini.code.sql.CodeDatabaseTable;
 import xuan.cat.databasecatmini.code.sql.CodeMySQL;
 import xuan.cat.databasecatmini.code.sql.builder.CodeField;
-import xuan.cat.databasecatmini.code.sql.builder.CodeSelectData;
 
 /**
  * 資料庫的一切操作
@@ -28,13 +25,6 @@ public final class Database {
      */
     public static MySQL createMySQL(String ip, int port, String user, String password) {
         return new CodeMySQL(ip, port, user, password);
-    }
-
-    /**
-     * @return 選擇訊息架構資料
-     */
-    public static SelectData selectInformationSchema(InformationSchema informationSchema){
-        return new CodeSelectData(informationSchema);
     }
 
     /**

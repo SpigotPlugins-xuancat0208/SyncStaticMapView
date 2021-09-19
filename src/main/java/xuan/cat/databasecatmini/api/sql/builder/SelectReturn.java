@@ -7,29 +7,6 @@ public enum SelectReturn {
 
     /** 正常 */
     NOT             ("",                "", false,  ""),
-
-    ALL             ("",                "", false,  "*"),
-
-    CHAR_LENGTH     ("CHAR_LENGTH(",    ")",false,  ""),
-    DATE            ("DATE(",           ")",false,  ""),
-    FROM_UNIXTIME   ("FROM_UNIXTIME(",  ")",false,  ""),
-    LOWER           ("LOWER(",          ")",false,  ""),
-    ROUND           ("ROUND(",          ")",false,  ""),
-    FLOOR           ("FLOOR(",          ")",false,  ""),
-    CEIL            ("CEIL(",           ")",false,  ""),
-    SEC_TO_TIME     ("SEC_TO_TIME(",    ")",false,  ""),
-    TIME_TO_SEC     ("TIME_TO_SEC(",    ")",false,  ""),
-    UPPER           ("UPPER(",          ")",false,  ""),
-
-    AVG             ("AVG(",            ")",true,   "*"),
-    COUNT           ("COUNT(",          ")",true,   "*"),
-    COUNT_DISTINCT  ("COUNT(DISTINCT ", ")",true,   "*"),
-    GROUP_CONCAT    ("GROUP_CONCAT(",   ")",true,   "*"),
-    MAX             ("MAX(",            ")",true,   "*"),
-    MIN             ("MIN(",            ")",true,   "*"),
-    SUM             ("SUM(",            ")",true,   "*"),
-
-    HEX             ("HEX(",            ")",false,  ""),
     ;
 
 

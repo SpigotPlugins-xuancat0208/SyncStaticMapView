@@ -1,6 +1,5 @@
 package xuan.cat.databasecatmini.code.sql.builder;
 
-import xuan.cat.databasecatmini.api.sql.DatabaseTable;
 import xuan.cat.databasecatmini.api.sql.builder.*;
 import xuan.cat.databasecatmini.code.sql.CodeSQLBuilder;
 import xuan.cat.databasecatmini.code.sql.CodeSQLPart;
@@ -25,12 +24,6 @@ public final class CodeAlterTable implements CodeSQLBuilder, AlterTable {
     private       TablePartition                    partition           = null;     // 分區
 
 
-    public CodeAlterTable(DatabaseTable table) {
-        this.tableList      = new LinkedHashMap<>();
-        this.indexList      = new LinkedHashMap<>();
-        this.foreignList    = new LinkedHashMap<>();
-        this.name           = table.getName();
-    }
     private CodeAlterTable(CodeAlterTable alterTable) {
         this.name           = CodeFunction.tryClone(alterTable.name);
         this.rename         = CodeFunction.tryClone(alterTable.rename);
@@ -151,105 +144,18 @@ public final class CodeAlterTable implements CodeSQLBuilder, AlterTable {
     }
 
 
-    public CodeAlterTable rename(Enum<?> rename) {
-        return rename(rename.name());
-    }
-    public CodeAlterTable rename(String rename) {
-        this.rename = rename;
-        return this;
-    }
-
     public CodeAlterTable collate(Collate collate) {
         this.collate = collate;
         return this;
     }
 
-    public CodeAlterTable comment(String comment) {
-        this.comment = comment;
-        return this;
-    }
-
-    public CodeAlterTable engine(DatabaseEngine engine) {
-        this.engine = engine;
-        return this;
-    }
-
-
-    public <T> CodeAlterTable tableAdd(Field<T> field) {
-        return tables(field, AlterType.ADD);
-    }
-    public <T> CodeAlterTable tableChange(Field<T> field) {
-        return tables(field, AlterType.CHANGE);
-    }
-    public <T> CodeAlterTable tableRemove(Field<T> field) {
-        return tables(field, AlterType.DROP);
-    }
-
-
-    private <T> CodeAlterTable tables(Field<T> field, AlterType alterType) {
-        this.tableList.put((CodeField<T>) field, alterType);
-        return this;
-    }
-
-
-    public CodeAlterTable indexAdd(FieldIndex index) {
-        return indexs(index, AlterType.ADD);
-    }
-    public CodeAlterTable indexRemove(FieldIndex index) {
-        return indexs(index, AlterType.DROP);
-    }
-
-
-    private CodeAlterTable indexs(FieldIndex table, AlterType alterType) {
-        this.indexList.put((CodeFieldIndex) table, alterType);
-        return this;
-    }
-
-    public CodeAlterTable foreignAdd(ForeignKey foreignKey) {
-        return foreigns(foreignKey, AlterType.ADD);
-    }
-    public CodeAlterTable foreignRemove(ForeignKey foreignKey) {
-        return foreigns(foreignKey, AlterType.DROP);
-    }
-
-
-    private CodeAlterTable foreigns(ForeignKey foreignKey, AlterType alterType) {
-        this.foreignList.put((CodeForeignKey) foreignKey, alterType);
-        return this;
-    }
-
-
-    public CodeAlterTable autoIncrement(Integer autoIncrement) {
-        this.autoIncrement = autoIncrement != null ? (long) autoIncrement : null;
-        return this;
-    }
-    public CodeAlterTable autoIncrement(Long autoIncrement) {
-        this.autoIncrement = autoIncrement;
-        return this;
-    }
-
-    public <T> CodeAlterTable partition(TablePartition<T> partition) {
-        this.partition = partition;
-        return this;
-    }
 
     public String name() {
         return name;
-    }
-
-    public DatabaseEngine engine() {
-        return engine;
     }
 
     public Collate collate() {
         return collate;
     }
 
-    public String comment() {
-        return comment;
-    }
-
-    public String rename() {
-        return rename;
-    }
 }

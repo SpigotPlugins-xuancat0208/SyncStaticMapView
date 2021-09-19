@@ -66,14 +66,6 @@ public final class CodeMySQL implements MySQL {
     }
 
 
-    public void deleteDatabase(String database) throws SQLException {
-        Connection  connection  = DriverManager.getConnection(getURL(), user, password);
-        createSQL(connection).UC("DROP DATABASE " + CodeFunction.toField(database) + ";");
-        connection.close();
-    }
-
-
-
     private CodeSQL createSQL(Connection connection) throws SQLException {
         return new CodeSQL(connection.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY));
     }
