@@ -17,6 +17,7 @@ public final class ConfigData {
     private final JavaPlugin plugin;
     private Map<String, String> languagesMap = new HashMap<>();
     private MySQL mySQL;
+    private String databaseName;
     private DatabaseConnection databaseConnection;
     private long cacheVitalityTime;
 
@@ -39,11 +40,13 @@ public final class ConfigData {
     private void load() throws SQLException {
         ConfigurationSection database = fileConfiguration.getConfigurationSection("database");
         MySQL mySQL;
+        String databaseName;
         DatabaseConnection databaseConnection;
         if (database == null)
             throw new NullPointerException("config.yml>database");
         mySQL = Database.createMySQL(database.getString("ip"), database.getInt("port"), database.getString("user"), database.getString("password"));
-        databaseConnection = mySQL.getOrCreateDatabase(database.getString("database").toLowerCase(Locale.ROOT));
+        databaseName = database.getString("database").toLowerCase(Locale.ROOT);
+        databaseConnection = mySQL.getOrCreateDatabase(databaseName);
 
         Map<String, String> languagesMap = new HashMap<>();
         ConfigurationSection languages = fileConfiguration.getConfigurationSection("languages");
@@ -56,14 +59,15 @@ public final class ConfigData {
 
 
         this.mySQL = mySQL;
+        this.databaseName = databaseName;
         this.databaseConnection = databaseConnection;
         this.languagesMap = languagesMap;
         this.cacheVitalityTime = cacheVitalityTime;
     }
 
 
-    public DatabaseConnection getDatabaseConnection() {
-        return databaseConnection;
+    public DatabaseConnection getDatabaseConnection() throws SQLException {
+        return databaseConnection.isConnected() ? databaseConnection : (databaseConnection = mySQL.getOrCreateDatabase(databaseName));
     }
 
     public long getCacheVitalityTime() {
