@@ -15,7 +15,6 @@ import xuan.cat.syncstaticmapview.api.branch.BranchMapColor;
 import xuan.cat.syncstaticmapview.api.branch.BranchMapConversion;
 import xuan.cat.syncstaticmapview.api.branch.BranchMinecraft;
 import xuan.cat.syncstaticmapview.api.branch.BranchPacket;
-import xuan.cat.syncstaticmapview.api.data.MapData;
 import xuan.cat.syncstaticmapview.code.data.ConfigData;
 import xuan.cat.syncstaticmapview.code.data.MapDataCache;
 import xuan.cat.syncstaticmapview.code.data.MapRedirectEntry;
@@ -37,13 +36,15 @@ public final class MapServer {
     private final Map<Integer, MapDataCache> mapDataCaches = new ConcurrentHashMap<>();
     /** 快取權限資料 */
     private final Map<Integer, MapRedirectsCache> mapRedirectsCaches = new ConcurrentHashMap<>();
-    /** 顯示完畢的地圖編號 */
-    private final Map<Player, Set<Integer>> endShowMapId = new ConcurrentHashMap<>();
+//    /** 顯示完畢的地圖編號 */
+//    private final Map<Player, Set<Integer>> endShowMapId = new ConcurrentHashMap<>();
     /** 排隊顯示的地圖編號 */
     private final Map<Player, Set<Integer>> queueShowMapId = new ConcurrentHashMap<>();
     private volatile boolean asyncTickRunning = false;
-    /** 請求更新 */
+    /** 上一次請求更新 */
     private Map<Integer, Date> markUpdatesLast = new HashMap<>();
+    /** 排隊全局更新 */
+    private final Set<Integer> queueSyncUpdate = ConcurrentHashMap.newKeySet();
 
 
     public MapServer(Plugin plugin, ConfigData configData, MapDatabase mapDatabase, BranchMapConversion branchMapConversion, BranchMapColor branchMapColor, BranchMinecraft branchMinecraft, BranchPacket branchPacket) {
@@ -61,6 +62,24 @@ public final class MapServer {
 
 
     private void syncTick() {
+        // 全局更新
+        if (queueSyncUpdate.size() > 0) {
+            List<ItemFrame> itemFrameList = new ArrayList<>();
+            Bukkit.getWorlds().forEach(world -> itemFrameList.addAll(world.getEntitiesByClass(ItemFrame.class)));
+            queueSyncUpdate.forEach(mapId -> {
+                itemFrameList.forEach(itemFrame -> {
+                    ItemStack item = itemFrame.getItem();
+                    if (item.getType() == Material.FILLED_MAP && branchMinecraft.getMapId(item) == -mapId) {
+                        branchMinecraft.getTracking(itemFrame).forEach(player -> {
+//                            endShowMapId.getOrDefault(player, new HashSet<>(1)).remove(mapId);
+                            queueShowMapId.getOrDefault(player, new HashSet<>(1)).add(mapId);
+                        });
+                    }
+                });
+            });
+        }
+
+        // 更新背包地圖
         for (Player player : Bukkit.getOnlinePlayers()) {
             player.getInventory().forEach(item -> trySendMap(player, item));
         }
@@ -90,10 +109,7 @@ public final class MapServer {
                 Date lastTime = markUpdatesLast.get(mapId);
                 if (lastTime == null || lastTime.getTime() != markTime.getTime()) {
                     mapRedirectsCaches.remove(mapId);
-                    endShowMapId.forEach((player, mapIds) -> {
-                        if (mapIds.remove(mapId))
-                            queueShowMapId.getOrDefault(player, new HashSet<>(1)).add(mapId);
-                    });
+                    queueSyncUpdate.add(mapId);
                 }
             });
             markUpdatesLast = markUpdates;
@@ -111,7 +127,7 @@ public final class MapServer {
                 MapDataCache mapDataCache = cacheMapData(targetMapID);
                 if (mapDataCache.data != null) {
                     branchPacket.sendMapView(player, -mapId, mapDataCache.data);
-                    endShowMapId.getOrDefault(player, new HashSet<>(1)).add(mapId);
+//                    endShowMapId.getOrDefault(player, new HashSet<>(1)).add(mapId);
                 }
 
                 return true;
@@ -161,7 +177,7 @@ public final class MapServer {
         if (item != null && item.getType() == Material.FILLED_MAP) {
             int mapId = -branchMinecraft.getMapId(item);
             if (mapId > 0) {
-                if (!endShowMapId.getOrDefault(player, new HashSet<>(1)).contains(mapId))
+//                if (!endShowMapId.getOrDefault(player, new HashSet<>(1)).contains(mapId))
                     queueShowMapId.getOrDefault(player, new HashSet<>(1)).add(mapId);
             }
         }
@@ -170,12 +186,12 @@ public final class MapServer {
 
 
     public void createCache(Player player) {
-        endShowMapId.put(player, ConcurrentHashMap.newKeySet());
+//        endShowMapId.put(player, ConcurrentHashMap.newKeySet());
         queueShowMapId.put(player, ConcurrentHashMap.newKeySet());
     }
 
     public void cleanCache(Player player) {
-        endShowMapId.remove(player);
+//        endShowMapId.remove(player);
         queueShowMapId.remove(player);
     }
 

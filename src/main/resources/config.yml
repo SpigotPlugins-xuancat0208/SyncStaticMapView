@@ -25,3 +25,4 @@ languages:
   not_set_any_redirect: "Not set any redirect"
   redirect_set_successfully: "Redirect set successfully"
   redirect_delete_successfully: "Redirect delete successfully"
+  redirect_list: "Redirect list:\n   Priority: Permission => MapId"

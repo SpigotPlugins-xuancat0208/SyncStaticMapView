@@ -148,6 +148,7 @@ public final class MapDatabase {
         SQL sql = TABLE.table_MapRedirect.selectData()
                 .select(TABLE.MAP_REDIRECT.field_Priority)
                 .select(TABLE.MAP_REDIRECT.field_Permission)
+                .select(TABLE.MAP_REDIRECT.field_RedirectID)
                 .where(w -> w.and(TABLE.MAP_REDIRECT.field_MapID, (long) mapId))
                 .callSQL(configData.getDatabaseConnection());
         if (sql.Q()) {
@@ -219,6 +220,7 @@ public final class MapDatabase {
         SQL sql = TABLE.table_MapUpdate.insertData()
                 .insert(TABLE.MAP_UPDATE.field_MapID, (long) mapId)
                 .insert(TABLE.MAP_UPDATE.field_TimeMark, new Value.NOW_TIME_ADD(configData.getCacheVitalityTime() * 2))
+                .updates(TABLE.MAP_UPDATE.field_MapID, (long) mapId)
                 .updates(TABLE.MAP_UPDATE.field_TimeMark, new Value.NOW_TIME_ADD(configData.getCacheVitalityTime() * 2))
                 .callSQL(configData.getDatabaseConnection());
         return sql.UC() > 0;
@@ -227,6 +229,7 @@ public final class MapDatabase {
         Map<Integer, Date> map = new HashMap<>();
         SQL sql = TABLE.table_MapUpdate.selectData()
                 .select(TABLE.MAP_UPDATE.field_MapID)
+                .select(TABLE.MAP_UPDATE.field_TimeMark)
                 .callSQL(configData.getDatabaseConnection());
         if (sql.Q()) {
             while (sql.N()) {

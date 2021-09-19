@@ -56,7 +56,6 @@ public final class CommandSuggest implements TabCompleter {
                     break;
             }
         } else if (parameters.length == 3) {
-            System.out.println("parameters.length=" + parameters.length);
             switch (parameters[0]) {
                 case "create":
                     switch (parameters[1]) {
@@ -112,7 +111,7 @@ public final class CommandSuggest implements TabCompleter {
                     }
                     break;
                 case "redirect":
-                    switch (parameters[3]) {
+                    switch (parameters[2]) {
                         case "list":
                             list.add("");
                             break;

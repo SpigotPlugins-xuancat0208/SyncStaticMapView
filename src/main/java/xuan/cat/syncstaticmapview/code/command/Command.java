@@ -238,8 +238,10 @@ public final class Command implements CommandExecutor {
                                             // 沒有設置任何的重定向
                                             sender.sendMessage(ChatColor.YELLOW + configData.getLanguage("not_set_any_redirect"));
                                         } else {
+                                            // 重定向清單
+                                            sender.sendMessage(ChatColor.YELLOW + configData.getLanguage("redirect_list"));
                                             for (MapRedirectEntry redirect : redirectEntries) {
-                                                sender.sendMessage("" + ChatColor.YELLOW + redirect.getRedirectId() + ": " + redirect.getPermission() + " => " + redirect.getRedirectId());
+                                                sender.sendMessage(" - " + ChatColor.YELLOW + redirect.getRedirectId() + ": " + redirect.getPermission() + " => " + redirect.getRedirectId());
                                             }
                                         }
                                     }
