@@ -52,7 +52,7 @@ public class Index extends JavaPlugin {
             protocolManager = ProtocolLibrary.getProtocolManager();
 
             saveDefaultConfig();
-//        saveResource("config_en.yml",       false);
+            saveResource("config_en.yml",       false);
             saveResource("config_zh-tw.yml",    false);
             saveResource("config_zh-cn.yml",    false);
 
