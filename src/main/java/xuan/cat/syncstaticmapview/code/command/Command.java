@@ -385,6 +385,9 @@ public final class Command implements CommandExecutor {
     }
 
     public void cropImageSave(CommandSender sender, BufferedImage sourceImage, String saveRatio) throws SQLException {
+        int revisionWidth = sourceImage.getWidth();
+        int revisionHeight = sourceImage.getHeight();
+
         if (saveRatio == null || saveRatio.length() == 0)
             saveRatio = "1:1";
         String[] saveRatios = saveRatio.split(":", 2);
@@ -393,14 +396,11 @@ public final class Command implements CommandExecutor {
             sender.sendMessage(ChatColor.YELLOW + configData.getLanguage("parameter_not_aspect_ratio") + saveRatio);
         } else {
             try {
-                int spaceRow = Integer.parseInt(saveRatios[0]);
+                int spaceRow = saveRatios[0].length() == 0 ? (int) Math.ceil((double) revisionWidth / 128.0) : Integer.parseInt(saveRatios[0]);
                 int spaceWidth = spaceRow * 128;
                 try {
-                    int spaceColumn = Integer.parseInt(saveRatios[1]);
+                    int spaceColumn = saveRatios[1].length() == 0 ? (int) Math.ceil((double) revisionWidth / 128.0) : Integer.parseInt(saveRatios[1]);
                     int spaceHeight = spaceColumn * 128;
-
-                    int revisionWidth = sourceImage.getWidth();
-                    int revisionHeight = sourceImage.getHeight();
 
                     if (revisionWidth > spaceWidth) {
                         double redress = (double) spaceWidth / (double) revisionWidth;
