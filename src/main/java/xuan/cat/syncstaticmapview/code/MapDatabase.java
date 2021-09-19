@@ -72,7 +72,7 @@ public final class MapDatabase {
                     .field(TABLE.MAP_REDIRECT.field_Priority)
                     .field(TABLE.MAP_REDIRECT.field_Permission)
                     .field(TABLE.MAP_REDIRECT.field_RedirectID)
-                    .index(TABLE.MAP_REDIRECT.field_MapID.index())
+                    .index(TABLE.MAP_REDIRECT.field_MapID.index().type(IndexType.INDEX))
                     .partition(TABLE.MAP_REDIRECT.field_MapID.partitionKey().rows(4))
                     .callSQL(configData.getDatabaseConnection())
                     .UC();
@@ -83,6 +83,7 @@ public final class MapDatabase {
             TABLE.table_MapUpdate.createTable().collate(Collate.utf8mb4_bin).engine(DatabaseEngine.MEMORY)
                     .field(TABLE.MAP_UPDATE.field_MapID)
                     .field(TABLE.MAP_UPDATE.field_TimeMark)
+                    .index(TABLE.MAP_UPDATE.field_MapID.index().type(IndexType.UNIQUE))
                     .callSQL(configData.getDatabaseConnection())
                     .UC();
         }

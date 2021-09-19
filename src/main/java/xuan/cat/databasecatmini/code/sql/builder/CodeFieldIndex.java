@@ -48,6 +48,11 @@ public final class CodeFieldIndex implements CodeSQLPart, FieldIndex {
         return this;
     }
 
+    public CodeFieldIndex type(IndexType type) {
+        this.type = type;
+        return this;
+    }
+
 
     public String name() {
         return name != null ? name : field;

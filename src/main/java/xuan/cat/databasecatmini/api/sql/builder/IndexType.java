@@ -6,6 +6,8 @@ package xuan.cat.databasecatmini.api.sql.builder;
 public enum IndexType {
     /** 唯一 */
     UNIQUE      ("UNIQUE "),
+    /** 索引 */
+    INDEX       ("INDEX "),
     ;
 
 

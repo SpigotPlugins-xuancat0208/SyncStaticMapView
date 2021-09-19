@@ -7,6 +7,8 @@ public interface FieldIndex {
     FieldIndex field(Enum<?> field);
     FieldIndex field(String field);
 
+    FieldIndex type(IndexType type);
+
     String name();
 
     String field();
