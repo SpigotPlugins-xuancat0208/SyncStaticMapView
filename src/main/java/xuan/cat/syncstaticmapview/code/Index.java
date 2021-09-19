@@ -89,6 +89,10 @@ public class Index extends JavaPlugin {
 
     public void onDisable() {
         mapServer.close();
+        try {
+            configData.getDatabaseConnection().disconnect();
+        } catch (Exception exception) {
+        }
     }
 
     @Override

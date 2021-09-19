@@ -21,27 +21,6 @@ public final class CodeDatabaseConnection implements DatabaseConnection {
         this.connection = connection;
     }
 
-    /*
-    protected final void connect() throws SQLException {
-        if (!isConnected()) {
-            // 連線
-            BoneCPDataSource config = new BoneCPDataSource();
-            config.setJdbcUrl("jdbc:mysql://" + ip + ":" + port + "/" + database + "?useSSL=false&serverTimezone=UTC");
-            config.setUsername(user);
-            config.setPassword(password);
-            // 每個分區的最大連線數
-            //config.setMaxConnectionsPerPartition(60);
-            // 分區數
-            //config.setPartitionCount(10);
-            // 每次連接的時候一次性拿幾個
-            //config.setAcquireIncrement(100);
-            // 執行續數量
-            //config.setReleaseHelperThreads(4);
-            connection = config.getConnection();//DriverManager.getConnection("jdbc:mysql://" + ip + ":" + port + "/" + database + "?useSSL=false&serverTimezone=UTC", user, password); // 連線 mySQL 資料庫
-        }
-    }
-
-     */
 
     /**
      * 斷開資料庫連線
