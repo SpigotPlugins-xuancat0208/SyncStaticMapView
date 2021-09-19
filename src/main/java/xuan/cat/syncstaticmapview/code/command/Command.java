@@ -403,17 +403,18 @@ public final class Command implements CommandExecutor {
                     int spaceHeight = spaceColumn * 128;
 
                     if (revisionWidth < spaceWidth) {
-                        double redress = (double) revisionWidth / (double) spaceWidth;
+                        double redress = (double) spaceWidth / (double) revisionWidth;
                         revisionWidth = spaceWidth;
                         revisionHeight = (int) (revisionHeight * redress);
-                    } else if (revisionHeight < spaceHeight) {
+                    }
+                    if (revisionHeight < spaceHeight) {
                         double redress = (double) revisionHeight / (double) spaceHeight;
                         revisionWidth = (int) (revisionWidth * redress);
                         revisionHeight = spaceHeight;
                     }
 
                     if (revisionWidth > spaceWidth) {
-                        double redress = (double) spaceWidth / (double) revisionWidth;
+                        double redress = (double) spaceHeight / (double) revisionHeight;
                         revisionWidth = spaceWidth;
                         revisionHeight = (int) (revisionHeight * redress);
                     }
