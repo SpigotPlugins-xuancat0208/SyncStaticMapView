@@ -402,6 +402,16 @@ public final class Command implements CommandExecutor {
                     int spaceColumn = saveRatios[1].length() == 0 ? (int) Math.ceil((double) revisionHeight / 128.0 - 2.0) : Integer.parseInt(saveRatios[1]);
                     int spaceHeight = spaceColumn * 128;
 
+                    if (revisionWidth < spaceWidth) {
+                        double redress = (double) revisionWidth / (double) spaceWidth;
+                        revisionWidth = spaceWidth;
+                        revisionHeight = (int) (revisionHeight * redress);
+                    } else if (revisionHeight < spaceHeight) {
+                        double redress = (double) revisionHeight / (double) spaceHeight;
+                        revisionWidth = (int) (revisionWidth * redress);
+                        revisionHeight = spaceHeight;
+                    }
+
                     if (revisionWidth > spaceWidth) {
                         double redress = (double) spaceWidth / (double) revisionWidth;
                         revisionWidth = spaceWidth;
