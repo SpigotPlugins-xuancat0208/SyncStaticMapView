@@ -36,7 +36,7 @@ public final class MapServer {
     private final Map<Integer, MapDataCache> mapDataCaches = new ConcurrentHashMap<>();
     /** 快取權限資料 */
     private final Map<Integer, MapRedirectsCache> mapRedirectsCaches = new ConcurrentHashMap<>();
-//    /** 顯示完畢的地圖編號 */
+    /** 顯示完畢的地圖編號 */
     private final Map<Player, Set<Integer>> endShowMapId = new ConcurrentHashMap<>();
     /** 排隊顯示的地圖編號 */
     private final Map<Player, Set<Integer>> queueShowMapId = new ConcurrentHashMap<>();
