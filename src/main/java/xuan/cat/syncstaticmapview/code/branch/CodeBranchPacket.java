@@ -12,7 +12,7 @@ import xuan.cat.syncstaticmapview.api.data.MapData;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 
-public class CodeBranchPacket implements BranchPacket {
+public final class CodeBranchPacket implements BranchPacket {
     private final ProtocolManager protocolManager     = ProtocolLibrary.getProtocolManager();
 
 

@@ -20,7 +20,7 @@ import xuan.cat.syncstaticmapview.code.data.ConfigData;
 
 import java.io.*;
 
-public class Index extends JavaPlugin {
+public final class Index extends JavaPlugin {
 
     private static ProtocolManager      protocolManager;
     private static Plugin               plugin;

@@ -7,7 +7,7 @@ import com.comphenix.protocol.events.PacketEvent;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
-public class MapPacketEvent extends PacketAdapter {
+public final class MapPacketEvent extends PacketAdapter {
     private final MapServer mapServer;
 
 
