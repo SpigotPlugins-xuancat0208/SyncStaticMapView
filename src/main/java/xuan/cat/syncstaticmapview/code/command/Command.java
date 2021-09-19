@@ -15,6 +15,7 @@ import xuan.cat.syncstaticmapview.api.branch.BranchMinecraft;
 import xuan.cat.syncstaticmapview.code.MapDatabase;
 import xuan.cat.syncstaticmapview.code.MapServer;
 import xuan.cat.syncstaticmapview.code.data.ConfigData;
+import xuan.cat.syncstaticmapview.code.data.MapRedirectEntry;
 
 import javax.imageio.ImageIO;
 import java.io.File;
@@ -22,6 +23,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.sql.SQLException;
+import java.util.List;
 
 public final class Command implements CommandExecutor {
     private final Plugin                plugin;
@@ -132,7 +134,7 @@ public final class Command implements CommandExecutor {
                                                     exception.printStackTrace();
                                                 } catch (IOException exception) {
                                                     // 圖片下載失敗
-                                                    sender.sendMessage(ChatColor.RED + configData.getLanguage("image_download_failed" + exception.getMessage()));
+                                                    sender.sendMessage(ChatColor.RED + configData.getLanguage("image_download_failed") + exception.getMessage());
                                                 }
                                             });
                                         }
@@ -219,6 +221,103 @@ public final class Command implements CommandExecutor {
                         sender.sendMessage(ChatColor.RED + configData.getLanguage("missing_parameters"));
                     }
                     break;
+
+                case "redirect":
+                    // 重定向
+                    if (parameters.length >= 3) {
+                        try {
+                            int mapId = Integer.parseInt(parameters[1]);
+                            switch (parameters[2]) {
+                                case "list":
+                                    if (!sender.hasPermission("command.map.*") && !sender.hasPermission("command.map.redirect.*") && !sender.hasPermission("command.map.redirect.list")) {
+                                        // 無權限
+                                        sender.sendMessage(ChatColor.RED + configData.getLanguage("no_permission"));
+                                    } else {
+                                        List<MapRedirectEntry> redirectEntries = mapServer.cacheMapRedirects(mapId).redirects;
+                                        if (redirectEntries.size() == 0) {
+                                            // 沒有設置任何的重定向
+                                            sender.sendMessage(ChatColor.YELLOW + configData.getLanguage("not_set_any_redirect"));
+                                        } else {
+                                            for (MapRedirectEntry redirect : redirectEntries) {
+                                                sender.sendMessage("" + ChatColor.YELLOW + redirect.getRedirectId() + ": " + redirect.getPermission() + " => " + redirect.getRedirectId());
+                                            }
+                                        }
+                                    }
+                                    break;
+
+                                case "set":
+                                    if (!sender.hasPermission("command.map.*") && !sender.hasPermission("command.map.redirect.*") && !sender.hasPermission("command.map.redirect.set")) {
+                                        // 無權限
+                                        sender.sendMessage(ChatColor.RED + configData.getLanguage("no_permission"));
+                                    } else {
+                                        if (parameters.length >= 6) {
+                                            MapRedirectEntry redirect = new MapRedirectEntry(Integer.parseInt(parameters[3]), parameters[4], Integer.parseInt(parameters[5]));
+                                            if (mapDatabase.existMapData(redirect.getRedirectId())) {
+                                                mapDatabase.removeMapRedirect(mapId, redirect.getPermission());
+                                                mapDatabase.removeMapRedirect(mapId, redirect.getPriority());
+                                                mapDatabase.addMapRedirects(mapId, redirect);
+                                                mapDatabase.markMapUpdate(mapId);
+                                                // 重導向設置成功
+                                                sender.sendMessage(ChatColor.YELLOW + configData.getLanguage("redirect_set_successfully"));
+                                            } else {
+                                                // 地圖資料不存在
+                                                sender.sendMessage(ChatColor.RED + configData.getLanguage("map_data_not_exist"));
+                                            }
+                                        } else {
+                                            // 缺少參數
+                                            sender.sendMessage(ChatColor.RED + configData.getLanguage("missing_parameters"));
+                                        }
+                                    }
+                                    break;
+
+                                case "delete":
+                                    if (!sender.hasPermission("command.map.*") && !sender.hasPermission("command.map.redirect.*") && !sender.hasPermission("command.map.redirect.delete")) {
+                                        // 無權限
+                                        sender.sendMessage(ChatColor.RED + configData.getLanguage("no_permission"));
+                                    } else {
+                                        if (parameters.length >= 4) {
+                                            mapDatabase.removeMapRedirect(mapId, parameters[3]);
+                                            mapDatabase.markMapUpdate(mapId);
+                                            // 重導向刪除成功
+                                            sender.sendMessage(ChatColor.YELLOW + configData.getLanguage("redirect_delete_successfully"));
+                                        } else {
+                                            // 缺少參數
+                                            sender.sendMessage(ChatColor.RED + configData.getLanguage("missing_parameters"));
+                                        }
+                                    }
+                                    break;
+
+                                case "delete_all":
+                                    if (!sender.hasPermission("command.map.*") && !sender.hasPermission("command.map.redirect.*") && !sender.hasPermission("command.map.redirect.delete_all")) {
+                                        // 無權限
+                                        sender.sendMessage(ChatColor.RED + configData.getLanguage("no_permission"));
+                                    } else {
+                                        mapDatabase.removeMapRedirect(mapId);
+                                        mapDatabase.markMapUpdate(mapId);
+                                        // 重導向刪除成功
+                                        sender.sendMessage(ChatColor.YELLOW + configData.getLanguage("redirect_delete_successfully"));
+                                    }
+                                    break;
+
+                                default:
+                                    // 未知的參數類型
+                                    sender.sendMessage(ChatColor.RED + configData.getLanguage("unknown_parameter_type") + " " + parameters[0]);
+                                    break;
+                            }
+                        } catch (NumberFormatException exception) {
+                            // 參數不是數字
+                            sender.sendMessage(ChatColor.RED + configData.getLanguage("parameter_not_number"));
+                        } catch (SQLException exception) {
+                            // 資料庫錯誤
+                            sender.sendMessage(ChatColor.RED + configData.getLanguage("database_error"));
+                            exception.printStackTrace();
+                        }
+                    } else {
+                        // 缺少參數
+                        sender.sendMessage(ChatColor.RED + configData.getLanguage("missing_parameters"));
+                    }
+                    break;
+
                 default:
                     // 未知的參數類型
                     sender.sendMessage(ChatColor.RED + configData.getLanguage("unknown_parameter_type") + " " + parameters[0]);

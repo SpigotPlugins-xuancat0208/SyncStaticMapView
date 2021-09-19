@@ -17,10 +17,11 @@ import xuan.cat.syncstaticmapview.api.branch.BranchMinecraft;
 import xuan.cat.syncstaticmapview.api.branch.BranchPacket;
 import xuan.cat.syncstaticmapview.api.data.MapData;
 import xuan.cat.syncstaticmapview.code.data.ConfigData;
+import xuan.cat.syncstaticmapview.code.data.MapDataCache;
+import xuan.cat.syncstaticmapview.code.data.MapRedirectEntry;
+import xuan.cat.syncstaticmapview.code.data.MapRedirectsCache;
 
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 public final class MapServer {
@@ -32,21 +33,17 @@ public final class MapServer {
     private final BranchMinecraft branchMinecraft;
     private final BranchPacket branchPacket;
     private final Set<BukkitTask> bukkitTasks = ConcurrentHashMap.newKeySet();
-    /** 快取 */
+    /** 快取地圖資料 */
     private final Map<Integer, MapDataCache> mapDataCaches = new ConcurrentHashMap<>();
-    private class MapDataCache {
-        public final long vitality = System.currentTimeMillis() + configData.getCacheVitalityTime();
-        public final MapData data;
-
-        private MapDataCache(MapData data) {
-            this.data = data;
-        }
-    }
+    /** 快取權限資料 */
+    private final Map<Integer, MapRedirectsCache> mapRedirectsCaches = new ConcurrentHashMap<>();
     /** 顯示完畢的地圖編號 */
     private final Map<Player, Set<Integer>> endShowMapId = new ConcurrentHashMap<>();
     /** 排隊顯示的地圖編號 */
     private final Map<Player, Set<Integer>> queueShowMapId = new ConcurrentHashMap<>();
     private volatile boolean asyncTickRunning = false;
+    /** 請求更新 */
+    private Map<Integer, Date> markUpdatesLast = new HashMap<>();
 
 
     public MapServer(Plugin plugin, ConfigData configData, MapDatabase mapDatabase, BranchMapConversion branchMapConversion, BranchMapColor branchMapColor, BranchMinecraft branchMinecraft, BranchPacket branchPacket) {
@@ -58,8 +55,8 @@ public final class MapServer {
         this.branchMinecraft = branchMinecraft;
         this.branchPacket = branchPacket;
         BukkitScheduler scheduler = Bukkit.getScheduler();
-        bukkitTasks.add(scheduler.runTaskTimer(plugin, this::syncTick, 0, 1));
-        bukkitTasks.add(scheduler.runTaskTimerAsynchronously(plugin, this::asyncTick, 0, 1));
+        bukkitTasks.add(scheduler.runTaskTimer(plugin, this::syncTick, 0, 10));
+        bukkitTasks.add(scheduler.runTaskTimerAsynchronously(plugin, this::asyncTick, 0, 10));
     }
 
 
@@ -81,32 +78,72 @@ public final class MapServer {
                 if (mapDataCache.vitality <= System.currentTimeMillis())
                     mapDataCaches.remove(mapId);
             });
+            mapRedirectsCaches.forEach((mapId, mapRedirectsCache) -> {
+                if (mapRedirectsCache.vitality <= System.currentTimeMillis())
+                    mapRedirectsCaches.remove(mapId);
+            });
+
+            // 檢查請求更新
+            mapDatabase.expiredMapUpdate();
+            Map<Integer, Date> markUpdates = mapDatabase.getMapUpdates();
+            markUpdates.forEach((mapId, markTime) -> {
+                Date lastTime = markUpdatesLast.get(mapId);
+                if (lastTime == null || lastTime.getTime() != markTime.getTime()) {
+                    mapRedirectsCaches.remove(mapId);
+                    endShowMapId.forEach((player, mapIds) -> {
+                        if (mapIds.remove(mapId))
+                            queueShowMapId.getOrDefault(player, new HashSet<>(1)).add(mapId);
+                    });
+                }
+            });
+            markUpdatesLast = markUpdates;
 
             // 發送地圖資料
             queueShowMapId.forEach((player, mapIds) -> mapIds.removeIf(mapId -> {
-                MapDataCache mapDataCache = mapDataCaches.get(mapId);
-                if (mapDataCache == null) {
-                    // 讀取
-                    try {
-                        mapDataCache = new MapDataCache(mapDatabase.loadMapData(mapId));
-                    } catch (Exception exception) {
-                        exception.printStackTrace();
-                        mapDataCache = new MapDataCache(null);
-                    }
+                MapRedirectsCache mapRedirectsCache = cacheMapRedirects(mapId);
+                int targetMapID = mapId;
+                for (MapRedirectEntry redirectEntry : mapRedirectsCache.redirects) {
+                   if (player.hasPermission(redirectEntry.getPermission())) {
+                       targetMapID = redirectEntry.getRedirectId();
+                       break;
+                   }
                 }
-
+                MapDataCache mapDataCache = cacheMapData(targetMapID);
                 if (mapDataCache.data != null) {
                     branchPacket.sendMapView(player, -mapId, mapDataCache.data);
-                    endShowMapId.getOrDefault(player, new HashSet<>()).add(mapId);
+                    endShowMapId.getOrDefault(player, new HashSet<>(1)).add(mapId);
                 }
 
                 return true;
             }));
+
         } catch (Exception exception) {
             exception.printStackTrace();
         }
 
         asyncTickRunning = false;
+    }
+
+
+    public MapRedirectsCache cacheMapRedirects(int mapId) {
+        return mapRedirectsCaches.computeIfAbsent(mapId, key -> {
+            try {
+                return new MapRedirectsCache(mapDatabase.getMapRedirects(key), System.currentTimeMillis() + configData.getCacheVitalityTime());
+            } catch (Exception exception) {
+                exception.printStackTrace();
+                return new MapRedirectsCache(new ArrayList<>(), System.currentTimeMillis() + configData.getCacheVitalityTime());
+            }
+        });
+    }
+    public MapDataCache cacheMapData(int mapId) {
+        return mapDataCaches.computeIfAbsent(mapId, key -> {
+            try {
+                return new MapDataCache(mapDatabase.loadMapData(key), System.currentTimeMillis() + configData.getCacheVitalityTime());
+            } catch (Exception exception) {
+                exception.printStackTrace();
+                return new MapDataCache(null, System.currentTimeMillis() + configData.getCacheVitalityTime());
+            }
+        });
     }
 
 
@@ -124,8 +161,8 @@ public final class MapServer {
         if (item != null && item.getType() == Material.FILLED_MAP) {
             int mapId = -branchMinecraft.getMapId(item);
             if (mapId > 0) {
-                if (!endShowMapId.getOrDefault(player, new HashSet<>()).contains(mapId))
-                    queueShowMapId.getOrDefault(player, new HashSet<>()).add(mapId);
+                if (!endShowMapId.getOrDefault(player, new HashSet<>(1)).contains(mapId))
+                    queueShowMapId.getOrDefault(player, new HashSet<>(1)).add(mapId);
             }
         }
     }
