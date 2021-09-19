@@ -6,14 +6,13 @@ import net.minecraft.server.level.EntityPlayer;
 import net.minecraft.server.level.PlayerChunkMap;
 import net.minecraft.server.level.WorldServer;
 import net.minecraft.server.network.ServerPlayerConnection;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.item.ItemStack;
 import org.bukkit.World;
 import org.bukkit.craftbukkit.libs.it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import org.bukkit.craftbukkit.v1_17_R1.CraftWorld;
-import org.bukkit.craftbukkit.v1_17_R1.entity.CraftEntity;
 import org.bukkit.craftbukkit.v1_17_R1.inventory.CraftItemStack;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 import xuan.cat.syncstaticmapview.api.branch.BranchMinecraft;
 
 import java.lang.reflect.Field;
@@ -34,16 +33,16 @@ public final class CodeBranchMinecraft implements BranchMinecraft {
    }
 
 
-    public Entity getEntityFromId(World world, int entityId) {
-        net.minecraft.world.entity.Entity entity = ((CraftWorld) world).getHandle().getEntity(entityId);
+    public org.bukkit.entity.Entity getEntityFromId(World world, int entityId) {
+        Entity entity = ((CraftWorld) world).getHandle().getEntity(entityId);
         return entity != null ? entity.getBukkitEntity() : null;
     }
 
 
-    public int getMapId(ItemStack item) {
+    public int getMapId(org.bukkit.inventory.ItemStack item) {
         CraftItemStack craftItem = CraftItemStack.asCraftCopy(item);
         try {
-            net.minecraft.world.item.ItemStack itemNMS = (net.minecraft.world.item.ItemStack) field_CraftItemStack_handle.get(craftItem);
+            ItemStack itemNMS = (ItemStack) field_CraftItemStack_handle.get(craftItem);
             NBTTagCompound nbt = (NBTTagCompound) field_ItemStack_tag.get(itemNMS);
             return nbt.getInt("map");
         } catch (Exception exception) {
@@ -51,10 +50,10 @@ public final class CodeBranchMinecraft implements BranchMinecraft {
             return 0;
         }
     }
-    public ItemStack setMapId(ItemStack item, int mapId) {
+    public org.bukkit.inventory.ItemStack setMapId(org.bukkit.inventory.ItemStack item, int mapId) {
         CraftItemStack craftItem = CraftItemStack.asCraftCopy(item);
         try {
-            net.minecraft.world.item.ItemStack itemNMS = (net.minecraft.world.item.ItemStack) field_CraftItemStack_handle.get(craftItem);
+            ItemStack itemNMS = (ItemStack) field_CraftItemStack_handle.get(craftItem);
             NBTTagCompound nbt = (NBTTagCompound) field_ItemStack_tag.get(itemNMS);
             if (nbt == null) {
                 nbt = new NBTTagCompound();
@@ -68,7 +67,7 @@ public final class CodeBranchMinecraft implements BranchMinecraft {
     }
 
 
-    public List<Player> getTracking(Entity entity) {
+    public List<Player> getTracking(org.bukkit.entity.Entity entity) {
         WorldServer worldServer = ((CraftWorld) entity.getWorld()).getHandle();
         List<Player> playerList = new ArrayList<>();
         ChunkProviderServer providerServer = worldServer.getChunkProvider();
