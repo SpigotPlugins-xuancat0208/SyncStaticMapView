@@ -8,7 +8,9 @@ import xuan.cat.databasecatmini.api.sql.DatabaseConnection;
 import xuan.cat.databasecatmini.api.sql.MySQL;
 
 import java.sql.SQLException;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
 
 public final class ConfigData {
     private FileConfiguration fileConfiguration;

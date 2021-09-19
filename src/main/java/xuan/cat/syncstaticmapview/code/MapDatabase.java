@@ -1,7 +1,8 @@
 package xuan.cat.syncstaticmapview.code;
 
 import xuan.cat.databasecatmini.api.Database;
-import xuan.cat.databasecatmini.api.sql.*;
+import xuan.cat.databasecatmini.api.sql.DatabaseTable;
+import xuan.cat.databasecatmini.api.sql.SQL;
 import xuan.cat.databasecatmini.api.sql.builder.*;
 import xuan.cat.syncstaticmapview.api.branch.BranchMapColor;
 import xuan.cat.syncstaticmapview.api.branch.BranchMapConversion;

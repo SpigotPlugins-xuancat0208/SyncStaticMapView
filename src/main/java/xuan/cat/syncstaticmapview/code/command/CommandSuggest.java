@@ -7,7 +7,6 @@ import xuan.cat.syncstaticmapview.code.MapServer;
 import xuan.cat.syncstaticmapview.code.data.ConfigData;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public final class CommandSuggest implements TabCompleter {
