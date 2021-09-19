@@ -406,8 +406,7 @@ public final class Command implements CommandExecutor {
                         double redress = (double) spaceWidth / (double) revisionWidth;
                         revisionWidth = spaceWidth;
                         revisionHeight = (int) (revisionHeight * redress);
-                    }
-                    if (revisionHeight < spaceHeight) {
+                    } else if (revisionHeight < spaceHeight) {
                         double redress = (double) spaceHeight / (double) revisionHeight;
                         revisionWidth = (int) (revisionWidth * redress);
                         revisionHeight = spaceHeight;
