@@ -53,8 +53,8 @@ public class Index extends JavaPlugin {
 
             saveDefaultConfig();
 //        saveResource("config_en.yml",       false);
-//        saveResource("config_zh-tw.yml",    false);
-//        saveResource("config_zh-cn.yml",    false);
+            saveResource("config_zh-tw.yml",    false);
+            saveResource("config_zh-cn.yml",    false);
 
             configData      = new ConfigData(this, getConfig());
             mapDatabase     = new MapDatabase(configData, branchMapConversion, branchMapColor);

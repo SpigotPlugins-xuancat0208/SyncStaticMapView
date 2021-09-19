@@ -16,7 +16,7 @@ languages:
   image_download_failed: "Image download failed: "
   image_read_failed: "Image read failed: "
   database_error: "Database error"
-  created_successfully: "Created successfully, map number: "
+  created_successfully: "Created successfully, map id: "
   not_filled_map_on_hand: "Not filled map on hand"
   map_no_original_data: "This map has no original data"
   parameter_not_number: "Parameter is not a number"

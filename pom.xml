@@ -71,23 +71,23 @@
 
 
         <!-- 1.17 spigot -->
-        <!--        <dependency>-->
-        <!--            <groupId>spigot</groupId>-->
-        <!--            <artifactId>1.17.1</artifactId>-->
-        <!--            <version>1</version>-->
-        <!--        </dependency>-->
+        <dependency>
+            <groupId>spigot</groupId>
+            <artifactId>1.17.1</artifactId>
+            <version>1</version>
+        </dependency>
 
         <!-- 1.17 paper -->
-        <dependency>
-            <groupId>paper</groupId>
-            <artifactId>1.17.1</artifactId>
-            <version>259</version>
-        </dependency>
-        <dependency>
-            <groupId>paper</groupId>
-            <artifactId>1.17.1</artifactId>
-            <version>259</version>
-            <classifier>patched</classifier>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>paper</groupId>-->
+<!--            <artifactId>1.17.1</artifactId>-->
+<!--            <version>259</version>-->
+<!--        </dependency>-->
+<!--        <dependency>-->
+<!--            <groupId>paper</groupId>-->
+<!--            <artifactId>1.17.1</artifactId>-->
+<!--            <version>259</version>-->
+<!--            <classifier>patched</classifier>-->
+<!--        </dependency>-->
     </dependencies>
 </project>

@@ -1,0 +1,37 @@
+# 要应用此配置文件
+# 重新命名成 config.yml 即可
+
+
+database:
+  ip: "127.0.0.1"
+  port: 3306
+  database: "!! 你的资料库名称 !!"
+  user: "!! 你的帐号 !!"
+  password: "!! 你的密码 !!"
+
+
+# 快取能保留多少时间 (毫秒)
+cache-vitality-time: 60000
+
+
+languages:
+  no_permission: "无此权限"
+  missing_parameters: "缺少参数"
+  reread_configuration_successfully: "已重新读取配置"
+  reread_configuration_error: "重新读取配置时发生错误"
+  unknown_parameter_type: "未知的参数类型"
+  only_be_used_by_player: "只能以玩家身分执行此指令"
+  parameter_not_url: "输入的参数不是网址"
+  image_download_failed: "图像下载失败: "
+  image_read_failed: "图像读取失败: "
+  database_error: "资料库错误"
+  created_successfully: "创建成功, 地图编号: "
+  not_filled_map_on_hand: "手上拿着的物品不是地图"
+  map_no_original_data: "此地图没有原始资料"
+  parameter_not_number: "参数不是数字"
+  given: "已给予"
+  map_data_not_exist: "地图资料不存在"
+  not_set_any_redirect: "没有设置任何的重定向"
+  redirect_set_successfully: "重导向设置成功"
+  redirect_delete_successfully: "重导向删除成功"
+  redirect_list: "重导向清单:\n   优先级: 权限 => 地图编号"

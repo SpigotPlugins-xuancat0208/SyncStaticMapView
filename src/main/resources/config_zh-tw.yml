@@ -1,0 +1,37 @@
+# 要應用此設定檔
+# 重新命名成 config.yml 即可
+
+
+database:
+  ip: "127.0.0.1"
+  port: 3306
+  database: "!! 你的資料庫名稱 !!"
+  user: "!! 你的帳號 !!"
+  password: "!! 你的密碼 !!"
+
+
+# 快取能保留多少時間 (毫秒)
+cache-vitality-time: 60000
+
+
+languages:
+  no_permission: "無此權限"
+  missing_parameters: "缺少參數"
+  reread_configuration_successfully: "已重新讀取設定"
+  reread_configuration_error: "重新讀取設定時發生錯誤"
+  unknown_parameter_type: "未知的參數類型"
+  only_be_used_by_player: "只能以玩家身分執行此指令"
+  parameter_not_url: "輸入的參數不是網址"
+  image_download_failed: "圖片下載失敗: "
+  image_read_failed: "圖片讀取失敗: "
+  database_error: "資料庫錯誤"
+  created_successfully: "創建成功, 地圖編號: "
+  not_filled_map_on_hand: "手上拿著的物品不是地圖"
+  map_no_original_data: "此地圖沒有原始資料"
+  parameter_not_number: "參數不是數字"
+  given: "已給予"
+  map_data_not_exist: "地圖資料不存在"
+  not_set_any_redirect: "沒有設置任何的重定向"
+  redirect_set_successfully: "重導向設置成功"
+  redirect_delete_successfully: "重導向刪除成功"
+  redirect_list: "重導向清單:\n   優先級: 權限 => 地圖編號"
