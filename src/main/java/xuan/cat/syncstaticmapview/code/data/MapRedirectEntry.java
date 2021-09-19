@@ -6,10 +6,10 @@ public final class MapRedirectEntry {
     private final int redirectId;
 
 
-    public MapRedirectEntry(int priority, String permission, int RedirectId) {
+    public MapRedirectEntry(int priority, String permission, int redirectId) {
         this.permission = permission;
         this.priority = priority;
-        this.redirectId = RedirectId;
+        this.redirectId = redirectId;
     }
 
 

@@ -10,20 +10,28 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.MapMeta;
 import org.bukkit.map.MapView;
 import org.bukkit.plugin.Plugin;
+import xuan.cat.syncstaticmapview.api.branch.BranchMapColor;
 import xuan.cat.syncstaticmapview.api.branch.BranchMapConversion;
 import xuan.cat.syncstaticmapview.api.branch.BranchMinecraft;
+import xuan.cat.syncstaticmapview.api.data.MapData;
 import xuan.cat.syncstaticmapview.code.MapDatabase;
 import xuan.cat.syncstaticmapview.code.MapServer;
+import xuan.cat.syncstaticmapview.code.data.CodeMapData;
 import xuan.cat.syncstaticmapview.code.data.ConfigData;
 import xuan.cat.syncstaticmapview.code.data.MapRedirectEntry;
 
 import javax.imageio.ImageIO;
+import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 public final class Command implements CommandExecutor {
     private final Plugin                plugin;
@@ -31,14 +39,16 @@ public final class Command implements CommandExecutor {
     private final MapServer             mapServer;
     private final ConfigData            configData;
     private final BranchMapConversion   branchMapConversion;
+    private final BranchMapColor        branchMapColor;
     private final BranchMinecraft       branchMinecraft;
 
-    public Command(Plugin plugin, MapDatabase mapDatabase, MapServer mapServer, ConfigData configData, BranchMapConversion branchMapConversion, BranchMinecraft branchMinecraft) {
+    public Command(Plugin plugin, MapDatabase mapDatabase, MapServer mapServer, ConfigData configData, BranchMapConversion branchMapConversion, BranchMapColor branchMapColor, BranchMinecraft branchMinecraft) {
         this.plugin                 = plugin;
         this.mapDatabase            = mapDatabase;
         this.mapServer              = mapServer;
         this.configData             = configData;
         this.branchMapConversion    = branchMapConversion;
+        this.branchMapColor         = branchMapColor;
         this.branchMinecraft        = branchMinecraft;
     }
 
@@ -81,15 +91,15 @@ public final class Command implements CommandExecutor {
                                 int mapId = Integer.parseInt(parameters[1]);
                                 if (mapDatabase.existMapData(mapId)) {
                                     giveMapItem(player, mapId);
-                                    // 已給予
-                                    sender.sendMessage(ChatColor.YELLOW + configData.getLanguage("given"));
+                                    // 已給予: ?
+                                    sender.sendMessage(ChatColor.YELLOW + configData.getLanguage("given") + mapId);
                                 } else {
-                                    // 地圖資料不存在
-                                    sender.sendMessage(ChatColor.RED + configData.getLanguage("map_data_not_exist"));
+                                    // 地圖資料不存在: ?
+                                    sender.sendMessage(ChatColor.RED + configData.getLanguage("map_data_not_exist") + mapId);
                                 }
                             } catch (NumberFormatException exception) {
                                 // 參數不是數字
-                                sender.sendMessage(ChatColor.RED + configData.getLanguage("parameter_not_number"));
+                                sender.sendMessage(ChatColor.RED + configData.getLanguage("parameter_not_number") + parameters[1]);
                             } catch (SQLException exception) {
                                 // 資料庫錯誤
                                 sender.sendMessage(ChatColor.RED + configData.getLanguage("database_error"));
@@ -113,34 +123,34 @@ public final class Command implements CommandExecutor {
                                     // 無權限
                                     sender.sendMessage(ChatColor.RED + configData.getLanguage("no_permission"));
                                 } else {
-                                    try {
-                                        String stitched = stitchedRight(parameters, 2);
+                                    if (parameters.length >= 4) {
+                                        String stitched = stitchedRight(parameters, 3);
                                         if (stitched.length() == 0) {
                                             // 缺少參數
                                             sender.sendMessage(ChatColor.RED + configData.getLanguage("missing_parameters"));
                                         } else {
-                                            URL url = new URL(stitched);
-                                            Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
-                                                try {
-                                                    int mapId = mapDatabase.addMapData(branchMapConversion.ofImage(ImageIO.read(url)));
-                                                    // 創建完畢, 資料庫地圖編號為:
-                                                    sender.sendMessage(ChatColor.YELLOW + configData.getLanguage("created_successfully") + mapId);
-                                                    if (sender instanceof Player) {
-                                                        Bukkit.getScheduler().runTask(plugin, () -> giveMapItem((Player) sender, mapId));
+                                            try {
+                                                URL url = new URL(stitched);
+                                                Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
+                                                    try {
+                                                        cropImageSave(sender, ImageIO.read(url), parameters[2]);
+                                                    } catch (SQLException exception) {
+                                                        // 資料庫錯誤
+                                                        sender.sendMessage(ChatColor.RED + configData.getLanguage("database_error"));
+                                                        exception.printStackTrace();
+                                                    } catch (IOException exception) {
+                                                        // 圖片下載失敗
+                                                        sender.sendMessage(ChatColor.RED + configData.getLanguage("image_download_failed") + exception.getMessage());
                                                     }
-                                                } catch (SQLException exception) {
-                                                    // 資料庫錯誤
-                                                    sender.sendMessage(ChatColor.RED + configData.getLanguage("database_error"));
-                                                    exception.printStackTrace();
-                                                } catch (IOException exception) {
-                                                    // 圖片下載失敗
-                                                    sender.sendMessage(ChatColor.RED + configData.getLanguage("image_download_failed") + exception.getMessage());
-                                                }
-                                            });
+                                                });
+                                            } catch (MalformedURLException exception) {
+                                                // 輸入的參數不是網址
+                                                sender.sendMessage(ChatColor.RED + configData.getLanguage("parameter_not_url") + stitched);
+                                            }
                                         }
-                                    } catch (MalformedURLException exception) {
-                                        // 輸入的參數不是網址
-                                        sender.sendMessage(ChatColor.RED + configData.getLanguage("parameter_not_url"));
+                                    } else {
+                                        // 缺少參數
+                                        sender.sendMessage(ChatColor.RED + configData.getLanguage("missing_parameters"));
                                     }
                                 }
                                 break;
@@ -149,29 +159,29 @@ public final class Command implements CommandExecutor {
                                     // 無權限
                                     sender.sendMessage(ChatColor.RED + configData.getLanguage("no_permission"));
                                 } else {
-                                    String stitched = stitchedRight(parameters, 2);
-                                    if (stitched.length() == 0) {
+                                    if (parameters.length >= 4) {
+                                        String stitched = stitchedRight(parameters, 3);
+                                        if (stitched.length() == 0) {
+                                            // 缺少參數
+                                            sender.sendMessage(ChatColor.RED + configData.getLanguage("missing_parameters"));
+                                        } else {
+                                            File file = new File(stitched);
+                                            Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
+                                                try {
+                                                    cropImageSave(sender, ImageIO.read(file), parameters[2]);
+                                                } catch (SQLException exception) {
+                                                    // 資料庫錯誤
+                                                    sender.sendMessage(ChatColor.RED + configData.getLanguage("database_error"));
+                                                    exception.printStackTrace();
+                                                } catch (IOException exception) {
+                                                    // 圖片讀取失敗
+                                                    sender.sendMessage(ChatColor.RED + configData.getLanguage("image_read_failed") + exception.getMessage());
+                                                }
+                                            });
+                                        }
+                                    } else {
                                         // 缺少參數
                                         sender.sendMessage(ChatColor.RED + configData.getLanguage("missing_parameters"));
-                                    } else {
-                                        File file = new File(stitched);
-                                        Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
-                                            try {
-                                                int mapId = mapDatabase.addMapData(branchMapConversion.ofImage(ImageIO.read(file)));
-                                                // 創建完畢, 資料庫地圖編號為:
-                                                sender.sendMessage(ChatColor.YELLOW + configData.getLanguage("created_successfully") + mapId);
-                                                if (sender instanceof Player) {
-                                                    Bukkit.getScheduler().runTask(plugin, () -> giveMapItem((Player) sender, mapId));
-                                                }
-                                            } catch (SQLException exception) {
-                                                // 資料庫錯誤
-                                                sender.sendMessage(ChatColor.RED + configData.getLanguage("database_error"));
-                                                exception.printStackTrace();
-                                            } catch (IOException exception) {
-                                                // 圖片讀取失敗
-                                                sender.sendMessage(ChatColor.RED + configData.getLanguage("image_read_failed") + exception.getMessage());
-                                            }
-                                        });
                                     }
                                 }
                                 // 文件
@@ -232,6 +242,9 @@ public final class Command implements CommandExecutor {
                                     if (!sender.hasPermission("command.map.*") && !sender.hasPermission("command.map.redirect.*") && !sender.hasPermission("command.map.redirect.list")) {
                                         // 無權限
                                         sender.sendMessage(ChatColor.RED + configData.getLanguage("no_permission"));
+                                    } else if (!mapDatabase.existMapData(mapId)) {
+                                        // 地圖資料不存在: ?
+                                        sender.sendMessage(ChatColor.RED + configData.getLanguage("map_data_not_exist") + mapId);
                                     } else {
                                         List<MapRedirectEntry> redirectEntries = mapServer.cacheMapRedirects(mapId).redirects;
                                         if (redirectEntries.size() == 0) {
@@ -251,20 +264,35 @@ public final class Command implements CommandExecutor {
                                     if (!sender.hasPermission("command.map.*") && !sender.hasPermission("command.map.redirect.*") && !sender.hasPermission("command.map.redirect.set")) {
                                         // 無權限
                                         sender.sendMessage(ChatColor.RED + configData.getLanguage("no_permission"));
+                                    } else if (!mapDatabase.existMapData(mapId)) {
+                                        // 地圖資料不存在: ?
+                                        sender.sendMessage(ChatColor.RED + configData.getLanguage("map_data_not_exist") + mapId);
                                     } else {
                                         if (parameters.length >= 6) {
-                                            MapRedirectEntry redirect = new MapRedirectEntry(Integer.parseInt(parameters[3]), parameters[4], Integer.parseInt(parameters[5]));
-                                            if (mapDatabase.existMapData(redirect.getRedirectId())) {
-                                                mapDatabase.removeMapRedirect(mapId, redirect.getPermission());
-                                                mapDatabase.removeMapRedirect(mapId, redirect.getPriority());
-                                                mapDatabase.addMapRedirects(mapId, redirect);
-                                                mapServer.createCache(mapId);
-                                                mapDatabase.markMapUpdate(mapId);
-                                                // 重導向設置成功
-                                                sender.sendMessage(ChatColor.YELLOW + configData.getLanguage("redirect_set_successfully"));
-                                            } else {
-                                                // 地圖資料不存在
-                                                sender.sendMessage(ChatColor.RED + configData.getLanguage("map_data_not_exist"));
+                                            try {
+                                                int priority = Integer.parseInt(parameters[3]);
+                                                try {
+                                                    int redirectId = Integer.parseInt(parameters[5]);
+                                                    MapRedirectEntry redirect = new MapRedirectEntry(priority, parameters[4], redirectId);
+                                                    if (mapDatabase.existMapData(redirect.getRedirectId())) {
+                                                        mapDatabase.removeMapRedirect(mapId, redirect.getPermission());
+                                                        mapDatabase.removeMapRedirect(mapId, redirect.getPriority());
+                                                        mapDatabase.addMapRedirects(mapId, redirect);
+                                                        mapServer.createCache(mapId);
+                                                        mapDatabase.markMapUpdate(mapId);
+                                                        // 重導向設置成功
+                                                        sender.sendMessage(ChatColor.YELLOW + configData.getLanguage("redirect_set_successfully"));
+                                                    } else {
+                                                        // 地圖資料不存在
+                                                        sender.sendMessage(ChatColor.RED + configData.getLanguage("map_data_not_exist") + redirect.getRedirectId());
+                                                    }
+                                                } catch (NumberFormatException exception) {
+                                                    // 參數不是數字
+                                                    sender.sendMessage(ChatColor.RED + configData.getLanguage("parameter_not_number") + parameters[5]);
+                                                }
+                                            } catch (NumberFormatException exception) {
+                                                // 參數不是數字
+                                                sender.sendMessage(ChatColor.RED + configData.getLanguage("parameter_not_number") + parameters[3]);
                                             }
                                         } else {
                                             // 缺少參數
@@ -277,6 +305,9 @@ public final class Command implements CommandExecutor {
                                     if (!sender.hasPermission("command.map.*") && !sender.hasPermission("command.map.redirect.*") && !sender.hasPermission("command.map.redirect.delete")) {
                                         // 無權限
                                         sender.sendMessage(ChatColor.RED + configData.getLanguage("no_permission"));
+                                    } else if (!mapDatabase.existMapData(mapId)) {
+                                        // 地圖資料不存在: ?
+                                        sender.sendMessage(ChatColor.RED + configData.getLanguage("map_data_not_exist") + mapId);
                                     } else {
                                         if (parameters.length >= 4) {
                                             mapDatabase.removeMapRedirect(mapId, parameters[3]);
@@ -295,6 +326,9 @@ public final class Command implements CommandExecutor {
                                     if (!sender.hasPermission("command.map.*") && !sender.hasPermission("command.map.redirect.*") && !sender.hasPermission("command.map.redirect.delete_all")) {
                                         // 無權限
                                         sender.sendMessage(ChatColor.RED + configData.getLanguage("no_permission"));
+                                    } else if (!mapDatabase.existMapData(mapId)) {
+                                        // 地圖資料不存在: ?
+                                        sender.sendMessage(ChatColor.RED + configData.getLanguage("map_data_not_exist") + mapId);
                                     } else {
                                         mapDatabase.removeMapRedirect(mapId);
                                         mapServer.createCache(mapId);
@@ -311,7 +345,7 @@ public final class Command implements CommandExecutor {
                             }
                         } catch (NumberFormatException exception) {
                             // 參數不是數字
-                            sender.sendMessage(ChatColor.RED + configData.getLanguage("parameter_not_number"));
+                            sender.sendMessage(ChatColor.RED + configData.getLanguage("parameter_not_number") + parameters[1]);
                         } catch (SQLException exception) {
                             // 資料庫錯誤
                             sender.sendMessage(ChatColor.RED + configData.getLanguage("database_error"));
@@ -340,7 +374,7 @@ public final class Command implements CommandExecutor {
                 player.getWorld().dropItem(player.getLocation(), item).setOwner(player.getUniqueId());
     }
 
-    private static String stitchedRight(String[] parameters, int start) {
+    private String stitchedRight(String[] parameters, int start) {
         StringBuilder builder = new StringBuilder();
         for (int index = start ; index < parameters.length ; index++) {
             if (builder.length() > 0)
@@ -348,5 +382,84 @@ public final class Command implements CommandExecutor {
             builder.append(parameters[index]);
         }
         return builder.toString();
+    }
+
+    public void cropImageSave(CommandSender sender, BufferedImage sourceImage, String saveRatio) throws SQLException {
+        if (saveRatio == null || saveRatio.length() == 0)
+            saveRatio = "1:1";
+        String[] saveRatios = saveRatio.split(":", 2);
+        if (saveRatios.length != 2) {
+            // 參數不是長寬比:
+            sender.sendMessage(ChatColor.YELLOW + configData.getLanguage("parameter_not_aspect_ratio") + saveRatio);
+        } else {
+            try {
+                int spaceRow = Integer.parseInt(saveRatios[0]);
+                int spaceWidth = spaceRow * 128;
+                try {
+                    int spaceColumn = Integer.parseInt(saveRatios[1]);
+                    int spaceHeight = spaceColumn * 128;
+
+                    int revisionWidth = sourceImage.getWidth();
+                    int revisionHeight = sourceImage.getHeight();
+
+                    if (revisionWidth > spaceWidth) {
+                        double redress = (double) spaceWidth / (double) revisionWidth;
+                        revisionWidth = spaceWidth;
+                        revisionHeight = (int) (revisionHeight * redress);
+                    }
+                    if (revisionHeight > spaceHeight) {
+                        double redress = (double) spaceHeight / (double) revisionHeight;
+                        revisionWidth = (int) (revisionWidth * redress);
+                        revisionHeight = spaceHeight;
+                    }
+
+                    BufferedImage spaceImage = new BufferedImage(spaceWidth, spaceHeight, BufferedImage.TYPE_INT_ARGB);
+                    Graphics2D spaceGraphics = spaceImage.createGraphics();
+                    spaceGraphics.setComposite(AlphaComposite.Src);
+                    spaceGraphics.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+                    spaceGraphics.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+                    spaceGraphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                    spaceGraphics.drawImage(sourceImage, (spaceWidth - revisionWidth) / 2, (spaceHeight - revisionHeight) / 2, revisionWidth, revisionHeight, null);
+                    spaceGraphics.dispose();
+
+                    Set<Integer> createIds = new LinkedHashSet<>();
+                    for (int readRow = 0 ; readRow < spaceRow ; readRow++) {
+                        for (int readColumn = 0 ; readColumn < spaceColumn ; readColumn++) {
+                            MapData mapData = new CodeMapData(branchMapColor, branchMapConversion);
+                            for (int x = 0 ; x < 128 ; x++)
+                                for (int y = 0 ; y < 128 ; y++)
+                                    mapData.setColor(x, y, new Color(spaceImage.getRGB(readRow << 7 | x, readColumn << 7 | y), true));
+                            int mapId = mapDatabase.addMapData(mapData);
+                            createIds.add(mapId);
+                        }
+                    }
+
+                    StringBuilder stringIds = new StringBuilder();
+
+                    for (int createId : createIds) {
+                        if (stringIds.length() != 0)
+                            stringIds.append(',').append(' ');
+                        stringIds.append(createId);
+                    }
+
+                    // 創建完畢, 資料庫地圖編號為:
+                    sender.sendMessage(ChatColor.YELLOW + configData.getLanguage("created_successfully") + stringIds);
+                    if (sender instanceof Player) {
+                        Bukkit.getScheduler().runTask(plugin, () -> {
+                            for (int createId : createIds) {
+                                giveMapItem((Player) sender, createId);
+                            }
+                        });
+                    }
+
+                } catch (NumberFormatException exception) {
+                    // 參數不是數字
+                    sender.sendMessage(ChatColor.RED + configData.getLanguage("parameter_not_number") + saveRatios[1]);
+                }
+            } catch (NumberFormatException exception) {
+                // 參數不是數字
+                sender.sendMessage(ChatColor.RED + configData.getLanguage("parameter_not_number") + saveRatios[0]);
+            }
+        }
     }
 }

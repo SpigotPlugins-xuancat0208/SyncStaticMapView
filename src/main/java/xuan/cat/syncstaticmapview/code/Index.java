@@ -66,7 +66,7 @@ public class Index extends JavaPlugin {
         // 指令
         PluginCommand command = getCommand("map");
         if (command != null) {
-            command.setExecutor(new Command(plugin, mapDatabase, mapServer, configData, branchMapConversion, branchMinecraft));
+            command.setExecutor(new Command(plugin, mapDatabase, mapServer, configData, branchMapConversion, branchMapColor, branchMinecraft));
             command.setTabCompleter(new CommandSuggest(mapServer, configData));
         }
         } catch (Exception exception) {

@@ -11,6 +11,6 @@ import java.awt.image.BufferedImage;
 public interface BranchMapConversion {
     MapData ofBukkit(MapView mapView);
 
-    MapData ofImage(BufferedImage image);
+//    MapData ofImage(BufferedImage image);
     BufferedImage toImage(MapData mapData);
 }

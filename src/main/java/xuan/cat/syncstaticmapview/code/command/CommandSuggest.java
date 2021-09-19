@@ -60,13 +60,12 @@ public final class CommandSuggest implements TabCompleter {
                     switch (parameters[1]) {
                         case "url":
                             if (sender.hasPermission("command.map.*") || sender.hasPermission("command.map.create.*") || sender.hasPermission("command.map.create.url")) {
-                                list.add("http://");
-                                list.add("https://");
+                                list.add("1:1");
                             }
                             break;
                         case "file":
                             if (sender.hasPermission("command.map.*") || sender.hasPermission("command.map.create.*") || sender.hasPermission("command.map.create.file")) {
-                                list.add("./");
+                                list.add("1:1");
                             }
                             break;
                         case "hand":
@@ -103,9 +102,6 @@ public final class CommandSuggest implements TabCompleter {
                             if (sender.hasPermission("command.map.*") || sender.hasPermission("command.map.create.*") || sender.hasPermission("command.map.create.file")) {
                                 list.add("./");
                             }
-                            break;
-                        case "hand":
-                            list.add("");
                             break;
                     }
                     break;

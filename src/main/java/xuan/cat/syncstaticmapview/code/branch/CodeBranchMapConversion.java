@@ -8,7 +8,6 @@ import xuan.cat.syncstaticmapview.api.branch.BranchMapConversion;
 import xuan.cat.syncstaticmapview.api.data.MapData;
 import xuan.cat.syncstaticmapview.code.data.CodeMapData;
 
-import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.lang.reflect.Field;
 
@@ -42,25 +41,25 @@ public final class CodeBranchMapConversion implements BranchMapConversion {
     }
 
 
-    private static BufferedImage resizeImage(BufferedImage image) {
-        BufferedImage bufferedImage = new BufferedImage(128, 128, BufferedImage.TYPE_INT_ARGB);
-        Graphics2D graphics2D = bufferedImage.createGraphics();
-        graphics2D.setComposite(AlphaComposite.Src);
-        graphics2D.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
-        graphics2D.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
-        graphics2D.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-        graphics2D.drawImage(image, 0, 0, 128, 128, null);
-        graphics2D.dispose();
-        return bufferedImage;
-    }
-    public MapData ofImage(BufferedImage image) {
-        image = resizeImage(image);
-        MapData mapData = new CodeMapData(branchMapColor, branchMapConversion);
-        for (int x = 0 ; x < 128 ; x++)
-            for (int y = 0 ; y < 128 ; y++)
-                mapData.setColor(x, y, new Color(image.getRGB(x, y), true));
-        return mapData;
-    }
+//    private static BufferedImage resizeImage(BufferedImage image) {
+//        BufferedImage bufferedImage = new BufferedImage(128, 128, BufferedImage.TYPE_INT_ARGB);
+//        Graphics2D graphics2D = bufferedImage.createGraphics();
+//        graphics2D.setComposite(AlphaComposite.Src);
+//        graphics2D.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+//        graphics2D.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+//        graphics2D.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+//        graphics2D.drawImage(image, 0, 0, 128, 128, null);
+//        graphics2D.dispose();
+//        return bufferedImage;
+//    }
+//    public MapData ofImage(BufferedImage image) {
+////        image = resizeImage(image);
+//        MapData mapData = new CodeMapData(branchMapColor, branchMapConversion);
+//        for (int x = 0 ; x < 128 ; x++)
+//            for (int y = 0 ; y < 128 ; y++)
+//                mapData.setColor(x, y, new Color(image.getRGB(x, y), true));
+//        return mapData;
+//    }
 
 
     public BufferedImage toImage(MapData mapData) {
