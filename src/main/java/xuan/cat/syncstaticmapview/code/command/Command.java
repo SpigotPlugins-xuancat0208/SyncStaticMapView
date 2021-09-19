@@ -396,10 +396,10 @@ public final class Command implements CommandExecutor {
             sender.sendMessage(ChatColor.YELLOW + configData.getLanguage("parameter_not_aspect_ratio") + saveRatio);
         } else {
             try {
-                int spaceRow = saveRatios[0].length() == 0 ? (int) Math.ceil((double) revisionWidth / 128.0) : Integer.parseInt(saveRatios[0]);
+                int spaceRow = saveRatios[0].length() == 0 ? (int) Math.ceil((double) revisionWidth / 128.0 - 2.0) : Integer.parseInt(saveRatios[0]);
                 int spaceWidth = spaceRow * 128;
                 try {
-                    int spaceColumn = saveRatios[1].length() == 0 ? (int) Math.ceil((double) revisionWidth / 128.0) : Integer.parseInt(saveRatios[1]);
+                    int spaceColumn = saveRatios[1].length() == 0 ? (int) Math.ceil((double) revisionHeight / 128.0 - 2.0) : Integer.parseInt(saveRatios[1]);
                     int spaceHeight = spaceColumn * 128;
 
                     if (revisionWidth > spaceWidth) {
