@@ -121,7 +121,7 @@ public final class CommandSuggest implements TabCompleter {
                         case "delete":
                             if (sender.hasPermission("command.map.*") || sender.hasPermission("command.map.redirect.*") || sender.hasPermission("command.map.redirect.delete")) {
                                 try {
-                                    mapServer.cacheMapRedirects(Integer.parseInt(parameters[2])).redirects.forEach(v -> list.add(v.getPermission()));
+                                    mapServer.cacheMapRedirects(Integer.parseInt(parameters[1])).redirects.forEach(v -> list.add(v.getPermission()));
                                 } catch (NumberFormatException exception) {
                                 }
                             }
