@@ -39,14 +39,16 @@ public final class ConfigData {
 
     private void load() throws SQLException {
         ConfigurationSection database = fileConfiguration.getConfigurationSection("database");
-        MySQL mySQL;
-        String databaseName;
-        DatabaseConnection databaseConnection;
         if (database == null)
             throw new NullPointerException("config.yml>database");
-        mySQL = Database.createMySQL(database.getString("ip"), database.getInt("port"), database.getString("user"), database.getString("password"));
-        databaseName = database.getString("database").toLowerCase(Locale.ROOT);
-        databaseConnection = mySQL.getOrCreateDatabase(databaseName);
+        MySQL mySQL = Database.createMySQL(database.getString("ip"), database.getInt("port"), database.getString("user"), database.getString("password"));
+        String databaseName;
+        try {
+            databaseName = database.getString("database").toLowerCase(Locale.ROOT);
+        } catch (NullPointerException exception) {
+            throw new NullPointerException("config.yml>database->database");
+        }
+
 
         Map<String, String> languagesMap = new HashMap<>();
         ConfigurationSection languages = fileConfiguration.getConfigurationSection("languages");
@@ -56,6 +58,9 @@ public final class ConfigData {
             languagesMap.put(key, languages.getString(key, ""));
         }
         long cacheVitalityTime = fileConfiguration.getLong("cache-vitality-time", 60000L);
+
+
+        DatabaseConnection databaseConnection = mySQL.getOrCreateDatabase(databaseName);
 
 
         this.mySQL = mySQL;

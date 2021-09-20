@@ -22,28 +22,28 @@ public final class CommandSuggest implements TabCompleter {
         List<String> list = new ArrayList<>();
 
         if (parameters.length == 1) {
-            if (sender.hasPermission("command.map.*") || sender.hasPermission("command.map.reload")) {
+            if (sender.hasPermission("command.mapview.*") || sender.hasPermission("command.mapview.reload")) {
                 list.add("reload");
             }
-            if (sender.hasPermission("command.map.*") || sender.hasPermission("command.map.get")) {
+            if (sender.hasPermission("command.mapview.*") || sender.hasPermission("command.mapview.get")) {
                 list.add("get");
             }
-            if (sender.hasPermission("command.map.*") || sender.hasPermission("command.map.create.*") || sender.hasPermission("command.map.create.url") || sender.hasPermission("command.map.create.file") || sender.hasPermission("command.map.create.hand")) {
+            if (sender.hasPermission("command.mapview.*") || sender.hasPermission("command.mapview.create.*") || sender.hasPermission("command.mapview.create.url") || sender.hasPermission("command.mapview.create.file") || sender.hasPermission("command.mapview.create.hand")) {
                 list.add("create");
             }
-            if (sender.hasPermission("command.map.*") || sender.hasPermission("command.map.redirect.*") || sender.hasPermission("command.map.redirect.list") || sender.hasPermission("command.map.redirect.set") || sender.hasPermission("command.map.redirect.delete") || sender.hasPermission("command.map.redirect.delete_all")) {
+            if (sender.hasPermission("command.mapview.*") || sender.hasPermission("command.mapview.redirect.*") || sender.hasPermission("command.mapview.redirect.list") || sender.hasPermission("command.mapview.redirect.set") || sender.hasPermission("command.mapview.redirect.delete") || sender.hasPermission("command.mapview.redirect.delete_all")) {
                 list.add("redirect");
             }
         } else if (parameters.length == 2) {
             switch (parameters[0]) {
                 case "create":
-                    if (sender.hasPermission("command.map.*") || sender.hasPermission("command.map.create.*") || sender.hasPermission("command.map.create.url")) {
+                    if (sender.hasPermission("command.mapview.*") || sender.hasPermission("command.mapview.create.*") || sender.hasPermission("command.mapview.create.url")) {
                         list.add("url");
                     }
-                    if (sender.hasPermission("command.map.*") || sender.hasPermission("command.map.create.*") || sender.hasPermission("command.map.create.file")) {
+                    if (sender.hasPermission("command.mapview.*") || sender.hasPermission("command.mapview.create.*") || sender.hasPermission("command.mapview.create.file")) {
                         list.add("file");
                     }
-                    if (sender.hasPermission("command.map.*") || sender.hasPermission("command.map.create.*") || sender.hasPermission("command.map.create.hand")) {
+                    if (sender.hasPermission("command.mapview.*") || sender.hasPermission("command.mapview.create.*") || sender.hasPermission("command.mapview.create.hand")) {
                         list.add("hand");
                     }
                     break;
@@ -59,12 +59,12 @@ public final class CommandSuggest implements TabCompleter {
                 case "create":
                     switch (parameters[1]) {
                         case "url":
-                            if (sender.hasPermission("command.map.*") || sender.hasPermission("command.map.create.*") || sender.hasPermission("command.map.create.url")) {
+                            if (sender.hasPermission("command.mapview.*") || sender.hasPermission("command.mapview.create.*") || sender.hasPermission("command.mapview.create.url")) {
                                 list.add("1:1");
                             }
                             break;
                         case "file":
-                            if (sender.hasPermission("command.map.*") || sender.hasPermission("command.map.create.*") || sender.hasPermission("command.map.create.file")) {
+                            if (sender.hasPermission("command.mapview.*") || sender.hasPermission("command.mapview.create.*") || sender.hasPermission("command.mapview.create.file")) {
                                 list.add("1:1");
                             }
                             break;
@@ -74,16 +74,16 @@ public final class CommandSuggest implements TabCompleter {
                     }
                     break;
                 case "redirect":
-                    if (sender.hasPermission("command.map.*") || sender.hasPermission("command.map.redirect.*") || sender.hasPermission("command.map.redirect.list")) {
+                    if (sender.hasPermission("command.mapview.*") || sender.hasPermission("command.mapview.redirect.*") || sender.hasPermission("command.mapview.redirect.list")) {
                         list.add("list");
                     }
-                    if (sender.hasPermission("command.map.*") || sender.hasPermission("command.map.redirect.*") || sender.hasPermission("command.map.redirect.set")) {
+                    if (sender.hasPermission("command.mapview.*") || sender.hasPermission("command.mapview.redirect.*") || sender.hasPermission("command.mapview.redirect.set")) {
                         list.add("set");
                     }
-                    if (sender.hasPermission("command.map.*") || sender.hasPermission("command.map.redirect.*") || sender.hasPermission("command.map.redirect.delete")) {
+                    if (sender.hasPermission("command.mapview.*") || sender.hasPermission("command.mapview.redirect.*") || sender.hasPermission("command.mapview.redirect.delete")) {
                         list.add("delete");
                     }
-                    if (sender.hasPermission("command.map.*") || sender.hasPermission("command.map.redirect.*") || sender.hasPermission("command.map.redirect.delete_all")) {
+                    if (sender.hasPermission("command.mapview.*") || sender.hasPermission("command.mapview.redirect.*") || sender.hasPermission("command.mapview.redirect.delete_all")) {
                         list.add("delete_all");
                     }
                     break;
@@ -93,13 +93,13 @@ public final class CommandSuggest implements TabCompleter {
                 case "create":
                     switch (parameters[1]) {
                         case "url":
-                            if (sender.hasPermission("command.map.*") || sender.hasPermission("command.map.create.*") || sender.hasPermission("command.map.create.url")) {
+                            if (sender.hasPermission("command.mapview.*") || sender.hasPermission("command.mapview.create.*") || sender.hasPermission("command.mapview.create.url")) {
                                 list.add("http://");
                                 list.add("https://");
                             }
                             break;
                         case "file":
-                            if (sender.hasPermission("command.map.*") || sender.hasPermission("command.map.create.*") || sender.hasPermission("command.map.create.file")) {
+                            if (sender.hasPermission("command.mapview.*") || sender.hasPermission("command.mapview.create.*") || sender.hasPermission("command.mapview.create.file")) {
                                 list.add("./");
                             }
                             break;
@@ -114,7 +114,7 @@ public final class CommandSuggest implements TabCompleter {
                             list.add("1");
                             break;
                         case "delete":
-                            if (sender.hasPermission("command.map.*") || sender.hasPermission("command.map.redirect.*") || sender.hasPermission("command.map.redirect.delete")) {
+                            if (sender.hasPermission("command.mapview.*") || sender.hasPermission("command.mapview.redirect.*") || sender.hasPermission("command.mapview.redirect.delete")) {
                                 try {
                                     mapServer.cacheMapRedirects(Integer.parseInt(parameters[1])).redirects.forEach(v -> list.add(v.getPermission()));
                                 } catch (NumberFormatException exception) {

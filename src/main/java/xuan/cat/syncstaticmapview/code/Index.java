@@ -64,7 +64,7 @@ public final class Index extends JavaPlugin {
         protocolManager.addPacketListener(new MapPacketEvent(plugin, mapServer));
 
         // 指令
-        PluginCommand command = getCommand("map");
+        PluginCommand command = getCommand("mapview");
         if (command != null) {
             command.setExecutor(new Command(plugin, mapDatabase, mapServer, configData, branchMapConversion, branchMapColor, branchMinecraft));
             command.setTabCompleter(new CommandSuggest(mapServer, configData));

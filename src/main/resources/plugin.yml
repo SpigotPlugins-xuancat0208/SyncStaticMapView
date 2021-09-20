@@ -6,5 +6,5 @@ depend: [ProtocolLib]
 authors: [xuancat0208]
 
 commands:
-  map:
+  mapview:
     usage: true

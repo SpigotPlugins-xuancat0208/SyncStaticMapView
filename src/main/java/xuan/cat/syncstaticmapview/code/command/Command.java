@@ -7,6 +7,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.MapMeta;
 import org.bukkit.map.MapView;
 import org.bukkit.plugin.Plugin;
@@ -28,9 +29,8 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.sql.SQLException;
-import java.util.LinkedHashSet;
+import java.util.*;
 import java.util.List;
-import java.util.Set;
 
 public final class Command implements CommandExecutor {
     private final Plugin                plugin;
@@ -59,7 +59,7 @@ public final class Command implements CommandExecutor {
             switch (parameters[0]) {
                 case "reload":
                     // 重新讀取配置文件
-                    if (!sender.hasPermission("command.map.*") && !sender.hasPermission("command.map.reload")) {
+                    if (!sender.hasPermission("command.mapview.*") && !sender.hasPermission("command.mapview.reload")) {
                         // 無權限
                         sender.sendMessage(ChatColor.RED + configData.getLanguage("no_permission"));
                     } else {
@@ -77,7 +77,7 @@ public final class Command implements CommandExecutor {
 
                 case "get":
                     // 重新讀取配置文件
-                    if (!sender.hasPermission("command.map.*") && !sender.hasPermission("command.map.get")) {
+                    if (!sender.hasPermission("command.mapview.*") && !sender.hasPermission("command.mapview.get")) {
                         // 無權限
                         sender.sendMessage(ChatColor.RED + configData.getLanguage("no_permission"));
                     } else if (!(sender instanceof Player)) {
@@ -89,7 +89,7 @@ public final class Command implements CommandExecutor {
                             try {
                                 int mapId = Integer.parseInt(parameters[1]);
                                 if (mapDatabase.existMapData(mapId)) {
-                                    giveMapItem(player, mapId);
+                                    giveMapItem(player, branchMinecraft.setMapId(new ItemStack(Material.FILLED_MAP), -mapId));
                                     // 已給予: ?
                                     sender.sendMessage(ChatColor.YELLOW + configData.getLanguage("given") + mapId);
                                 } else {
@@ -118,12 +118,12 @@ public final class Command implements CommandExecutor {
                         switch (parameters[1]) {
                             case "url":
                                 // 網址
-                                if (!sender.hasPermission("command.map.*") && !sender.hasPermission("command.map.create.*") && !sender.hasPermission("command.map.create.url")) {
+                                if (!sender.hasPermission("command.mapview.*") && !sender.hasPermission("command.mapview.create.*") && !sender.hasPermission("command.mapview.create.url")) {
                                     // 無權限
                                     sender.sendMessage(ChatColor.RED + configData.getLanguage("no_permission"));
                                 } else {
-                                    if (parameters.length >= 4) {
-                                        String stitched = stitchedRight(parameters, 3);
+                                    if (parameters.length >= 5) {
+                                        String stitched = stitchedRight(parameters, 4);
                                         if (stitched.length() == 0) {
                                             // 缺少參數
                                             sender.sendMessage(ChatColor.RED + configData.getLanguage("missing_parameters"));
@@ -154,12 +154,12 @@ public final class Command implements CommandExecutor {
                                 }
                                 break;
                             case "file":
-                                if (!sender.hasPermission("command.map.*") && !sender.hasPermission("command.map.create.*") && !sender.hasPermission("command.map.create.file")) {
+                                if (!sender.hasPermission("command.mapview.*") && !sender.hasPermission("command.mapview.create.*") && !sender.hasPermission("command.mapview.create.file")) {
                                     // 無權限
                                     sender.sendMessage(ChatColor.RED + configData.getLanguage("no_permission"));
                                 } else {
-                                    if (parameters.length >= 4) {
-                                        String stitched = stitchedRight(parameters, 3);
+                                    if (parameters.length >= 5) {
+                                        String stitched = stitchedRight(parameters, 4);
                                         if (stitched.length() == 0) {
                                             // 缺少參數
                                             sender.sendMessage(ChatColor.RED + configData.getLanguage("missing_parameters"));
@@ -186,7 +186,7 @@ public final class Command implements CommandExecutor {
                                 // 文件
                                 break;
                             case "hand":
-                                if (!sender.hasPermission("command.map.*") && !sender.hasPermission("command.map.create.*") && !sender.hasPermission("command.map.create.hand")) {
+                                if (!sender.hasPermission("command.mapview.*") && !sender.hasPermission("command.mapview.create.*") && !sender.hasPermission("command.mapview.create.hand")) {
                                     // 無權限
                                     sender.sendMessage(ChatColor.RED + configData.getLanguage("no_permission"));
                                 } else if (!(sender instanceof Player)) {
@@ -203,7 +203,7 @@ public final class Command implements CommandExecutor {
                                                 int mapId = mapDatabase.addMapData(branchMapConversion.ofBukkit(mapView));
                                                 // 創建完畢, 資料庫地圖編號為:
                                                 sender.sendMessage(ChatColor.YELLOW + configData.getLanguage("created_successfully") + mapId);
-                                                giveMapItem(player, mapId);
+                                                giveMapItem(player, branchMinecraft.setMapId(new ItemStack(Material.FILLED_MAP), -mapId));
                                             } else {
                                                 // 此地圖沒有原始資料
                                                 sender.sendMessage(ChatColor.RED + configData.getLanguage("map_no_original_data"));
@@ -238,7 +238,7 @@ public final class Command implements CommandExecutor {
                             int mapId = Integer.parseInt(parameters[1]);
                             switch (parameters[2]) {
                                 case "list":
-                                    if (!sender.hasPermission("command.map.*") && !sender.hasPermission("command.map.redirect.*") && !sender.hasPermission("command.map.redirect.list")) {
+                                    if (!sender.hasPermission("command.mapview.*") && !sender.hasPermission("command.mapview.redirect.*") && !sender.hasPermission("command.mapview.redirect.list")) {
                                         // 無權限
                                         sender.sendMessage(ChatColor.RED + configData.getLanguage("no_permission"));
                                     } else if (!mapDatabase.existMapData(mapId)) {
@@ -260,7 +260,7 @@ public final class Command implements CommandExecutor {
                                     break;
 
                                 case "set":
-                                    if (!sender.hasPermission("command.map.*") && !sender.hasPermission("command.map.redirect.*") && !sender.hasPermission("command.map.redirect.set")) {
+                                    if (!sender.hasPermission("command.mapview.*") && !sender.hasPermission("command.mapview.redirect.*") && !sender.hasPermission("command.mapview.redirect.set")) {
                                         // 無權限
                                         sender.sendMessage(ChatColor.RED + configData.getLanguage("no_permission"));
                                     } else if (!mapDatabase.existMapData(mapId)) {
@@ -301,7 +301,7 @@ public final class Command implements CommandExecutor {
                                     break;
 
                                 case "delete":
-                                    if (!sender.hasPermission("command.map.*") && !sender.hasPermission("command.map.redirect.*") && !sender.hasPermission("command.map.redirect.delete")) {
+                                    if (!sender.hasPermission("command.mapview.*") && !sender.hasPermission("command.mapview.redirect.*") && !sender.hasPermission("command.mapview.redirect.delete")) {
                                         // 無權限
                                         sender.sendMessage(ChatColor.RED + configData.getLanguage("no_permission"));
                                     } else if (!mapDatabase.existMapData(mapId)) {
@@ -322,7 +322,7 @@ public final class Command implements CommandExecutor {
                                     break;
 
                                 case "delete_all":
-                                    if (!sender.hasPermission("command.map.*") && !sender.hasPermission("command.map.redirect.*") && !sender.hasPermission("command.map.redirect.delete_all")) {
+                                    if (!sender.hasPermission("command.mapview.*") && !sender.hasPermission("command.mapview.redirect.*") && !sender.hasPermission("command.mapview.redirect.delete_all")) {
                                         // 無權限
                                         sender.sendMessage(ChatColor.RED + configData.getLanguage("no_permission"));
                                     } else if (!mapDatabase.existMapData(mapId)) {
@@ -367,10 +367,10 @@ public final class Command implements CommandExecutor {
     }
 
 
-    public void giveMapItem(Player player, int mapId) {
+    public void giveMapItem(Player player, ItemStack item) {
         if (player.isOnline())
-            for (ItemStack item : player.getInventory().addItem(branchMinecraft.setMapId(new ItemStack(Material.FILLED_MAP), -mapId)).values())
-                player.getWorld().dropItem(player.getLocation(), item).setOwner(player.getUniqueId());
+            for (ItemStack drop : player.getInventory().addItem(item).values())
+                player.getWorld().dropItem(player.getLocation(), drop).setOwner(player.getUniqueId());
     }
 
     private String stitchedRight(String[] parameters, int start) {
@@ -395,10 +395,10 @@ public final class Command implements CommandExecutor {
             sender.sendMessage(ChatColor.YELLOW + configData.getLanguage("parameter_not_aspect_ratio") + saveRatio);
         } else {
             try {
-                int spaceRow = saveRatios[0].length() == 0 ? (int) Math.ceil((double) revisionWidth / 128.0 - 2.0) : Integer.parseInt(saveRatios[0]);
+                int spaceRow = Math.max(1, saveRatios[0].length() == 0 ? (int) Math.ceil((double) revisionWidth / 128.0 - 2.0) : Integer.parseInt(saveRatios[0]));
                 int spaceWidth = spaceRow * 128;
                 try {
-                    int spaceColumn = saveRatios[1].length() == 0 ? (int) Math.ceil((double) revisionHeight / 128.0 - 2.0) : Integer.parseInt(saveRatios[1]);
+                    int spaceColumn = Math.max(1, saveRatios[1].length() == 0 ? (int) Math.ceil((double) revisionHeight / 128.0 - 2.0) : Integer.parseInt(saveRatios[1]));
                     int spaceHeight = spaceColumn * 128;
 
                     if (revisionWidth < spaceWidth) {
@@ -433,14 +433,25 @@ public final class Command implements CommandExecutor {
                     spaceGraphics.dispose();
 
                     Set<Integer> createIds = new LinkedHashSet<>();
-                    for (int readRow = 0 ; readRow < spaceRow ; readRow++) {
-                        for (int readColumn = 0 ; readColumn < spaceColumn ; readColumn++) {
+                    List<ItemStack> itemList = new ArrayList<>();
+                    for (int readColumn = 0 ; readColumn < spaceColumn ; readColumn++) {
+                        for (int readRow = 0 ; readRow < spaceRow ; readRow++) {
                             MapData mapData = new CodeMapData(branchMapColor, branchMapConversion);
                             for (int x = 0 ; x < 128 ; x++)
                                 for (int y = 0 ; y < 128 ; y++)
                                     mapData.setColor(x, y, new Color(spaceImage.getRGB(readRow << 7 | x, readColumn << 7 | y), true));
                             int mapId = mapDatabase.addMapData(mapData);
                             createIds.add(mapId);
+                            if (spaceRow > 1 || spaceColumn > 1) {
+                                ItemStack item = branchMinecraft.setMapId(new ItemStack(Material.FILLED_MAP), -mapId);
+                                ItemMeta meta = item.getItemMeta();
+                                assert meta != null;
+                                meta.setLore(List.of("" + ChatColor.WHITE + readRow + "-" + readColumn));
+                                item.setItemMeta(meta);
+                                itemList.add(item);
+                            } else {
+                                itemList.add(branchMinecraft.setMapId(new ItemStack(Material.FILLED_MAP), -mapId));
+                            }
                         }
                     }
 
@@ -456,9 +467,8 @@ public final class Command implements CommandExecutor {
                     sender.sendMessage(ChatColor.YELLOW + configData.getLanguage("created_successfully") + stringIds);
                     if (sender instanceof Player) {
                         Bukkit.getScheduler().runTask(plugin, () -> {
-                            for (int createId : createIds) {
-                                giveMapItem((Player) sender, createId);
-                            }
+                            for (ItemStack item : itemList)
+                                giveMapItem((Player) sender, item);
                         });
                     }
 
