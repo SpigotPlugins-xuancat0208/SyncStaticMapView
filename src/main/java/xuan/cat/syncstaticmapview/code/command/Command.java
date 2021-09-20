@@ -124,8 +124,8 @@ public final class Command implements CommandExecutor {
                                     // 無權限
                                     sender.sendMessage(ChatColor.RED + configData.getLanguage("no_permission"));
                                 } else {
-                                    if (parameters.length >= 5) {
-                                        String stitched = stitchedRight(parameters, 4);
+                                    if (parameters.length >= 4) {
+                                        String stitched = stitchedRight(parameters, 3);
                                         if (stitched.length() == 0) {
                                             // 缺少參數
                                             sender.sendMessage(ChatColor.RED + configData.getLanguage("missing_parameters"));
@@ -160,8 +160,8 @@ public final class Command implements CommandExecutor {
                                     // 無權限
                                     sender.sendMessage(ChatColor.RED + configData.getLanguage("no_permission"));
                                 } else {
-                                    if (parameters.length >= 5) {
-                                        String stitched = stitchedRight(parameters, 4);
+                                    if (parameters.length >= 4) {
+                                        String stitched = stitchedRight(parameters, 3);
                                         if (stitched.length() == 0) {
                                             // 缺少參數
                                             sender.sendMessage(ChatColor.RED + configData.getLanguage("missing_parameters"));
