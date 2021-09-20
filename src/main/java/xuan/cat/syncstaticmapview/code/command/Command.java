@@ -448,7 +448,7 @@ public final class Command implements CommandExecutor {
                                 ItemStack item = branchMinecraft.setMapId(new ItemStack(Material.FILLED_MAP), -mapId);
                                 ItemMeta meta = item.getItemMeta();
                                 assert meta != null;
-                                meta.setLore(List.of("" + ChatColor.WHITE + readRow + "-" + readColumn));
+                                meta.setLore(List.of("" + ChatColor.WHITE + (readRow + 1) + "-" + readColumn + 1));
                                 item.setItemMeta(meta);
                                 itemList.add(item);
                             } else {
