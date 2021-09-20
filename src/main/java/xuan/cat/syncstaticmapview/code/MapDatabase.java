@@ -1,15 +1,15 @@
 package xuan.cat.syncstaticmapview.code;
 
-import xuan.cat.syncstaticmapview.database.api.Database;
-import xuan.cat.syncstaticmapview.database.api.sql.DatabaseTable;
-import xuan.cat.syncstaticmapview.database.api.sql.SQL;
-import xuan.cat.syncstaticmapview.database.api.sql.builder.*;
 import xuan.cat.syncstaticmapview.api.branch.BranchMapColor;
 import xuan.cat.syncstaticmapview.api.branch.BranchMapConversion;
 import xuan.cat.syncstaticmapview.api.data.MapData;
 import xuan.cat.syncstaticmapview.code.data.CodeMapData;
 import xuan.cat.syncstaticmapview.code.data.ConfigData;
 import xuan.cat.syncstaticmapview.code.data.MapRedirectEntry;
+import xuan.cat.syncstaticmapview.database.api.Database;
+import xuan.cat.syncstaticmapview.database.api.sql.DatabaseTable;
+import xuan.cat.syncstaticmapview.database.api.sql.SQL;
+import xuan.cat.syncstaticmapview.database.api.sql.builder.*;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
