@@ -16,7 +16,7 @@ public class CodeFieldStyle<T> implements FieldStyle<T> {
 
     public static final FieldStyle<Integer>     INT                         = new CodeFieldStyle<>(Integer      .class, " int", (value) -> '\'' + CodeFunction.safetyValue(value.toString()) + '\'', (sql, field) -> sql.getInt(field.name()));
     public static final FieldStyle<Long>        INT_UNSIGNED                = new CodeFieldStyle<>(Long         .class, " int", (value) -> '\'' + CodeFunction.safetyValue(value.toString()) + '\'', (sql, field) -> sql.getLong(field.name()), true,  false);
-    public static final FieldStyle<Long>        BIGINT                      = new CodeFieldStyle<>(Long         .class, " bigint", (value) -> '\'' + CodeFunction.safetyValue(value.toString()) + '\'', (sql, field) -> sql.getLong(field.name()));
+    public static final FieldStyle<Date>        DATETIME                    = new CodeFieldStyle<>(Date         .class, " datetime", CodeFieldStyle::strDate, (sql, field) -> sql.getTimestamp(field.name()));
     private static String strDate(Date value) {
         if      (value instanceof Value.NOW_DATE || value instanceof Value.NOW_TIMESTAMP || value instanceof Value.NOW_TIME)
             return "now()";

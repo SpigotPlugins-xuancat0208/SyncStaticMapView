@@ -12,7 +12,6 @@ import java.util.Date;
 public interface FieldStyle<T> {
     FieldStyle<Integer>     INT                         = CodeFieldStyle.INT;
     FieldStyle<Long>        INT_UNSIGNED                = CodeFieldStyle.INT_UNSIGNED;
-    FieldStyle<Long>        BIGINT                      = CodeFieldStyle.BIGINT;
     FieldStyle<Date>        DATETIME                    = CodeFieldStyle.DATETIME;
     FieldStyle<String>      VARCHAR                     = CodeFieldStyle.VARCHAR;
     FieldStyle<String>      TINYTEXT                    = CodeFieldStyle.TINYTEXT;
