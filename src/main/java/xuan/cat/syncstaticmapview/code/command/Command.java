@@ -156,6 +156,7 @@ public final class Command implements CommandExecutor {
                                 }
                                 break;
                             case "file":
+                                // 文件
                                 if (!sender.hasPermission("command.mapview.*") && !sender.hasPermission("command.mapview.create.*") && !sender.hasPermission("command.mapview.create.file")) {
                                     // 無權限
                                     sender.sendMessage(ChatColor.RED + configData.getLanguage("no_permission"));
@@ -185,9 +186,9 @@ public final class Command implements CommandExecutor {
                                         sender.sendMessage(ChatColor.RED + configData.getLanguage("missing_parameters"));
                                     }
                                 }
-                                // 文件
                                 break;
                             case "hand":
+                                // 手上
                                 if (!sender.hasPermission("command.mapview.*") && !sender.hasPermission("command.mapview.create.*") && !sender.hasPermission("command.mapview.create.hand")) {
                                     // 無權限
                                     sender.sendMessage(ChatColor.RED + configData.getLanguage("no_permission"));
@@ -198,29 +199,31 @@ public final class Command implements CommandExecutor {
                                     Player player = (Player) sender;
                                     ItemStack item = player.getInventory().getItemInMainHand();
                                     if (item.getType() == Material.FILLED_MAP) {
-                                        try {
-                                            MapMeta mapMeta = (MapMeta) item.getItemMeta();
-                                            MapView mapView = mapMeta.hasMapView() ? mapMeta.getMapView() : null;
-                                            if (mapView != null) {
-                                                int mapId = mapDatabase.addMapData(branchMapConversion.ofBukkit(mapView));
-                                                // 創建完畢, 資料庫地圖編號為:
-                                                sender.sendMessage(ChatColor.YELLOW + configData.getLanguage("created_successfully") + mapId);
-                                                giveMapItem(player, branchMinecraft.setMapId(new ItemStack(Material.FILLED_MAP), -mapId));
-                                            } else {
-                                                // 此地圖沒有原始資料
-                                                sender.sendMessage(ChatColor.RED + configData.getLanguage("map_no_original_data"));
-                                            }
-                                        } catch (SQLException exception) {
-                                            // 資料庫錯誤
-                                            sender.sendMessage(ChatColor.RED + configData.getLanguage("database_error"));
-                                            exception.printStackTrace();
+                                        MapMeta mapMeta = (MapMeta) item.getItemMeta();
+                                        MapView mapView = mapMeta.hasMapView() ? mapMeta.getMapView() : null;
+                                        if (mapView != null) {
+                                            MapData mapData = branchMapConversion.ofBukkit(mapView);
+                                            Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
+                                                try {
+                                                    int mapId = mapDatabase.addMapData(mapData);
+                                                    // 創建完畢, 資料庫地圖編號為:
+                                                    sender.sendMessage(ChatColor.YELLOW + configData.getLanguage("created_successfully") + mapId);
+                                                    giveMapItem(player, branchMinecraft.setMapId(new ItemStack(Material.FILLED_MAP), -mapId));
+                                                } catch (SQLException exception) {
+                                                    // 資料庫錯誤
+                                                    sender.sendMessage(ChatColor.RED + configData.getLanguage("database_error"));
+                                                    exception.printStackTrace();
+                                                }
+                                            });
+                                        } else {
+                                            // 此地圖沒有原始資料
+                                            sender.sendMessage(ChatColor.RED + configData.getLanguage("map_no_original_data"));
                                         }
                                     } else {
                                         // 手上拿著的物品不是地圖
                                         sender.sendMessage(ChatColor.RED + configData.getLanguage("not_filled_map_on_hand"));
                                     }
                                 }
-                                // 手上
                                 break;
                             default:
                                 // 未知的參數類型
