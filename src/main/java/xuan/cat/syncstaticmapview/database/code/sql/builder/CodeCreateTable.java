@@ -22,7 +22,7 @@ public final class CodeCreateTable implements CodeSQLBuilder, CreateTable {
     private       Collate               collate             = Collate.NOT;
     private       String                comment             = null;         // 註解
     private       Long                  autoIncrement       = null;         // 資料表引擎
-    private       TablePartition        partition           = null;     // 分區
+    private       TablePartition        partition           = null;         // 分區
 
 
     public CodeCreateTable(DatabaseTable table) {
