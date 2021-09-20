@@ -5,6 +5,7 @@ database:
   user: "!! YOUR_USER_NAME !!"
   password: "!! YOUR_USER_PASSWORD !!"
 cache-vitality-time: 60000
+create-table-can-partition: true
 languages:
   no_permission: "No permission"
   missing_parameters: "Missing parameters"

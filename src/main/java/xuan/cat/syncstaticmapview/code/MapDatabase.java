@@ -60,7 +60,7 @@ public final class MapDatabase {
                     .field(TABLE.MAP_DATA.field_MapID)
                     .field(TABLE.MAP_DATA.field_MapPixels)
                     .field(TABLE.MAP_DATA.field_SaveTime)
-                    .partition(TABLE.MAP_DATA.field_MapID.partitionKey().rows(20))
+                    .partition(configData.isCreateTableCanPartition() ? TABLE.MAP_DATA.field_MapID.partitionKey().rows(20) : null)
                     .callSQL(configData.getDatabaseConnection())
                     .UC();
         }
@@ -73,7 +73,7 @@ public final class MapDatabase {
                     .field(TABLE.MAP_REDIRECT.field_Permission)
                     .field(TABLE.MAP_REDIRECT.field_RedirectID)
                     .index(TABLE.MAP_REDIRECT.field_MapID.index().type(IndexType.INDEX))
-                    .partition(TABLE.MAP_REDIRECT.field_MapID.partitionKey().rows(4))
+                    .partition(configData.isCreateTableCanPartition() ? TABLE.MAP_REDIRECT.field_MapID.partitionKey().rows(4) : null)
                     .callSQL(configData.getDatabaseConnection())
                     .UC();
         }

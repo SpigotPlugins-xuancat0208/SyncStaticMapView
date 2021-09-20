@@ -20,6 +20,7 @@ public final class ConfigData {
     private String databaseName;
     private DatabaseConnection databaseConnection;
     private long cacheVitalityTime;
+    private boolean createTableCanPartition;
 
     public ConfigData(JavaPlugin plugin, FileConfiguration fileConfiguration) throws SQLException {
         this.plugin = plugin;
@@ -49,6 +50,7 @@ public final class ConfigData {
             throw new NullPointerException("config.yml>database->database");
         }
 
+        boolean createTableCanPartition = fileConfiguration.getBoolean("create-table-can-partition", true);
 
         Map<String, String> languagesMap = new HashMap<>();
         ConfigurationSection languages = fileConfiguration.getConfigurationSection("languages");
@@ -62,8 +64,8 @@ public final class ConfigData {
 
         DatabaseConnection databaseConnection = mySQL.getOrCreateDatabase(databaseName);
 
-
         this.mySQL = mySQL;
+        this.createTableCanPartition = createTableCanPartition;
         this.databaseName = databaseName;
         this.databaseConnection = databaseConnection;
         this.languagesMap = languagesMap;
@@ -77,5 +79,9 @@ public final class ConfigData {
 
     public long getCacheVitalityTime() {
         return cacheVitalityTime;
+    }
+
+    public boolean isCreateTableCanPartition() {
+        return createTableCanPartition;
     }
 }

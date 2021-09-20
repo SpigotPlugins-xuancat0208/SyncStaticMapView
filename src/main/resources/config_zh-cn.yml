@@ -14,6 +14,11 @@ database:
 cache-vitality-time: 60000
 
 
+# 创建资料表时允许加入分区支持
+#   如果资料库是使用 MariaDB 可以启用此选项
+create-table-can-partition: true
+
+
 languages:
   no_permission: "无此权限"
   missing_parameters: "缺少参数"

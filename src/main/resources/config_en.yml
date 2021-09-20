@@ -14,6 +14,11 @@ database:
 cache-vitality-time: 60000
 
 
+# Partition support is allowed when creating data tables
+#   If the database is MariaDB can enable
+create-table-can-partition: true
+
+
 languages:
   no_permission: "No permission"
   missing_parameters: "Missing parameters"

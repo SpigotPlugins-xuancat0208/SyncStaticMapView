@@ -14,6 +14,11 @@ database:
 cache-vitality-time: 60000
 
 
+# 創建資料表時允許加入分區支持
+#   如果資料庫是使用 MariaDB 可以啟用此選項
+create-table-can-partition: true
+
+
 languages:
   no_permission: "無此權限"
   missing_parameters: "缺少參數"
