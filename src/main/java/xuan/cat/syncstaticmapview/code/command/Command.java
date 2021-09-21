@@ -15,6 +15,7 @@ import xuan.cat.syncstaticmapview.api.branch.BranchMapColor;
 import xuan.cat.syncstaticmapview.api.branch.BranchMapConversion;
 import xuan.cat.syncstaticmapview.api.branch.BranchMinecraft;
 import xuan.cat.syncstaticmapview.api.data.MapData;
+import xuan.cat.syncstaticmapview.api.data.MapRedirect;
 import xuan.cat.syncstaticmapview.code.MapDatabase;
 import xuan.cat.syncstaticmapview.code.MapServer;
 import xuan.cat.syncstaticmapview.code.data.CodeMapData;
@@ -250,14 +251,14 @@ public final class Command implements CommandExecutor {
                                         // 地圖資料不存在: ?
                                         sender.sendMessage(ChatColor.RED + configData.getLanguage("map_data_not_exist") + mapId);
                                     } else {
-                                        List<MapRedirectEntry> redirectEntries = mapServer.cacheMapRedirects(mapId).redirects;
-                                        if (redirectEntries.size() == 0) {
+                                        List<MapRedirect> redirects = mapServer.cacheMapRedirects(mapId).redirects;
+                                        if (redirects.size() == 0) {
                                             // 沒有設置任何的重定向
                                             sender.sendMessage(ChatColor.YELLOW + configData.getLanguage("not_set_any_redirect"));
                                         } else {
                                             // 重定向清單
                                             sender.sendMessage(ChatColor.YELLOW + configData.getLanguage("redirect_list"));
-                                            for (MapRedirectEntry redirect : redirectEntries) {
+                                            for (MapRedirect redirect : redirects) {
                                                 sender.sendMessage(" - " + ChatColor.YELLOW + redirect.getPriority() + ": " + redirect.getPermission() + " => " + redirect.getRedirectId());
                                             }
                                         }
@@ -277,7 +278,7 @@ public final class Command implements CommandExecutor {
                                                 int priority = Integer.parseInt(parameters[3]);
                                                 try {
                                                     int redirectId = Integer.parseInt(parameters[5]);
-                                                    MapRedirectEntry redirect = new MapRedirectEntry(priority, parameters[4], redirectId);
+                                                    MapRedirect redirect = new MapRedirectEntry(priority, parameters[4], redirectId);
                                                     if (mapDatabase.existMapData(redirect.getRedirectId())) {
                                                         mapDatabase.removeMapRedirect(mapId, redirect.getPermission());
                                                         mapDatabase.removeMapRedirect(mapId, redirect.getPriority());
