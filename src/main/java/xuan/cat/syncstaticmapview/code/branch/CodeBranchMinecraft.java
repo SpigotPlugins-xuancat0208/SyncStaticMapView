@@ -39,6 +39,19 @@ public final class CodeBranchMinecraft implements BranchMinecraft {
     }
 
 
+    public boolean isDisableCopy(org.bukkit.inventory.ItemStack item) {
+        CraftItemStack craftItem = CraftItemStack.asCraftCopy(item);
+        try {
+            ItemStack itemNMS = (ItemStack) field_CraftItemStack_handle.get(craftItem);
+            NBTTagCompound nbt = (NBTTagCompound) field_ItemStack_tag.get(itemNMS);
+            return nbt.getBoolean("AntiMapCopy");
+        } catch (Exception exception) {
+            exception.printStackTrace();
+            return false;
+        }
+    }
+
+
     public int getMapId(org.bukkit.inventory.ItemStack item) {
         CraftItemStack craftItem = CraftItemStack.asCraftCopy(item);
         try {

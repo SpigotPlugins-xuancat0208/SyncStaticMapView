@@ -10,6 +10,8 @@ import java.util.List;
 public interface BranchMinecraft {
     Entity getEntityFromId(World world, int entityId);
 
+    boolean isDisableCopy(ItemStack item);
+
     int getMapId(ItemStack item);
     ItemStack setMapId(ItemStack item, int mapId);
 

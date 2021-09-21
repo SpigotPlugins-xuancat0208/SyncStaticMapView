@@ -41,3 +41,4 @@ languages:
   redirect_delete_successfully: "重导向删除成功"
   redirect_list: "重导向清单:\n   优先级: 权限 => 地图编号"
   parameter_not_aspect_ratio: "参数不是长宽比: "
+  map_cannot_copy: "此地图不可複製"

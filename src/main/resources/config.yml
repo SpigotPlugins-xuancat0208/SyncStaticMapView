@@ -28,3 +28,4 @@ languages:
   redirect_delete_successfully: "Redirect delete successfully"
   redirect_list: "Redirect list:\n   Priority: Permission => MapId"
   parameter_not_aspect_ratio: "Parameter is not a aspect ratio: "
+  map_cannot_copy: "This map cannot copy"

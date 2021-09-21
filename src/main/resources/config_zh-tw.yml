@@ -41,3 +41,4 @@ languages:
   redirect_delete_successfully: "重導向刪除成功"
   redirect_list: "重導向清單:\n   優先級: 權限 => 地圖編號"
   parameter_not_aspect_ratio: "參數不是長寬比: "
+  map_cannot_copy: "此地圖不可複製"

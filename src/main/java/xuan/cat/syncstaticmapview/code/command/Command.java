@@ -202,7 +202,10 @@ public final class Command implements CommandExecutor {
                                     if (item.getType() == Material.FILLED_MAP) {
                                         MapMeta mapMeta = (MapMeta) item.getItemMeta();
                                         MapView mapView = mapMeta.hasMapView() ? mapMeta.getMapView() : null;
-                                        if (mapView != null) {
+                                        if (branchMinecraft.isDisableCopy(item)) {
+                                            // 此地圖不可複製
+                                            sender.sendMessage(ChatColor.RED + configData.getLanguage("map_cannot_copy"));
+                                        } else if (mapView != null) {
                                             MapData mapData = branchMapConversion.ofBukkit(mapView);
                                             Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
                                                 try {
