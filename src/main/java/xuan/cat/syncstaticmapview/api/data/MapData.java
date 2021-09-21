@@ -17,4 +17,11 @@ public interface MapData {
     void setRGB(int x, int y, int r, int g, int b);
 
     BufferedImage toImage();
+
+    default int getWidth() {
+        return 128;
+    }
+    default int getHeight() {
+        return 128;
+    }
 }

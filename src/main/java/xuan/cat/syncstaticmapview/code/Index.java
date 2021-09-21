@@ -79,6 +79,26 @@ public final class Index extends JavaPlugin {
         return mapServer;
     }
 
+    public static BranchMapColor getBranchMapColor() {
+        return branchMapColor;
+    }
+
+    public static BranchMapConversion getBranchMapConversion() {
+        return branchMapConversion;
+    }
+
+    public static BranchMinecraft getBranchMinecraft() {
+        return branchMinecraft;
+    }
+
+    public static BranchPacket getBranchPacket() {
+        return branchPacket;
+    }
+
+    public static MapDatabase getMapDatabase() {
+        return mapDatabase;
+    }
+
     public static ConfigData getConfigData() {
         return configData;
     }
