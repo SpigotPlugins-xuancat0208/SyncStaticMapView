@@ -454,7 +454,7 @@ public final class Command implements CommandExecutor {
                                         try {
                                             int capacity = Integer.parseInt(parameters[3]);
                                             if (!mapDatabase.increaseStatisticsCapacity(playerUUID, capacity))
-                                                mapDatabase.createStatistics(playerUUID, capacity, 0);
+                                                mapDatabase.createStatistics(playerUUID, configData.getDefaultPlayerLimit() + capacity, 0);
                                             int[] statistics = mapDatabase.getStatistics(playerUUID);
                                             if (statistics == null)
                                                 statistics = new int[] {0, configData.getDefaultPlayerLimit()};
@@ -483,8 +483,12 @@ public final class Command implements CommandExecutor {
                                     if (playerUUID != null) {
                                         try {
                                             int capacity = Integer.parseInt(parameters[3]);
-                                            if (!mapDatabase.subtractStatisticsCapacity(playerUUID, capacity))
-                                                mapDatabase.createStatistics(playerUUID, 0, 0);
+                                            try {
+                                                if (!mapDatabase.subtractStatisticsCapacity(playerUUID, capacity))
+                                                    mapDatabase.createStatistics(playerUUID, configData.getDefaultPlayerLimit() - capacity, 0);
+                                            } catch (SQLException exception) {
+                                                mapDatabase.setStatisticsCapacity(playerUUID, 0);
+                                            }
                                             int[] statistics = mapDatabase.getStatistics(playerUUID);
                                             if (statistics == null)
                                                 statistics = new int[] {0, configData.getDefaultPlayerLimit()};
