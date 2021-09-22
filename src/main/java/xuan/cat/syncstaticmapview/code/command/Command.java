@@ -27,11 +27,12 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.sql.SQLException;
-import java.util.*;
 import java.util.List;
+import java.util.*;
 import java.util.regex.Pattern;
 
 public final class Command implements CommandExecutor {
@@ -144,7 +145,18 @@ public final class Command implements CommandExecutor {
                                                     URL url = new URL(stitched);
                                                     mapServer.processURL(() -> {
                                                         try {
-                                                            cropImageSave(sender, ImageIO.read(url), parameters[2]);
+                                                            HttpURLConnection connection    = (HttpURLConnection) url.openConnection();
+                                                            connection.setRequestMethod("GET");
+                                                            connection.setDoInput(true);
+                                                            connection.setDoOutput(true);
+                                                            connection.setRequestProperty("accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9");
+                                                            connection.setRequestProperty("accept-encoding", "gzip, deflate, br");
+                                                            connection.setRequestProperty("user-agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.82 Safari/537.36");
+                                                            if (connection.getResponseCode() == 200) {
+                                                                cropImageSave(sender, ImageIO.read(connection.getInputStream()), parameters[2]);
+                                                            } else {
+                                                                throw new IOException(connection.getResponseCode() + " " + connection.getResponseMessage());
+                                                            }
                                                         } catch (SQLException exception) {
                                                             // 資料庫錯誤
                                                             sender.sendMessage(ChatColor.RED + configData.getLanguage("database_error"));
@@ -169,6 +181,7 @@ public final class Command implements CommandExecutor {
                                     }
                                 }
                                 break;
+
                             case "file":
                                 // 文件
                                 if (!sender.hasPermission("command.mapview.*") && !sender.hasPermission("command.mapview.create.*") && !sender.hasPermission("command.mapview.create.file")) {
@@ -201,6 +214,7 @@ public final class Command implements CommandExecutor {
                                     }
                                 }
                                 break;
+
                             case "hand":
                                 // 手上
                                 if (!sender.hasPermission("command.mapview.*") && !sender.hasPermission("command.mapview.create.*") && !sender.hasPermission("command.mapview.create.hand")) {
@@ -516,7 +530,7 @@ public final class Command implements CommandExecutor {
                                         UUID playerUUID = parseUUID(sender, parameters[2]);
                                         if (playerUUID != null) {
                                             try {
-                                                int[] statistics = mapDatabase.getStatistics(((Player) sender).getUniqueId());
+                                                int[] statistics = mapDatabase.getStatistics(playerUUID);
                                                 if (statistics == null)
                                                     statistics = new int[] {0, configData.getDefaultPlayerLimit()};
                                                 // 上傳限制: ?
