@@ -262,15 +262,27 @@ public final class Command implements CommandExecutor {
                                             // 此地圖不可複製
                                             sender.sendMessage(ChatColor.RED + configData.getLanguage("map_cannot_copy"));
                                         } else if (mapView != null) {
-                                            try {
-                                                if (!player.hasPermission("mapview.ignore_upload_limit") && !mapDatabase.consumeStatisticsUsed(player.getUniqueId(), 1)) {
+                                            if (!player.hasPermission("mapview.ignore_create_rate_limit") && !mapServer.markCoolingTime(player, configData.getCreateRateLimit())) {
+                                                // 創建的速度太快了, 等一下
+                                                sender.sendMessage(ChatColor.RED + configData.getLanguage("creation_speed_too_fast"));
+                                            } else {
+                                                try {
+                                                    if (!player.hasPermission("mapview.ignore_upload_limit") && !mapDatabase.consumeStatisticsUsed(player.getUniqueId(), 1)) {
+                                                        int[] statistics = mapDatabase.getStatistics(player.getUniqueId());
+                                                        if (statistics != null) {
+                                                            // 超出允許的數量
+                                                            sender.sendMessage(ChatColor.RED + configData.getLanguage("your_upload_has_reached_limit") + statistics[0] + " + 1 / " + statistics[1]);
+                                                            return true;
+                                                        } else {
+                                                            // 加入資料紀錄
+                                                            mapDatabase.createStatistics(player.getUniqueId(), configData.getDefaultPlayerLimit(), 1);
+                                                        }
+                                                    }
+
                                                     int[] statistics = mapDatabase.getStatistics(player.getUniqueId());
                                                     if (statistics != null) {
                                                         // 超出允許的數量
                                                         sender.sendMessage(ChatColor.RED + configData.getLanguage("your_upload_has_reached_limit") + statistics[0] + " / " + statistics[1]);
-                                                    } else if (!player.hasPermission("mapview.ignore_create_rate_limit") && !mapServer.markCoolingTime(player, configData.getCreateRateLimit())) {
-                                                        // 創建的速度太快了, 等一下
-                                                        sender.sendMessage(ChatColor.RED + configData.getLanguage("creation_speed_too_fast"));
                                                     } else {
                                                         // 加入資料紀錄
                                                         mapDatabase.createStatistics(player.getUniqueId(), configData.getDefaultPlayerLimit(), 1);
@@ -288,11 +300,12 @@ public final class Command implements CommandExecutor {
                                                             }
                                                         });
                                                     }
+
+                                                } catch (SQLException exception) {
+                                                    // 資料庫錯誤
+                                                    sender.sendMessage(ChatColor.RED + configData.getLanguage("database_error"));
+                                                    exception.printStackTrace();
                                                 }
-                                            } catch (SQLException exception) {
-                                                // 資料庫錯誤
-                                                sender.sendMessage(ChatColor.RED + configData.getLanguage("database_error"));
-                                                exception.printStackTrace();
                                             }
                                         } else {
                                             // 此地圖沒有原始資料
