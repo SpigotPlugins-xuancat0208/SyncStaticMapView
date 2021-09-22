@@ -79,7 +79,7 @@ languages:
   map_cannot_copy: "此地圖不可複製"
   your_upload_has_reached_limit: "你的上傳數量已達到限制: "
   url_not_allowed: "不允許使用此網址"
-  player_not online_use_uuid: "此玩家沒有在線上, 使用 UUID"
+  player_not_online_use_uuid: "此玩家沒有在線上, 使用 UUID"
   parameter_not_player_name_or_uuid: "參數不是 玩家名稱 或 UUID: "
   set_successfully_now_limit: "設置完畢, 當前的上傳限制: "
   now_limit: "上傳限制: "

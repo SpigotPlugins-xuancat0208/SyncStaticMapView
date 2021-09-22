@@ -565,7 +565,7 @@ public final class Command implements CommandExecutor {
                 return player.getUniqueId();
             } else {
                 // 此玩家沒有在線上, 使用 UUID
-                sender.sendMessage(ChatColor.RED + configData.getLanguage("online_use_uuid") + parameter);
+                sender.sendMessage(ChatColor.RED + configData.getLanguage("player_not_online_use_uuid"));
             }
         } else {
             // 參數不是 玩家名稱 或 UUID

@@ -38,7 +38,7 @@ languages:
   map_cannot_copy: "This map cannot copy"
   your_upload_has_reached_limit: "Your upload has reached the limit: "
   url_not_allowed: "This URL is not allowed"
-  player_not online_use_uuid: "This player is not online, use UUID"
+  player_not_online_use_uuid: "This player is not online, use UUID"
   parameter_not_player_name_or_uuid: "Parameter is not a player name or UUID: "
   set_successfully_now_limit: "Set up, the current upload limit: "
   now_limit: "Upload limit: "
