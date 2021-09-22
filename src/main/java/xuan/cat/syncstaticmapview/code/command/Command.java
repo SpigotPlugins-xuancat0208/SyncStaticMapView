@@ -487,7 +487,8 @@ public final class Command implements CommandExecutor {
                                                 if (!mapDatabase.subtractStatisticsCapacity(playerUUID, capacity))
                                                     mapDatabase.createStatistics(playerUUID, configData.getDefaultPlayerLimit() - capacity, 0);
                                             } catch (SQLException exception) {
-                                                mapDatabase.setStatisticsCapacity(playerUUID, 0);
+                                                if (!mapDatabase.setStatisticsCapacity(playerUUID, 0))
+                                                    mapDatabase.createStatistics(playerUUID, 0, 0);
                                             }
                                             int[] statistics = mapDatabase.getStatistics(playerUUID);
                                             if (statistics == null)
