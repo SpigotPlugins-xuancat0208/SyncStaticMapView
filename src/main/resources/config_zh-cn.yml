@@ -86,3 +86,4 @@ languages:
   now_limit: "上传限制: "
   exceeding_allowed_size: "超出允许的尺寸: "
   creation_speed_too_fast: "创建的速度太快了, 等一下"
+  can_not_get_this_map: "你无法获取此地图"

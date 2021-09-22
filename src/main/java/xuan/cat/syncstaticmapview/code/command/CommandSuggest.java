@@ -26,7 +26,7 @@ public final class CommandSuggest implements TabCompleter {
             if (sender.hasPermission("command.mapview.*") || sender.hasPermission("command.mapview.reload")) {
                 list.add("reload");
             }
-            if (sender.hasPermission("command.mapview.*") || sender.hasPermission("command.mapview.get")) {
+            if (sender.hasPermission("command.mapview.*") || sender.hasPermission("command.mapview.get_own") || sender.hasPermission("command.mapview.get_all")) {
                 list.add("get");
             }
             if (sender.hasPermission("command.mapview.*") || sender.hasPermission("command.mapview.create.*") || sender.hasPermission("command.mapview.create.url") || sender.hasPermission("command.mapview.create.file") || sender.hasPermission("command.mapview.create.hand")) {

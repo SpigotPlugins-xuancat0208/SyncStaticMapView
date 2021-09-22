@@ -32,6 +32,7 @@ public final class MapDatabase {
             Field<Long>     field_MapID         = Database.atField(FieldStyle.INT_UNSIGNED, "MapID").autoIncrement(true);
             Field<byte[]>   field_MapPixels     = Database.atField(FieldStyle.BLOB, "MapPixels");
             Field<Date>     field_SaveTime      = Database.atField(FieldStyle.DATETIME, "SaveTime");
+            Field<Long>     field_UploaderID    = Database.atField(FieldStyle.INT_UNSIGNED, "UploaderID").defaultValue(0L);
         }
 
         DatabaseTable table_MapRedirect = Database.atTable("MAP_REDIRECTS");
@@ -50,10 +51,10 @@ public final class MapDatabase {
 
         DatabaseTable table_MapStatistics = Database.atTable("MAP_STATISTICS");
         interface MAP_STATISTICS {
+            Field<Long>     field_PlayerID      = Database.atField(FieldStyle.INT_UNSIGNED, "PlayerID").autoIncrement(true);
             Field<UUID>     field_PlayerUUID    = Database.atField(FieldStyle.UUID, "PlayerUUID");
             Field<Long>     field_Used          = Database.atField(FieldStyle.INT_UNSIGNED, "Used");
             Field<Long>     field_Capacity      = Database.atField(FieldStyle.INT_UNSIGNED, "Capacity");
-
         }
     }
 
@@ -69,9 +70,15 @@ public final class MapDatabase {
                     .field(TABLE.MAP_DATA.field_MapID)
                     .field(TABLE.MAP_DATA.field_MapPixels)
                     .field(TABLE.MAP_DATA.field_SaveTime)
+                    .field(TABLE.MAP_DATA.field_UploaderID)
                     .partition(configData.isCreateTableCanPartition() ? TABLE.MAP_DATA.field_MapID.partitionKey().rows(20) : null)
                     .callSQL(configData.getDatabaseConnection())
                     .UC();
+        } else {
+            try {
+                TABLE.table_MapData.alterTable().tableAdd(TABLE.MAP_DATA.field_UploaderID).callSQL(configData.getDatabaseConnection()).UC();
+            } catch (SQLException ignored) {
+            }
         }
 
         // MAP_PERMISSION 資料表
@@ -100,19 +107,37 @@ public final class MapDatabase {
         // MAP_STATISTICS 資料表
         if (!TABLE.table_MapStatistics.existTable(configData.getDatabaseConnection())) {
             TABLE.table_MapStatistics.createTable().collate(Collate.utf8mb4_bin).engine(DatabaseEngine.MyISAM)
+                    .field(TABLE.MAP_STATISTICS.field_PlayerID)
                     .field(TABLE.MAP_STATISTICS.field_PlayerUUID)
                     .field(TABLE.MAP_STATISTICS.field_Used)
                     .field(TABLE.MAP_STATISTICS.field_Capacity)
                     .index(TABLE.MAP_STATISTICS.field_PlayerUUID.index().type(IndexType.UNIQUE))
                     .callSQL(configData.getDatabaseConnection())
                     .UC();
+        } else {
+            try {
+                TABLE.table_MapStatistics.alterTable().tableAdd(TABLE.MAP_STATISTICS.field_PlayerID.clone().isFirst(true)).callSQL(configData.getDatabaseConnection()).UC();
+            } catch (SQLException ignored) {
+            }
         }
     }
 
 
-    public Integer addMapData(MapData mapData) throws SQLException {
+//    public Integer addMapData(MapData mapData) throws SQLException {
+//        SQL sql = TABLE.table_MapData.insertData()
+//                .insert(TABLE.MAP_DATA.field_MapPixels, zipDataBytes(mapData.getPixels()))
+//                .insert(TABLE.MAP_DATA.field_SaveTime, Value.NOW_DATE)
+//                .callSQL(configData.getDatabaseConnection());
+//        sql.U();
+//        Integer incrementInt = sql.getAutoIncrementInt();
+//        sql.C();
+//        assert incrementInt != null;
+//        return incrementInt;
+//    }
+    public Integer addMapData(MapData mapData, int uploaderId) throws SQLException {
         SQL sql = TABLE.table_MapData.insertData()
                 .insert(TABLE.MAP_DATA.field_MapPixels, zipDataBytes(mapData.getPixels()))
+                .insert(TABLE.MAP_DATA.field_UploaderID, (long) uploaderId)
                 .insert(TABLE.MAP_DATA.field_SaveTime, Value.NOW_DATE)
                 .callSQL(configData.getDatabaseConnection());
         sql.U();
@@ -163,6 +188,28 @@ public final class MapDatabase {
         return sql.UC() > 0;
     }
 
+    public boolean setMapUploaderID(int mapId, int uploaderId) throws SQLException {
+        SQL sql = TABLE.table_MapData.updateData()
+                .updates(TABLE.MAP_DATA.field_UploaderID, (long) uploaderId)
+                .where(w -> w.and(TABLE.MAP_DATA.field_MapID, (long) mapId))
+                .limit(1)
+                .callSQL(configData.getDatabaseConnection());
+        return sql.UC() > 0;
+    }
+    public int getMapUploaderID(int mapId) throws SQLException {
+        SQL sql = TABLE.table_MapData.selectData()
+                .select(TABLE.MAP_DATA.field_UploaderID)
+                .where(w -> w.and(TABLE.MAP_DATA.field_MapID, (long) mapId))
+                .limit(1)
+                .callSQL(configData.getDatabaseConnection());
+        if (sql.Q()) {
+            sql.N();
+            return sql.getThenClose(TABLE.MAP_DATA.field_UploaderID).intValue();
+        } else {
+            sql.C();
+            return 0;
+        }
+    }
 
 
     public List<MapRedirect> getMapRedirects(int mapId) throws SQLException {
@@ -329,6 +376,20 @@ public final class MapDatabase {
         return sql.QC();
     }
 
+    public int getPlayerId(UUID playerUUID) throws SQLException {
+        SQL sql = TABLE.table_MapStatistics.selectData()
+                .select(TABLE.MAP_STATISTICS.field_PlayerID)
+                .where(w -> w.and(TABLE.MAP_STATISTICS.field_PlayerUUID, playerUUID))
+                .limit(1)
+                .callSQL(configData.getDatabaseConnection());
+        if (sql.Q()) {
+            sql.N();
+            return sql.getThenClose(TABLE.MAP_STATISTICS.field_PlayerID).intValue();
+        } else {
+            sql.C();
+            return 0;
+        }
+    }
 
 
     private byte[] zipDataBytes(byte[] bytes) {

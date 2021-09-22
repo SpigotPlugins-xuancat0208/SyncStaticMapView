@@ -44,3 +44,4 @@ languages:
   now_limit: "Upload limit: "
   exceeding_allowed_size: "Exceeding the allowed size: "
   creation_speed_too_fast: "The creation speed is too fast, wait a minute"
+  can_not_get_this_map: "You can't get this map"
