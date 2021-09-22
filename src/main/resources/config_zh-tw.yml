@@ -50,7 +50,6 @@ url-rate-limit: 4
 # 允許的網址來源清單
 allowed-url-source-list:
   - "https://i.imgur.com/"
-  - "https://i.pximg.net/"
 
 
 

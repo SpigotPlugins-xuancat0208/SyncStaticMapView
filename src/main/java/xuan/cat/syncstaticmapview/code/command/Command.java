@@ -27,12 +27,14 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.*;
+import java.util.function.Consumer;
 import java.util.regex.Pattern;
 
 public final class Command implements CommandExecutor {
@@ -134,38 +136,50 @@ public final class Command implements CommandExecutor {
                                             sender.sendMessage(ChatColor.RED + configData.getLanguage("missing_parameters"));
                                         } else {
                                             boolean allowed = false;
-                                            for (String allowedUrl : configData.getAllowedUrlSourceList()) {
-                                                if (stitched.startsWith(allowedUrl)) {
-                                                    allowed = true;
-                                                    break;
+                                            if (sender.hasPermission("mapview.ignore_url_allowed")) {
+                                                allowed = true;
+                                            } else {
+                                                for (String allowedUrl : configData.getAllowedUrlSourceList()) {
+                                                    if (stitched.startsWith(allowedUrl)) {
+                                                        allowed = true;
+                                                        break;
+                                                    }
                                                 }
                                             }
                                             if (allowed) {
                                                 try {
                                                     URL url = new URL(stitched);
-                                                    mapServer.processURL(() -> {
-                                                        try {
-                                                            HttpURLConnection connection    = (HttpURLConnection) url.openConnection();
-                                                            connection.setRequestMethod("GET");
-                                                            connection.setDoInput(true);
-                                                            connection.setDoOutput(true);
-                                                            connection.setRequestProperty("accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9");
-                                                            connection.setRequestProperty("accept-encoding", "gzip, deflate, br");
-                                                            connection.setRequestProperty("user-agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.82 Safari/537.36");
-                                                            if (connection.getResponseCode() == 200) {
-                                                                cropImageSave(sender, ImageIO.read(connection.getInputStream()), parameters[2]);
-                                                            } else {
-                                                                throw new IOException(connection.getResponseCode() + " " + connection.getResponseMessage());
-                                                            }
-                                                        } catch (SQLException exception) {
-                                                            // 資料庫錯誤
-                                                            sender.sendMessage(ChatColor.RED + configData.getLanguage("database_error"));
-                                                            exception.printStackTrace();
-                                                        } catch (IOException exception) {
-                                                            // 圖片下載失敗
-                                                            sender.sendMessage(ChatColor.RED + configData.getLanguage("image_download_failed") + exception.getMessage());
+                                                    try {
+                                                        Consumer<BufferedImage> toAsync = cropImageSave(sender, parameters[2]);
+                                                        if (toAsync != null) {
+                                                            mapServer.processURL(() -> {
+                                                                try {
+                                                                    HttpURLConnection connection    = (HttpURLConnection) url.openConnection();
+                                                                    connection.setRequestMethod("GET");
+                                                                    connection.setDoInput(true);
+                                                                    connection.setDoOutput(true);
+                                                                    connection.setRequestProperty("accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9");
+                                                                    connection.setRequestProperty("accept-encoding", "gzip, deflate, br");
+                                                                    connection.setRequestProperty("user-agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.82 Safari/537.36");
+                                                                    if (connection.getResponseCode() == 200) {
+                                                                        InputStream inputStream = connection.getInputStream();
+                                                                        BufferedImage bufferedImage = ImageIO.read(inputStream);
+                                                                        inputStream.close();
+                                                                        toAsync.accept(bufferedImage);
+                                                                    } else {
+                                                                        throw new IOException(connection.getResponseCode() + " " + connection.getResponseMessage());
+                                                                    }
+                                                                } catch (IOException exception) {
+                                                                    // 圖片下載失敗
+                                                                    sender.sendMessage(ChatColor.RED + configData.getLanguage("image_download_failed") + exception.getMessage());
+                                                                }
+                                                            });
                                                         }
-                                                    });
+                                                    } catch (SQLException exception) {
+                                                        // 資料庫錯誤
+                                                        sender.sendMessage(ChatColor.RED + configData.getLanguage("database_error"));
+                                                        exception.printStackTrace();
+                                                    }
                                                 } catch (MalformedURLException exception) {
                                                     // 輸入的參數不是網址
                                                     sender.sendMessage(ChatColor.RED + configData.getLanguage("parameter_not_url") + stitched);
@@ -195,18 +209,23 @@ public final class Command implements CommandExecutor {
                                             sender.sendMessage(ChatColor.RED + configData.getLanguage("missing_parameters"));
                                         } else {
                                             File file = new File(stitched);
-                                            Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
-                                                try {
-                                                    cropImageSave(sender, ImageIO.read(file), parameters[2]);
-                                                } catch (SQLException exception) {
-                                                    // 資料庫錯誤
-                                                    sender.sendMessage(ChatColor.RED + configData.getLanguage("database_error"));
-                                                    exception.printStackTrace();
-                                                } catch (IOException exception) {
-                                                    // 圖片讀取失敗
-                                                    sender.sendMessage(ChatColor.RED + configData.getLanguage("image_read_failed") + exception.getMessage());
+                                            try {
+                                                Consumer<BufferedImage> toAsync = cropImageSave(sender, parameters[2]);
+                                                if (toAsync != null) {
+                                                    Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
+                                                        try {
+                                                            toAsync.accept(ImageIO.read(file));
+                                                        } catch (IOException exception) {
+                                                            // 圖片讀取失敗
+                                                            sender.sendMessage(ChatColor.RED + configData.getLanguage("image_read_failed") + exception.getMessage());
+                                                        }
+                                                    });
                                                 }
-                                            });
+                                            } catch (SQLException exception) {
+                                                // 資料庫錯誤
+                                                sender.sendMessage(ChatColor.RED + configData.getLanguage("database_error"));
+                                                exception.printStackTrace();
+                                            }
                                         }
                                     } else {
                                         // 缺少參數
@@ -610,9 +629,7 @@ public final class Command implements CommandExecutor {
         return builder.toString();
     }
 
-    public void cropImageSave(CommandSender sender, BufferedImage sourceImage, String saveRatio) throws SQLException {
-        int revisionWidth = sourceImage.getWidth();
-        int revisionHeight = sourceImage.getHeight();
+    public Consumer<BufferedImage> cropImageSave(CommandSender sender, String saveRatio) throws SQLException {
 
         if (saveRatio == null || saveRatio.length() == 0)
             saveRatio = "1:1";
@@ -622,10 +639,10 @@ public final class Command implements CommandExecutor {
             sender.sendMessage(ChatColor.YELLOW + configData.getLanguage("parameter_not_aspect_ratio") + saveRatio);
         } else {
             try {
-                int spaceRow = Math.max(1, saveRatios[0].length() == 0 ? (int) Math.ceil((double) revisionWidth / 128.0 - 2.0) : Integer.parseInt(saveRatios[0]));
+                int spaceRow = Math.max(1, saveRatios[0].length() == 0 ? 1 : Integer.parseInt(saveRatios[0]));
                 int spaceWidth = spaceRow * 128;
                 try {
-                    int spaceColumn = Math.max(1, saveRatios[1].length() == 0 ? (int) Math.ceil((double) revisionHeight / 128.0 - 2.0) : Integer.parseInt(saveRatios[1]));
+                    int spaceColumn = Math.max(1, saveRatios[1].length() == 0 ? 1 : Integer.parseInt(saveRatios[1]));
                     int spaceHeight = spaceColumn * 128;
                     if (!sender.hasPermission("mapview.ignore_size_restrictions") && (spaceRow > configData.getMaximumRowAllowed() || spaceColumn > configData.getMaximumColumnAllowed())) {
                         // 超出允許的尺寸
@@ -637,8 +654,8 @@ public final class Command implements CommandExecutor {
                                 int[] statistics = mapDatabase.getStatistics(player.getUniqueId());
                                 if (statistics != null) {
                                     // 超出允許的數量
-                                    sender.sendMessage(ChatColor.RED + configData.getLanguage("your_upload_has_reached_limit") + statistics[0] + " / " + statistics[1]);
-                                    return;
+                                    sender.sendMessage(ChatColor.RED + configData.getLanguage("your_upload_has_reached_limit") + statistics[0] + " + " + (spaceRow * spaceColumn) + " / " + statistics[1]);
+                                    return null;
                                 } else {
                                     // 加入資料紀錄
                                     mapDatabase.createStatistics(player.getUniqueId(), configData.getDefaultPlayerLimit(), spaceRow * spaceColumn);
@@ -646,76 +663,87 @@ public final class Command implements CommandExecutor {
                             }
                         }
 
-                        if (revisionWidth < spaceWidth) {
-                            double redress = (double) spaceWidth / (double) revisionWidth;
-                            revisionWidth = spaceWidth;
-                            revisionHeight = (int) (revisionHeight * redress);
-                        }
-                        if (revisionHeight < spaceHeight) {
-                            double redress = (double) spaceHeight / (double) revisionHeight;
-                            revisionWidth = (int) (revisionWidth * redress);
-                            revisionHeight = spaceHeight;
-                        }
+                        return (BufferedImage sourceImage) -> {
+                            try {
+                                int revisionWidth = sourceImage.getWidth();
+                                int revisionHeight = sourceImage.getHeight();
 
-                        if (revisionWidth > spaceWidth) {
-                            double redress = (double) spaceWidth / (double) revisionWidth;
-                            revisionWidth = spaceWidth;
-                            revisionHeight = (int) (revisionHeight * redress);
-                        }
-                        if (revisionHeight > spaceHeight) {
-                            double redress = (double) spaceHeight / (double) revisionHeight;
-                            revisionWidth = (int) (revisionWidth * redress);
-                            revisionHeight = spaceHeight;
-                        }
-
-                        BufferedImage spaceImage = new BufferedImage(spaceWidth, spaceHeight, BufferedImage.TYPE_INT_ARGB);
-                        Graphics2D spaceGraphics = spaceImage.createGraphics();
-                        spaceGraphics.setComposite(AlphaComposite.Src);
-                        spaceGraphics.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
-                        spaceGraphics.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
-                        spaceGraphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-                        spaceGraphics.drawImage(sourceImage, (spaceWidth - revisionWidth) / 2, (spaceHeight - revisionHeight) / 2, revisionWidth, revisionHeight, null);
-                        spaceGraphics.dispose();
-
-                        Set<Integer> createIds = new LinkedHashSet<>();
-                        List<ItemStack> itemList = new ArrayList<>();
-                        for (int readColumn = 0 ; readColumn < spaceColumn ; readColumn++) {
-                            for (int readRow = 0 ; readRow < spaceRow ; readRow++) {
-                                MapData mapData = new CodeMapData(branchMapColor, branchMapConversion);
-                                for (int x = 0 ; x < 128 ; x++)
-                                    for (int y = 0 ; y < 128 ; y++)
-                                        mapData.setColor(x, y, new Color(spaceImage.getRGB(readRow << 7 | x, readColumn << 7 | y), true));
-                                int mapId = mapDatabase.addMapData(mapData);
-                                createIds.add(mapId);
-                                if (spaceRow > 1 || spaceColumn > 1) {
-                                    ItemStack item = branchMinecraft.setMapId(new ItemStack(Material.FILLED_MAP), -mapId);
-                                    ItemMeta meta = item.getItemMeta();
-                                    assert meta != null;
-                                    meta.setLore(List.of("" + ChatColor.WHITE + (readColumn + 1) + "-" + (readRow + 1)));
-                                    item.setItemMeta(meta);
-                                    itemList.add(item);
-                                } else {
-                                    itemList.add(branchMinecraft.setMapId(new ItemStack(Material.FILLED_MAP), -mapId));
+                                if (revisionWidth < spaceWidth) {
+                                    double redress = (double) spaceWidth / (double) revisionWidth;
+                                    revisionWidth = spaceWidth;
+                                    revisionHeight = (int) (revisionHeight * redress);
                                 }
+                                if (revisionHeight < spaceHeight) {
+                                    double redress = (double) spaceHeight / (double) revisionHeight;
+                                    revisionWidth = (int) (revisionWidth * redress);
+                                    revisionHeight = spaceHeight;
+                                }
+
+                                if (revisionWidth > spaceWidth) {
+                                    double redress = (double) spaceWidth / (double) revisionWidth;
+                                    revisionWidth = spaceWidth;
+                                    revisionHeight = (int) (revisionHeight * redress);
+                                }
+                                if (revisionHeight > spaceHeight) {
+                                    double redress = (double) spaceHeight / (double) revisionHeight;
+                                    revisionWidth = (int) (revisionWidth * redress);
+                                    revisionHeight = spaceHeight;
+                                }
+
+                                BufferedImage spaceImage = new BufferedImage(spaceWidth, spaceHeight, BufferedImage.TYPE_INT_ARGB);
+                                Graphics2D spaceGraphics = spaceImage.createGraphics();
+                                spaceGraphics.setComposite(AlphaComposite.Src);
+                                spaceGraphics.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+                                spaceGraphics.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+                                spaceGraphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                                spaceGraphics.drawImage(sourceImage, (spaceWidth - revisionWidth) / 2, (spaceHeight - revisionHeight) / 2, revisionWidth, revisionHeight, null);
+                                spaceGraphics.dispose();
+
+                                Set<Integer> createIds = new LinkedHashSet<>();
+                                List<ItemStack> itemList = new ArrayList<>();
+                                for (int readColumn = 0 ; readColumn < spaceColumn ; readColumn++) {
+                                    for (int readRow = 0 ; readRow < spaceRow ; readRow++) {
+                                        MapData mapData = new CodeMapData(branchMapColor, branchMapConversion);
+                                        for (int x = 0 ; x < 128 ; x++)
+                                            for (int y = 0 ; y < 128 ; y++)
+                                                mapData.setColor(x, y, new Color(spaceImage.getRGB(readRow << 7 | x, readColumn << 7 | y), true));
+                                        int mapId = mapDatabase.addMapData(mapData);
+                                        createIds.add(mapId);
+                                        if (spaceRow > 1 || spaceColumn > 1) {
+                                            ItemStack item = branchMinecraft.setMapId(new ItemStack(Material.FILLED_MAP), -mapId);
+                                            ItemMeta meta = item.getItemMeta();
+                                            assert meta != null;
+                                            meta.setLore(List.of("" + ChatColor.WHITE + (readColumn + 1) + "-" + (readRow + 1)));
+                                            item.setItemMeta(meta);
+                                            itemList.add(item);
+                                        } else {
+                                            itemList.add(branchMinecraft.setMapId(new ItemStack(Material.FILLED_MAP), -mapId));
+                                        }
+                                    }
+                                }
+
+                                StringBuilder stringIds = new StringBuilder();
+
+                                for (int createId : createIds) {
+                                    if (stringIds.length() != 0)
+                                        stringIds.append(',').append(' ');
+                                    stringIds.append(createId);
+                                }
+
+                                // 創建完畢, 資料庫地圖編號為:
+                                sender.sendMessage(ChatColor.YELLOW + configData.getLanguage("created_successfully") + stringIds);
+                                if (sender instanceof Player) {
+                                    Bukkit.getScheduler().runTask(plugin, () -> {
+                                        for (ItemStack item : itemList)
+                                            giveMapItem((Player) sender, item);
+                                    });
+                                }
+                            } catch (SQLException exception) {
+                                // 資料庫錯誤
+                                sender.sendMessage(ChatColor.RED + configData.getLanguage("database_error"));
+                                exception.printStackTrace();
                             }
-                        }
-
-                        StringBuilder stringIds = new StringBuilder();
-
-                        for (int createId : createIds) {
-                            if (stringIds.length() != 0)
-                                stringIds.append(',').append(' ');
-                            stringIds.append(createId);
-                        }
-
-                        // 創建完畢, 資料庫地圖編號為:
-                        sender.sendMessage(ChatColor.YELLOW + configData.getLanguage("created_successfully") + stringIds);
-                        if (sender instanceof Player) {
-                            Bukkit.getScheduler().runTask(plugin, () -> {
-                                for (ItemStack item : itemList)
-                                    giveMapItem((Player) sender, item);
-                            });
-                        }
+                        };
                     }
                 } catch (NumberFormatException exception) {
                     // 參數不是數字
@@ -726,5 +754,6 @@ public final class Command implements CommandExecutor {
                 sender.sendMessage(ChatColor.RED + configData.getLanguage("parameter_not_number") + saveRatios[0]);
             }
         }
+        return null;
     }
 }

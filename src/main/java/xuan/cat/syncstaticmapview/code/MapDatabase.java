@@ -277,6 +277,7 @@ public final class MapDatabase {
         SQL sql = TABLE.table_MapStatistics.updateData()
                 .updates(TABLE.MAP_STATISTICS.field_Capacity, (long) capacity)
                 .where(w -> w.and(TABLE.MAP_STATISTICS.field_PlayerUUID, playerUUID))
+                .limit(1)
                 .callSQL(configData.getDatabaseConnection());
         return sql.UC() > 0;
     }
@@ -284,6 +285,7 @@ public final class MapDatabase {
         SQL sql = TABLE.table_MapStatistics.updateData()
                 .updatesIncrease(TABLE.MAP_STATISTICS.field_Capacity, (long) capacity)
                 .where(w -> w.and(TABLE.MAP_STATISTICS.field_PlayerUUID, playerUUID))
+                .limit(1)
                 .callSQL(configData.getDatabaseConnection());
         return sql.UC() > 0;
     }
@@ -291,6 +293,7 @@ public final class MapDatabase {
         SQL sql = TABLE.table_MapStatistics.updateData()
                 .updatesSubtract(TABLE.MAP_STATISTICS.field_Capacity, (long) capacity)
                 .where(w -> w.and(TABLE.MAP_STATISTICS.field_PlayerUUID, playerUUID))
+                .limit(1)
                 .callSQL(configData.getDatabaseConnection());
         return sql.UC() > 0;
     }
@@ -313,6 +316,7 @@ public final class MapDatabase {
         SQL sql = TABLE.table_MapStatistics.updateData()
                 .updatesIncrease(TABLE.MAP_STATISTICS.field_Used, (long) consume)
                 .where(w -> w.and(TABLE.MAP_STATISTICS.field_PlayerUUID, playerUUID).and(TABLE.MAP_STATISTICS.field_Capacity, WhereJudge.ABOVE, TABLE.MAP_STATISTICS.field_Used, WhereOperator.INCREASE, (long) consume))
+                .limit(1)
                 .callSQL(configData.getDatabaseConnection());
         return sql.UC() > 0;
     }

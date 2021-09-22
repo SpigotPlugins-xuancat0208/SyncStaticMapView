@@ -12,7 +12,6 @@ default-player-limit: 400
 url-rate-limit: 4
 allowed-url-source-list:
   - "https://i.imgur.com/"
-  - "https://i.pximg.net/"
 languages:
   no_permission: "No permission"
   missing_parameters: "Missing parameters"

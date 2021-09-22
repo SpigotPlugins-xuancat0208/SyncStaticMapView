@@ -50,7 +50,6 @@ url-rate-limit: 4
 # List of allowed URL sources
 allowed-url-source-list:
   - "https://i.imgur.com/"
-  - "https://i.pximg.net/"
 
 
 
