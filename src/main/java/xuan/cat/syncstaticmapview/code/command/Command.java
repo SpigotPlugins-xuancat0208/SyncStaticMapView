@@ -500,6 +500,7 @@ public final class Command implements CommandExecutor {
                                     }
                                 }
                                 break;
+
                             case "increase":
                                 if (!sender.hasPermission("command.mapview.*") && !sender.hasPermission("command.mapview.limit.*") && !sender.hasPermission("command.mapview.limit.increase")) {
                                     // 無權限
@@ -530,6 +531,7 @@ public final class Command implements CommandExecutor {
                                     }
                                 }
                                 break;
+
                             case "subtract":
                                 if (!sender.hasPermission("command.mapview.*") && !sender.hasPermission("command.mapview.limit.*") && !sender.hasPermission("command.mapview.limit.subtract")) {
                                     // 無權限
@@ -565,6 +567,7 @@ public final class Command implements CommandExecutor {
                                     }
                                 }
                                 break;
+
                             case "check":
                                 if (parameters.length < 3) {
                                     if (!sender.hasPermission("command.mapview.*") && !sender.hasPermission("command.mapview.limit.*") && !sender.hasPermission("command.mapview.limit.check_own")) {

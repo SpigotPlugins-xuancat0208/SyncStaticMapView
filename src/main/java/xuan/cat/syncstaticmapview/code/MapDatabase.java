@@ -207,7 +207,7 @@ public final class MapDatabase {
             return sql.getThenClose(TABLE.MAP_DATA.field_UploaderID).intValue();
         } else {
             sql.C();
-            return 0;
+            return -2;
         }
     }
 
@@ -387,7 +387,7 @@ public final class MapDatabase {
             return sql.getThenClose(TABLE.MAP_STATISTICS.field_PlayerID).intValue();
         } else {
             sql.C();
-            return 0;
+            return -1;
         }
     }
 
