@@ -75,7 +75,7 @@ public final class SyncMap {
     public static int createData(MapData mapData) throws SQLException {
         return createData(mapData, 0);
     }
-    public static int createData(MapData mapData, int uploaderId) throws SQLException {
+    private static int createData(MapData mapData, int uploaderId) throws SQLException {
         checkAsync();
         return Index.getMapDatabase().addMapData(mapData, uploaderId);
     }
