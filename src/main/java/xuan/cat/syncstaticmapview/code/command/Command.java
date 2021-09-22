@@ -279,27 +279,19 @@ public final class Command implements CommandExecutor {
                                                         }
                                                     }
 
-                                                    int[] statistics = mapDatabase.getStatistics(player.getUniqueId());
-                                                    if (statistics != null) {
-                                                        // 超出允許的數量
-                                                        sender.sendMessage(ChatColor.RED + configData.getLanguage("your_upload_has_reached_limit") + statistics[0] + " / " + statistics[1]);
-                                                    } else {
-                                                        // 加入資料紀錄
-                                                        mapDatabase.createStatistics(player.getUniqueId(), configData.getDefaultPlayerLimit(), 1);
-                                                        MapData mapData = branchMapConversion.ofBukkit(mapView);
-                                                        Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
-                                                            try {
-                                                                int mapId = mapDatabase.addMapData(mapData);
-                                                                // 創建完畢, 資料庫地圖編號為:
-                                                                sender.sendMessage(ChatColor.YELLOW + configData.getLanguage("created_successfully") + mapId);
-                                                                giveMapItem(player, branchMinecraft.setMapId(new ItemStack(Material.FILLED_MAP), -mapId));
-                                                            } catch (SQLException exception) {
-                                                                // 資料庫錯誤
-                                                                sender.sendMessage(ChatColor.RED + configData.getLanguage("database_error"));
-                                                                exception.printStackTrace();
-                                                            }
-                                                        });
-                                                    }
+                                                    MapData mapData = branchMapConversion.ofBukkit(mapView);
+                                                    Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
+                                                        try {
+                                                            int mapId = mapDatabase.addMapData(mapData);
+                                                            // 創建完畢, 資料庫地圖編號為:
+                                                            sender.sendMessage(ChatColor.YELLOW + configData.getLanguage("created_successfully") + mapId);
+                                                            giveMapItem(player, branchMinecraft.setMapId(new ItemStack(Material.FILLED_MAP), -mapId));
+                                                        } catch (SQLException exception) {
+                                                            // 資料庫錯誤
+                                                            sender.sendMessage(ChatColor.RED + configData.getLanguage("database_error"));
+                                                            exception.printStackTrace();
+                                                        }
+                                                    });
 
                                                 } catch (SQLException exception) {
                                                     // 資料庫錯誤
