@@ -283,12 +283,14 @@ public final class Command implements CommandExecutor {
                                                 sender.sendMessage(ChatColor.RED + configData.getLanguage("creation_speed_too_fast"));
                                             } else {
                                                 try {
-                                                    if (!player.hasPermission("mapview.ignore_upload_limit") && !mapDatabase.consumeStatisticsUsed(player.getUniqueId(), 1)) {
+                                                    if (!mapDatabase.consumeStatisticsUsed(player.getUniqueId(), 1)) {
                                                         int[] statistics = mapDatabase.getStatistics(player.getUniqueId());
                                                         if (statistics != null) {
-                                                            // 超出允許的數量
-                                                            sender.sendMessage(ChatColor.RED + configData.getLanguage("your_upload_has_reached_limit") + statistics[1] + " + 1 / " + statistics[2]);
-                                                            return true;
+                                                            if (!player.hasPermission("mapview.ignore_upload_limit")) {
+                                                                // 超出允許的數量
+                                                                sender.sendMessage(ChatColor.RED + configData.getLanguage("your_upload_has_reached_limit") + statistics[1] + " + 1 / " + statistics[2]);
+                                                                return true;
+                                                            }
                                                         } else {
                                                             // 加入資料紀錄
                                                             mapDatabase.createStatistics(player.getUniqueId(), configData.getDefaultPlayerLimit(), 1);
@@ -683,12 +685,14 @@ public final class Command implements CommandExecutor {
                     } else {
                         if (sender instanceof Player) {
                             Player player = (Player) sender;
-                            if (!player.hasPermission("mapview.ignore_upload_limit") && !mapDatabase.consumeStatisticsUsed(player.getUniqueId(), spaceRow * spaceColumn)) {
+                            if (!mapDatabase.consumeStatisticsUsed(player.getUniqueId(), spaceRow * spaceColumn)) {
                                 int[] statistics = mapDatabase.getStatistics(player.getUniqueId());
                                 if (statistics != null) {
-                                    // 超出允許的數量
-                                    sender.sendMessage(ChatColor.RED + configData.getLanguage("your_upload_has_reached_limit") + statistics[1] + " + " + (spaceRow * spaceColumn) + " / " + statistics[2]);
-                                    return null;
+                                    if (!player.hasPermission("mapview.ignore_upload_limit")) {
+                                        // 超出允許的數量
+                                        sender.sendMessage(ChatColor.RED + configData.getLanguage("your_upload_has_reached_limit") + statistics[1] + " + " + (spaceRow * spaceColumn) + " / " + statistics[2]);
+                                        return null;
+                                    }
                                 } else {
                                     // 加入資料紀錄
                                     mapDatabase.createStatistics(player.getUniqueId(), configData.getDefaultPlayerLimit(), spaceRow * spaceColumn);
