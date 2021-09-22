@@ -443,7 +443,7 @@ public final class Command implements CommandExecutor {
                                                 mapDatabase.createStatistics(playerUUID, capacity, 0);
                                             int[] statistics = mapDatabase.getStatistics(playerUUID);
                                             if (statistics == null)
-                                                statistics = new int[] {0, 0};
+                                                statistics = new int[] {0, configData.getDefaultPlayerLimit()};
                                             // 設置完畢, 當前的上傳限制: ?
                                             sender.sendMessage(ChatColor.YELLOW + configData.getLanguage("set_successfully_now_limit") + statistics[0] + "/" + statistics[1]);
                                         } catch (SQLException exception) {
@@ -473,7 +473,7 @@ public final class Command implements CommandExecutor {
                                                 mapDatabase.createStatistics(playerUUID, 0, 0);
                                             int[] statistics = mapDatabase.getStatistics(playerUUID);
                                             if (statistics == null)
-                                                statistics = new int[] {0, 0};
+                                                statistics = new int[] {0, configData.getDefaultPlayerLimit()};
                                             // 設置完畢, 當前的上傳限制: ?
                                             sender.sendMessage(ChatColor.YELLOW + configData.getLanguage("set_successfully_now_limit") + statistics[0] + "/" + statistics[1]);
                                         } catch (SQLException exception) {
@@ -499,7 +499,7 @@ public final class Command implements CommandExecutor {
                                         try {
                                             int[] statistics = mapDatabase.getStatistics(((Player) sender).getUniqueId());
                                             if (statistics == null)
-                                                statistics = new int[] {0, 0};
+                                                statistics = new int[] {0, configData.getDefaultPlayerLimit()};
                                             // 上傳限制: ?
                                             sender.sendMessage(ChatColor.YELLOW + configData.getLanguage("now_limit") + statistics[0] + "/" + statistics[1]);
                                         } catch (SQLException exception) {
@@ -518,7 +518,7 @@ public final class Command implements CommandExecutor {
                                             try {
                                                 int[] statistics = mapDatabase.getStatistics(((Player) sender).getUniqueId());
                                                 if (statistics == null)
-                                                    statistics = new int[] {0, 0};
+                                                    statistics = new int[] {0, configData.getDefaultPlayerLimit()};
                                                 // 上傳限制: ?
                                                 sender.sendMessage(ChatColor.YELLOW + configData.getLanguage("now_limit") + statistics[0] + "/" + statistics[1]);
                                             } catch (SQLException exception) {
