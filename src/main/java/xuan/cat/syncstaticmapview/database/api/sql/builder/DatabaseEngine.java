@@ -4,8 +4,16 @@ package xuan.cat.syncstaticmapview.database.api.sql.builder;
  * 資料表引擎類型枚舉
  */
 public enum DatabaseEngine {
+    CSV                 ("'CSV'"),
+    MRG_MyISAM          ("'MRG_MyISAM'"),
     MEMORY              ("'MEMORY'"),
     MyISAM              ("'MyISAM'"),
+    SEQUENCE            ("'SEQUENCE'"),
+    ARCHIVE             ("'ARCHIVE'"),
+    Aria                ("'Aria'"),
+    PERFORMANCE_SCHEMA  ("'PERFORMANCE_SCHEMA'"),
+    InnoDB              ("'InnoDB'"),
+
     ;
 
 

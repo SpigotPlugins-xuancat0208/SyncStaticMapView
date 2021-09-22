@@ -12,6 +12,11 @@ public interface DeleteData extends SQLBuilder {
 
     DeleteData limit(Integer limit);
 
+    DeleteData offset(Integer offset);
+
+    DeleteData order(Order order);
+    DeleteData order(Consumer<Order> consumer);
+
     DeleteData where(Where where);
     DeleteData where(Consumer<Where> consumer);
     DeleteData brackets(Consumer<WhereBrackets> consumer);
@@ -19,4 +24,7 @@ public interface DeleteData extends SQLBuilder {
 
     Where where();
     String name();
+    Order order();
+    Integer limit();
+    Integer offset();
 }

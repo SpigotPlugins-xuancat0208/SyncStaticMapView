@@ -2,6 +2,10 @@
 # Rename it to config.yml
 
 
+
+
+
+# database
 database:
   ip: "127.0.0.1"
   port: 3306
@@ -10,13 +14,44 @@ database:
   password: "!! YOUR_USER_PASSWORD !!"
 
 
+
 # How long can the cache be retained (milliseconds)
 cache-vitality-time: 60000
+
 
 
 # Partition support is allowed when creating data tables
 #   If the database is MariaDB can enable
 create-table-can-partition: true
+
+
+
+# Maximum number of rows allowed in a single upload
+maximum-row-allowed: 8
+# Maximum number of columns allowed in a single upload
+maximum-column-allowed: 8
+
+
+
+# Default player can upload the maximum number of maps
+#   If cut 2:2 it will be 4 instead of 1
+default-player-limit: 400
+
+
+
+# URL access speed limit (second)
+#   All url share a rate limit discard
+#   Avoid hacker attacks from a large number of upload requests
+#   Shutting down before processing is completed will cause all current queues to disappear
+url-rate-limit: 4
+
+
+
+# List of allowed URL sources
+allowed-url-source-list:
+  - "https://i.imgur.com/"
+  - "https://i.pximg.net/"
+
 
 
 languages:
@@ -42,3 +77,10 @@ languages:
   redirect_list: "Redirect list:\n   Priority: Permission => MapId"
   parameter_not_aspect_ratio: "Parameter is not a aspect ratio: "
   map_cannot_copy: "This map cannot copy"
+  your_upload_has_reached_limit: "Your upload has reached the limit: "
+  url_not_allowed: "This URL is not allowed"
+  player_not online_use_uuid: "This player is not online, use UUID"
+  parameter_not_player_name_or_uuid: "Parameter is not a player name or UUID: "
+  set_successfully_now_limit: "Set up, the current upload limit: "
+  now_limit: "Upload limit: "
+  exceeding_allowed_size: "Exceeding the allowed size: "

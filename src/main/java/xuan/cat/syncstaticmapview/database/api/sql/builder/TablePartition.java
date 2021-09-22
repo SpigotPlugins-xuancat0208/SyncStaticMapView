@@ -11,6 +11,8 @@ public interface TablePartition<T> {
 
 
     interface Independent<T> extends TablePartition<T> {
+        boolean linear();
+        int rows();
         Independent<T> clone();
         Independent<T> rows(int rows);
         Independent<T> linear(boolean linear);

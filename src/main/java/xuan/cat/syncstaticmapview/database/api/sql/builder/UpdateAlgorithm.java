@@ -8,9 +8,9 @@ public enum UpdateAlgorithm {
     /** 等於 */
     EQUAL       ("="),
     /** 加法 */
-    ADDITION    ("+"),
+    INCREASE    ("+"),
     /** 減法 */
-    SUBTRACTION ("-");
+    SUBTRACT    ("-");
 
 
     private final String value;

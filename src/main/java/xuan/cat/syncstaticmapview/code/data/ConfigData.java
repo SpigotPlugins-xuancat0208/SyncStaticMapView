@@ -9,6 +9,7 @@ import xuan.cat.syncstaticmapview.database.api.sql.MySQL;
 
 import java.sql.SQLException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -21,6 +22,11 @@ public final class ConfigData {
     private DatabaseConnection databaseConnection;
     private long cacheVitalityTime;
     private boolean createTableCanPartition;
+    private int maximumRowAllowed;
+    private int maximumColumnAllowed;
+    private int defaultPlayerLimit;
+    private int urlRateLimit;
+    private List<String> allowedUrlSourceList;
 
     public ConfigData(JavaPlugin plugin, FileConfiguration fileConfiguration) throws SQLException {
         this.plugin = plugin;
@@ -59,7 +65,13 @@ public final class ConfigData {
         for (String key : languages.getKeys(false)) {
             languagesMap.put(key, languages.getString(key, ""));
         }
+
         long cacheVitalityTime = fileConfiguration.getLong("cache-vitality-time", 60000L);
+        int maximumRowAllowed = fileConfiguration.getInt("maximum-row-allowed", 8);
+        int maximumColumnAllowed = fileConfiguration.getInt("maximum-column-allowed", 8);
+        int defaultPlayerLimit = fileConfiguration.getInt("default-player-limit", 400);
+        int urlRateLimit = fileConfiguration.getInt("url-rate-limit", 4);
+        List<String> allowedUrlSourceList = fileConfiguration.getStringList("allowed-url-source-list");
 
 
         DatabaseConnection databaseConnection = mySQL.getOrCreateDatabase(databaseName);
@@ -70,6 +82,11 @@ public final class ConfigData {
         this.databaseConnection = databaseConnection;
         this.languagesMap = languagesMap;
         this.cacheVitalityTime = cacheVitalityTime;
+        this.maximumRowAllowed = maximumRowAllowed;
+        this.maximumColumnAllowed = maximumColumnAllowed;
+        this.defaultPlayerLimit = defaultPlayerLimit;
+        this.urlRateLimit = urlRateLimit;
+        this.allowedUrlSourceList = allowedUrlSourceList;
     }
 
 
@@ -83,5 +100,25 @@ public final class ConfigData {
 
     public boolean isCreateTableCanPartition() {
         return createTableCanPartition;
+    }
+
+    public int getDefaultPlayerLimit() {
+        return defaultPlayerLimit;
+    }
+
+    public int getMaximumColumnAllowed() {
+        return maximumColumnAllowed;
+    }
+
+    public int getMaximumRowAllowed() {
+        return maximumRowAllowed;
+    }
+
+    public int getUrlRateLimit() {
+        return urlRateLimit;
+    }
+
+    public List<String> getAllowedUrlSourceList() {
+        return allowedUrlSourceList;
     }
 }

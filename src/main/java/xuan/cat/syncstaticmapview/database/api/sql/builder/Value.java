@@ -1,5 +1,7 @@
 package xuan.cat.syncstaticmapview.database.api.sql.builder;
 
+import xuan.cat.syncstaticmapview.database.code.sql.builder.CodeVariable;
+
 import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.Date;
@@ -28,7 +30,7 @@ public interface Value {
     }
 
 
-
+    Timestamp   NOW_TIMESTAMP   = new NOW_TIMESTAMP();
     class NOW_TIMESTAMP extends Timestamp {
         public NOW_TIMESTAMP() {
             super(NOW_DATE.getTime());
@@ -52,7 +54,7 @@ public interface Value {
     }
 
 
-
+    Time        NOW_TIME        = new NOW_TIME();
     class NOW_TIME extends Time {
         public NOW_TIME() {
             super(NOW_DATE.getTime());
@@ -76,4 +78,16 @@ public interface Value {
     }
 
 
+
+    static byte[] HEX(String value) {
+        return CodeVariable.HEX(value);
+    }
+
+
+    static String UNHEX(String value) {
+        return new String(new CodeVariable.UNHEX(value).getChars());
+    }
+    static String UNHEX(byte[] value) {
+        return new String(new CodeVariable.UNHEX(value).getChars());
+    }
 }

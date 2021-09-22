@@ -48,6 +48,10 @@ public abstract class CodeVariable implements Variable {
             }
         }
 
+        public char[] getChars() {
+            return chars;
+        }
+
         public StringBuilder part() {
             return new StringBuilder(chars.length + 9).append("UNHEX('").append(chars).append("')");
         }

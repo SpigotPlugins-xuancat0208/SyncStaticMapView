@@ -2,6 +2,10 @@
 # 重新命名成 config.yml 即可
 
 
+
+
+
+# 資料庫
 database:
   ip: "127.0.0.1"
   port: 3306
@@ -10,13 +14,44 @@ database:
   password: "!! 你的密碼 !!"
 
 
+
 # 快取能保留多少時間 (毫秒)
 cache-vitality-time: 60000
+
 
 
 # 創建資料表時允許加入分區支持
 #   如果資料庫是使用 MariaDB 可以啟用此選項
 create-table-can-partition: true
+
+
+
+# 單次上傳允許的最大行數量
+maximum-row-allowed: 8
+# 單次上傳允許的最大欄數量
+maximum-column-allowed: 8
+
+
+
+# 預設玩家能上傳最大的地圖數量
+#   如果裁切 2:2 那會是 4 個而不是 1 個
+default-player-limit: 400
+
+
+
+# 網址訪問速度限制 (秒)
+#   全部網址共享一個速率限制棄
+#   避免遭受到大量上傳請求的駭客攻擊
+#   未處理完畢卻關機, 會導致當前列隊全部消失
+url-rate-limit: 4
+
+
+
+# 允許的網址來源清單
+allowed-url-source-list:
+  - "https://i.imgur.com/"
+  - "https://i.pximg.net/"
+
 
 
 languages:
@@ -42,3 +77,10 @@ languages:
   redirect_list: "重導向清單:\n   優先級: 權限 => 地圖編號"
   parameter_not_aspect_ratio: "參數不是長寬比: "
   map_cannot_copy: "此地圖不可複製"
+  your_upload_has_reached_limit: "你的上傳數量已達到限制: "
+  url_not_allowed: "不允許使用此網址"
+  player_not online_use_uuid: "此玩家沒有在線上, 使用 UUID"
+  parameter_not_player_name_or_uuid: "參數不是 玩家名稱 或 UUID: "
+  set_successfully_now_limit: "設置完畢, 當前的上傳限制: "
+  now_limit: "上傳限制: "
+  exceeding_allowed_size: "超出允許的尺寸: "

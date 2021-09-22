@@ -2,6 +2,10 @@
 # 重新命名成 config.yml 即可
 
 
+
+
+
+# 资料库
 database:
   ip: "127.0.0.1"
   port: 3306
@@ -10,13 +14,44 @@ database:
   password: "!! 你的密码 !!"
 
 
+
 # 快取能保留多少时间 (毫秒)
 cache-vitality-time: 60000
+
 
 
 # 创建资料表时允许加入分区支持
 #   如果资料库是使用 MariaDB 可以启用此选项
 create-table-can-partition: true
+
+
+
+# 单次上传允许的最大行数量
+maximum-row-allowed: 8
+# 单次上传允许的最大栏数量
+maximum-column-allowed: 8
+
+
+
+# 预设玩家能上传最大的地图数量
+#   如果裁切 2:2 那会是 4 个而不是 1 个
+default-player-limit: 400
+
+
+
+# 网址访问速度限制 (秒)
+#   全部网址共享一个速率限制弃
+#   避免遭受到大量上传请求的骇客攻击
+#   未处理完毕却关机, 会导致当前列队全部消失
+url-rate-limit: 4
+
+
+
+# 允许的网址来源清单
+allowed-url-source-list:
+  - "https://i.imgur.com/"
+  - "https://i.pximg.net/"
+
 
 
 languages:
@@ -42,3 +77,10 @@ languages:
   redirect_list: "重导向清单:\n   优先级: 权限 => 地图编号"
   parameter_not_aspect_ratio: "参数不是长宽比: "
   map_cannot_copy: "此地图不可複製"
+  your_upload_has_reached_limit: "你的上传数量已达到限制: "
+  url_not_allowed: "不允许使用此网址"
+  player_not online_use_uuid: "此玩家没有在线上, 使用 UUID"
+  parameter_not_player_name_or_uuid: "参数不是 玩家名称 或 UUID: "
+  set_successfully_now_limit: "设置完毕, 当前的上传限制: "
+  now_limit: "上传限制: "
+  exceeding_allowed_size: "超出允许的尺寸: "

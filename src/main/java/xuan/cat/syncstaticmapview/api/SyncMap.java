@@ -98,7 +98,7 @@ public final class SyncMap {
 
 
     public static boolean setRedirect(int mapId, MapRedirect mapRedirect) throws SQLException {
-        checkAsync();
+//        checkAsync();
         checkMapId(mapId);
         if (existData(mapId)) {
             MapDatabase database = Index.getMapDatabase();
@@ -112,13 +112,13 @@ public final class SyncMap {
         }
     }
     public static List<MapRedirect> getRedirects(int mapId) throws SQLException {
-        checkAsync();
+//        checkAsync();
         checkMapId(mapId);
         return Index.getMapDatabase().getMapRedirects(mapId);
     }
 
     public static boolean deleteRedirects(int mapId) throws SQLException {
-        checkAsync();
+//        checkAsync();
         checkMapId(mapId);
         MapDatabase database = Index.getMapDatabase();
         boolean successfully = database.removeMapRedirect(mapId);
@@ -126,7 +126,7 @@ public final class SyncMap {
         return successfully;
     }
     public static boolean deleteRedirect(int mapId, String permission) throws SQLException {
-        checkAsync();
+//        checkAsync();
         checkMapId(mapId);
         MapDatabase database = Index.getMapDatabase();
         boolean successfully = database.removeMapRedirect(mapId, permission);
@@ -134,7 +134,7 @@ public final class SyncMap {
         return successfully;
     }
     public static boolean deleteRedirect(int mapId, int priority) throws SQLException {
-        checkAsync();
+//        checkAsync();
         checkMapId(mapId);
         MapDatabase database = Index.getMapDatabase();
         boolean successfully = database.removeMapRedirect(mapId, priority);

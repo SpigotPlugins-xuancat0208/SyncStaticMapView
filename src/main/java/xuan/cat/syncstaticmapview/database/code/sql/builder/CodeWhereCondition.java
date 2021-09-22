@@ -2,6 +2,7 @@ package xuan.cat.syncstaticmapview.database.code.sql.builder;
 
 import xuan.cat.syncstaticmapview.database.api.sql.builder.Field;
 import xuan.cat.syncstaticmapview.database.api.sql.builder.WhereJudge;
+import xuan.cat.syncstaticmapview.database.api.sql.builder.WhereOperator;
 import xuan.cat.syncstaticmapview.database.code.sql.CodeSQLPart;
 
 /**
@@ -9,9 +10,9 @@ import xuan.cat.syncstaticmapview.database.code.sql.CodeSQLPart;
  * 表示單個判斷式
  */
 public abstract class CodeWhereCondition<T> implements CodeSQLPart {
-
     public    final Field<T>    field;
     protected final WhereJudge  judge;
+
 
     protected CodeWhereCondition(Field<T> field, WhereJudge judge, boolean isClone) {
         if (isClone) {
@@ -23,6 +24,7 @@ public abstract class CodeWhereCondition<T> implements CodeSQLPart {
         }
     }
 
+
     public StringBuilder part() {
         if (judge == WhereJudge.IS_NOT_NULL || judge == WhereJudge.IS_NULL) {
             return new StringBuilder().append(CodeFunction.toField(field.name())).append(judge.part());
@@ -32,6 +34,7 @@ public abstract class CodeWhereCondition<T> implements CodeSQLPart {
             return new StringBuilder().append(CodeFunction.toField(field.name())).append(judge.part()).append(partValue());
         }
     }
+
 
     public abstract String partValue();
 
@@ -48,7 +51,6 @@ public abstract class CodeWhereCondition<T> implements CodeSQLPart {
         public Value(Field<T> field, WhereJudge judge) {
             this(field, judge, null);
         }
-
         public Value(Field<T> field, WhereJudge judge, T value) {
             this(field, judge, value, false);
         }
@@ -95,6 +97,40 @@ public abstract class CodeWhereCondition<T> implements CodeSQLPart {
 
         public Relatively<T> clone() {
             return new Relatively<>(field, judge, value, true);
+        }
+    }
+
+
+    /**
+     * 是運算符欄位
+     */
+    public static final class Operator<T extends Number> extends CodeWhereCondition<T> {
+        private final Field<T>      value;
+        private final WhereOperator operator;
+        private final T             calculate;
+
+        public Operator(Field<T> field, WhereJudge judge, Field<T> value, WhereOperator operator, T calculate) {
+            this(field, judge, value, operator, calculate, false);
+        }
+        protected Operator(Field<T> field, WhereJudge judge, Field<T> value, WhereOperator operator, T calculate, boolean isClone) {
+            super(field, judge, isClone);
+            if (isClone) {
+                this.value      = CodeFunction.tryClone(value);
+                this.operator   = CodeFunction.tryClone(operator);
+                this.calculate  = CodeFunction.tryClone(calculate);
+            } else {
+                this.value      = value;
+                this.operator   = operator;
+                this.calculate  = calculate;
+            }
+        }
+
+        public String partValue() {
+            return CodeFunction.toField(value.name()) + operator.part() + CodeFunction.toValue(value, calculate);
+        }
+
+        public Operator<T> clone() {
+            return new Operator<>(field, judge, value, operator, calculate, true);
         }
     }
 }

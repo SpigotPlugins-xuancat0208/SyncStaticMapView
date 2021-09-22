@@ -15,19 +15,20 @@ import java.util.function.Consumer;
  * 選擇資料
  */
 public final class CodeSelectData implements CodeSQLBuilder, SelectData {
-
     private final String                    from;
     private final InformationSchema         informationSchema;
     private final Map<Field, SelectReturn>  selects;
     private       boolean                   selectAll           = true;
     private       boolean                   selectDistinct      = false;
     private       CodeWhere                 where               = null;
+    private       CodeOrder                 order               = null;
     private       Integer                   limit               = null;
     private       Integer                   offset              = null;
     private       CodeSelectData            union               = null;
     private       CodeSelectData            unionAll            = null;
     private       boolean                   useCache            = false;
     private       boolean                   bufferResult        = false;
+
 
     public CodeSelectData(DatabaseTable table) {
         this.selects            = new HashMap<>();
@@ -46,6 +47,7 @@ public final class CodeSelectData implements CodeSQLBuilder, SelectData {
         this.selectAll          = CodeFunction.tryClone(selectData.selectAll);
         this.selectDistinct     = CodeFunction.tryClone(selectData.selectDistinct);
         this.where              = CodeFunction.tryClone(selectData.where);
+        this.order              = CodeFunction.tryClone(selectData.order);
         this.limit              = CodeFunction.tryClone(selectData.limit);
         this.offset             = CodeFunction.tryClone(selectData.offset);
         this.union              = CodeFunction.tryClone(selectData.union);
@@ -53,6 +55,7 @@ public final class CodeSelectData implements CodeSQLBuilder, SelectData {
         this.useCache           = CodeFunction.tryClone(selectData.useCache);
         this.bufferResult       = CodeFunction.tryClone(selectData.bufferResult);
     }
+
 
     public String asString() {
         StringBuilder builder = new StringBuilder();
@@ -90,6 +93,9 @@ public final class CodeSelectData implements CodeSQLBuilder, SelectData {
         if (where != null)
             builder.append(where.part());
 
+        if (order != null)
+            builder.append(order.part());
+
         if (limit != null) {
             builder.append(" LIMIT ");
             builder.append(limit);
@@ -117,10 +123,23 @@ public final class CodeSelectData implements CodeSQLBuilder, SelectData {
     }
 
 
+
+    public CodeSelectData selectDistinct(boolean selectDistinct) {
+        this.selectDistinct = selectDistinct;
+        return this;
+    }
+
     public <T> CodeSelectData select(Field<T> field) {
         return select(field, SelectReturn.NOT);
     }
-
+    public CodeSelectData select(SelectReturn dataReturn) {
+        if (dataReturn == SelectReturn.ALL) {
+            selectAll = true;
+            return this;
+        } else {
+            return select(null, dataReturn);
+        }
+    }
     public <T> CodeSelectData select(Field<T> field, SelectReturn dataReturn) {
         selectAll = false;
         selects.put(field, dataReturn);
@@ -158,9 +177,99 @@ public final class CodeSelectData implements CodeSQLBuilder, SelectData {
         this.limit = limit;
         return this;
     }
+    public CodeSelectData offset(Integer offset) {
+        this.offset = offset;
+        return this;
+    }
+
+
+    public CodeSelectData order(Order order) {
+        this.order = (CodeOrder) order;
+        return this;
+    }
+    public CodeSelectData order(Consumer<Order> consumer) {
+        if (this.order == null)
+            this.order = new CodeOrder();
+        consumer.accept(this.order);
+        return this;
+    }
+
+
+    public CodeSelectData union(SelectData union) {
+        this.union = (CodeSelectData) union;
+        return this;
+    }
+
+    public CodeSelectData unionAll(SelectData unionAll) {
+        this.unionAll = (CodeSelectData) unionAll;
+        return this;
+    }
+
+    public CodeSelectData useCache(boolean useCache) {
+        this.useCache = useCache;
+        return this;
+    }
+
+    public CodeSelectData bufferResult(boolean bufferResult) {
+        this.bufferResult = bufferResult;
+        return this;
+    }
+
+
+    /*
+    public void selectAll(boolean selectAll) {
+        this.selectAll = selectAll;
+    }
+    public boolean selectAll() {
+        return selectAll;
+    }
+     */
+
+    public boolean selectDistinct() {
+        return selectDistinct;
+    }
+
+    public Integer limit() {
+        return limit;
+    }
+
+    public Integer offset() {
+        return offset;
+    }
+
+    public Map<Field, SelectReturn> selects() {
+        return selects;
+    }
+
+    public CodeOrder order() {
+        return order;
+    }
+
+    public String from() {
+        return from;
+    }
+
+    public InformationSchema informationSchema() {
+        return informationSchema;
+    }
 
     public CodeWhere where() {
         return where;
     }
 
+    public CodeSelectData union() {
+        return union;
+    }
+
+    public CodeSelectData unionAll() {
+        return unionAll;
+    }
+
+    public boolean bufferResult() {
+        return bufferResult;
+    }
+
+    public boolean useCache() {
+        return useCache;
+    }
 }

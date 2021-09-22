@@ -8,7 +8,6 @@ import xuan.cat.syncstaticmapview.database.code.sql.CodeSQLBuilder;
  * 創建數據庫
  */
 public final class CodeCreateDatabase implements CodeSQLBuilder, CreateDatabase {
-
     private final String    name;                       // 數據庫名稱
     private       Collate   collate     = Collate.NOT;  // 數據庫編碼類型
 

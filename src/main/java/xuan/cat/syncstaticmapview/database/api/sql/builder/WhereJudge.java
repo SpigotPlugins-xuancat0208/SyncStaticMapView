@@ -7,8 +7,28 @@ public enum WhereJudge {
 
     /** 等於 */
     EQUAL       ("="),
+    /** 大於 */
+    EXCEED      (">"),
     /** 小於 */
     LESS        ("<"),
+    /** 等於或大於 */
+    ABOVE       (">="),
+    /** 等於或小於 */
+    UNDER       ("<="),
+    /** 不等於 */
+    CANNOT      ("!="),
+    /** 相似 */
+    LIKE        ("LIKE"),
+    /** 不相似 */
+    NOT_LIKE    ("NOT LIKE"),
+    /** 正則表達式 */
+    REGEXP      ("REGEXP"),
+    /** 不等於正則表達式 */
+    NOT_REGEXP  ("NOT REGEXP"),
+    /** 有其一符合 */
+    IN          ("IN"),
+    /** 全部都不符合 */
+    NOT_IN      ("NOT IN"),
     /** 空值 */
     IS_NULL     ("IS NULL"),
     /** 非空值 */

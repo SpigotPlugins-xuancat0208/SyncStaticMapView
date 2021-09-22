@@ -41,10 +41,15 @@ public final class MapServer {
     /** 排隊顯示的地圖編號 */
     private final Map<Player, Set<Integer>> queueShowMapId = new ConcurrentHashMap<>();
     private volatile boolean asyncTickRunning = false;
+    private volatile boolean asyncUrlTickRunning = false;
     /** 上一次請求更新 */
     private Map<Integer, Date> markUpdatesLast = new HashMap<>();
     /** 排隊全局更新 */
     private final Set<Integer> queueSyncUpdate = ConcurrentHashMap.newKeySet();
+    /** 分散處理避免過量訪問網址 **/
+    private final List<Runnable> queueSpeedLimitURL = new ArrayList<>();
+    /** 等待網址處裡的延遲時間 */
+    private int delaySpeedLimitURL = 0;
 
 
     public MapServer(Plugin plugin, ConfigData configData, MapDatabase mapDatabase, BranchMapConversion branchMapConversion, BranchMapColor branchMapColor, BranchMinecraft branchMinecraft, BranchPacket branchPacket) {
@@ -58,6 +63,7 @@ public final class MapServer {
         BukkitScheduler scheduler = Bukkit.getScheduler();
         bukkitTasks.add(scheduler.runTaskTimer(plugin, this::syncTick, 0, 10));
         bukkitTasks.add(scheduler.runTaskTimerAsynchronously(plugin, this::asyncTick, 0, 10));
+        bukkitTasks.add(scheduler.runTaskTimerAsynchronously(plugin, this::asyncUrlTick, 0, 20));
     }
 
 
@@ -139,6 +145,42 @@ public final class MapServer {
         }
 
         asyncTickRunning = false;
+    }
+
+
+    private void asyncUrlTick() {
+        if (asyncUrlTickRunning)
+            return;
+        asyncUrlTickRunning = true;
+
+        try {
+            if (delaySpeedLimitURL <= 0) {
+                Runnable runnable = null;
+                synchronized (queueSpeedLimitURL) {
+                    if (queueSpeedLimitURL.size() > 0) {
+                        runnable = queueSpeedLimitURL.remove(0);
+                    }
+                }
+                if (runnable != null) {
+                    delaySpeedLimitURL = configData.getUrlRateLimit();
+                    runnable.run();
+                }
+            } else {
+                delaySpeedLimitURL--;
+            }
+
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
+
+        asyncUrlTickRunning = false;
+    }
+
+
+    public void processURL(Runnable runnable) {
+        synchronized (queueSpeedLimitURL) {
+            queueSpeedLimitURL.add(runnable);
+        }
     }
 
 

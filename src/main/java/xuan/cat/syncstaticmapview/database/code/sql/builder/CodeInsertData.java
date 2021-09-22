@@ -12,7 +12,6 @@ import java.util.*;
  * 插入資料
  */
 public final class CodeInsertData implements CodeSQLBuilder, InsertData {
-
     private final Map<Field, List<Object>>  values;            // 欄位對應值清單
     private final Map<Field, Change>        updates;           // 欄位對應值清單
     private final String                    name;
@@ -93,14 +92,14 @@ public final class CodeInsertData implements CodeSQLBuilder, InsertData {
                         merge.append('=');
                         merge.append(CodeFunction.toValue(field, change.value));
                         break;
-                    case ADDITION:
+                    case INCREASE:
                         merge.append(CodeFunction.toField(field.name()));
                         merge.append('=');
                         merge.append(CodeFunction.toField(field.name()));
                         merge.append('+');
                         merge.append(CodeFunction.toValue(field, change.value));
                         break;
-                    case SUBTRACTION:
+                    case SUBTRACT:
                         merge.append(CodeFunction.toField(field.name()));
                         merge.append('=');
                         merge.append(CodeFunction.toField(field.name()));
@@ -129,13 +128,29 @@ public final class CodeInsertData implements CodeSQLBuilder, InsertData {
     public <T> CodeInsertData updates(Field<T> field, T value) {
         return updates(field, value, UpdateAlgorithm.EQUAL);
     }
-
+    public <T extends Number> CodeInsertData updatesIncrease(Field<T> field, T value) {
+        return updates(field, value, UpdateAlgorithm.INCREASE);
+    }
+    public <T extends Number> CodeInsertData updatesSubtraction(Field<T> field, T value) {
+        return updates(field, value, UpdateAlgorithm.SUBTRACT);
+    }
     public <T> CodeInsertData updates(Field<T> field, T value, UpdateAlgorithm algorithm) {
         insert(field, value);
         updates.put(field, new Change<>(field, value, algorithm));
         return this;
     }
 
+    public CodeInsertData lowPriority(boolean lowPriority) {
+        this.lowPriority = lowPriority;
+        return this;
+    }
+
+
+
+
+    public boolean lowPriority() {
+        return lowPriority;
+    }
 
     public String name() {
         return name;

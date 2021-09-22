@@ -30,4 +30,9 @@ public interface MySQL {
      */
     DatabaseConnection createDatabase(String database) throws SQLException;
 
+    /**
+     * 刪除資料庫
+     * @param database 資料庫名稱
+     */
+    void deleteDatabase(String database) throws SQLException;
 }

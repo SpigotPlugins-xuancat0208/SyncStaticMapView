@@ -10,11 +10,11 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public final class CodeMySQL implements MySQL {
-
     private final   String      ip;
     private final   int         port;
     private final   String      user;
     private final   String      password;
+
 
     /**
      * 資料庫
@@ -64,6 +64,14 @@ public final class CodeMySQL implements MySQL {
 
         return getDatabase(database);
     }
+
+
+    public void deleteDatabase(String database) throws SQLException {
+        Connection  connection  = DriverManager.getConnection(getURL(), user, password);
+        createSQL(connection).UC("DROP DATABASE " + CodeFunction.toField(database) + ";");
+        connection.close();
+    }
+
 
 
     private CodeSQL createSQL(Connection connection) throws SQLException {

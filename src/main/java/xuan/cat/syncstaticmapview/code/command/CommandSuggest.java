@@ -1,5 +1,6 @@
 package xuan.cat.syncstaticmapview.code.command;
 
+import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
@@ -34,6 +35,9 @@ public final class CommandSuggest implements TabCompleter {
             if (sender.hasPermission("command.mapview.*") || sender.hasPermission("command.mapview.redirect.*") || sender.hasPermission("command.mapview.redirect.list") || sender.hasPermission("command.mapview.redirect.set") || sender.hasPermission("command.mapview.redirect.delete") || sender.hasPermission("command.mapview.redirect.delete_all")) {
                 list.add("redirect");
             }
+            if (sender.hasPermission("command.mapview.*") || sender.hasPermission("command.mapview.limit.*") || sender.hasPermission("command.mapview.limit.set") || sender.hasPermission("command.mapview.limit.increase") || sender.hasPermission("command.mapview.limit.subtract")) {
+                list.add("limit");
+            }
         } else if (parameters.length == 2) {
             switch (parameters[0]) {
                 case "create":
@@ -52,6 +56,20 @@ public final class CommandSuggest implements TabCompleter {
                     break;
                 case "redirect":
                     list.add("1");
+                    break;
+                case "limit":
+                    if (sender.hasPermission("command.mapview.*") || sender.hasPermission("command.mapview.limit.*") || sender.hasPermission("command.mapview.limit.set")) {
+                        list.add("set");
+                    }
+                    if (sender.hasPermission("command.mapview.*") || sender.hasPermission("command.mapview.limit.*") || sender.hasPermission("command.mapview.limit.increase")) {
+                        list.add("increase");
+                    }
+                    if (sender.hasPermission("command.mapview.*") || sender.hasPermission("command.mapview.limit.*") || sender.hasPermission("command.mapview.limit.subtract")) {
+                        list.add("subtract");
+                    }
+                    if (sender.hasPermission("command.mapview.*") || sender.hasPermission("command.mapview.limit.*") || sender.hasPermission("command.mapview.limit.check_own") || sender.hasPermission("command.mapview.limit.check_all")) {
+                        list.add("check");
+                    }
                     break;
             }
         } else if (parameters.length == 3) {
@@ -85,6 +103,45 @@ public final class CommandSuggest implements TabCompleter {
                     }
                     if (sender.hasPermission("command.mapview.*") || sender.hasPermission("command.mapview.redirect.*") || sender.hasPermission("command.mapview.redirect.delete_all")) {
                         list.add("delete_all");
+                    }
+                    break;
+                case "limit":
+                    switch (parameters[1]) {
+                        case "set":
+                            if (sender.hasPermission("command.mapview.*") || sender.hasPermission("command.mapview.limit.*") || sender.hasPermission("command.mapview.limit.set")) {
+                                Bukkit.getOnlinePlayers().forEach(player -> {
+                                    list.add(player.getName());
+                                    list.add(player.getUniqueId().toString());
+                                });
+                            }
+                            break;
+                        case "increase":
+                            if (sender.hasPermission("command.mapview.*") || sender.hasPermission("command.mapview.limit.*") || sender.hasPermission("command.mapview.limit.increase")) {
+                                Bukkit.getOnlinePlayers().forEach(player -> {
+                                    list.add(player.getName());
+                                    list.add(player.getUniqueId().toString());
+                                });
+                            }
+                            break;
+                        case "subtract":
+                            if (sender.hasPermission("command.mapview.*") || sender.hasPermission("command.mapview.limit.*") || sender.hasPermission("command.mapview.limit.subtract")) {
+                                Bukkit.getOnlinePlayers().forEach(player -> {
+                                    list.add(player.getName());
+                                    list.add(player.getUniqueId().toString());
+                                });
+                            }
+                            break;
+                        case "check":
+                            if (sender.hasPermission("command.mapview.*") || sender.hasPermission("command.mapview.limit.*") || sender.hasPermission("command.mapview.limit.check_own")) {
+                                list.add("");
+                            }
+                            if (sender.hasPermission("command.mapview.*") || sender.hasPermission("command.mapview.limit.*") || sender.hasPermission("command.mapview.limit.check_all")) {
+                                Bukkit.getOnlinePlayers().forEach(player -> {
+                                    list.add(player.getName());
+                                    list.add(player.getUniqueId().toString());
+                                });
+                            }
+                            break;
                     }
                     break;
             }
@@ -123,6 +180,19 @@ public final class CommandSuggest implements TabCompleter {
                             break;
                         case "delete_all":
                             list.add("");
+                            break;
+                    }
+                    break;
+                case "limit":
+                    switch (parameters[1]) {
+                        case "set":
+                            list.add("1");
+                            break;
+                        case "increase":
+                            list.add("1");
+                            break;
+                        case "subtract":
+                            list.add("1");
                             break;
                     }
                     break;

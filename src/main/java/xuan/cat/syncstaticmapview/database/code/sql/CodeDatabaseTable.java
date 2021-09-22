@@ -11,8 +11,8 @@ import xuan.cat.syncstaticmapview.database.code.sql.builder.*;
 import java.sql.SQLException;
 
 public final class CodeDatabaseTable implements DatabaseTable {
-
     private final String name;
+
 
     public CodeDatabaseTable(String name) {
         this.name   = name;
@@ -31,9 +31,42 @@ public final class CodeDatabaseTable implements DatabaseTable {
     }
 
 
+    public long lastInsertIDByLong(DatabaseConnection database) throws SQLException {
+        SQL             sql         = database.createSQL();
+        Field<Long>     insert      = new CodeField<>(FieldStyle.BIGINT, "AUTO_INCREMENT");
+        if (sql.Q(selectData(InformationSchema.TABLES).select(insert).where(w -> w.and(new CodeField<>(FieldStyle.TEXT, "TABLE_SCHEMA"), database.getName()).and(new CodeField<>(FieldStyle.TEXT, "TABLE_NAME"), getName())).limit(1))) {
+            sql.N();
+            return sql.getThenClose(insert);
+        } else {
+            sql.C();
+            return 0;
+        }
+    }
+    public int lastInsertIDByInt(DatabaseConnection database) throws SQLException {
+        SQL             sql         = database.createSQL();
+        Field<Integer>  insert      = new CodeField<>(FieldStyle.INT, "AUTO_INCREMENT");
+        if (sql.Q(selectData(InformationSchema.TABLES).select(insert).where(w -> w.and(new CodeField<>(FieldStyle.TEXT, "TABLE_SCHEMA"), database.getName()).and(new CodeField<>(FieldStyle.TEXT, "TABLE_NAME"), getName())).limit(1))) {
+            sql.N();
+            return sql.getThenClose(insert);
+        } else {
+            sql.C();
+            return 0;
+        }
+    }
+
+
+    public CodeAlterTable alterTable() {
+        return new CodeAlterTable(this);
+    }
+
     public CodeCreateTable createTable() {
         return new CodeCreateTable(this);
     }
+
+    public CodeDeleteTable deleteTable() {
+        return new CodeDeleteTable(this);
+    }
+
 
 
     public CodeDeleteData deleteData() {

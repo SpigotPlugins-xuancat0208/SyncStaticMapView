@@ -12,7 +12,13 @@ public interface InsertData extends SQLBuilder {
 
     <T> InsertData updates(Field<T> field, T value);
 
+    <T extends Number> InsertData updatesIncrease(Field<T> field, T value);
+    <T extends Number> InsertData updatesSubtraction(Field<T> field, T value);
+
     <T> InsertData updates(Field<T> field, T value, UpdateAlgorithm algorithm);
 
+    InsertData lowPriority(boolean lowPriority);
+
+    boolean lowPriority();
     String name();
 }

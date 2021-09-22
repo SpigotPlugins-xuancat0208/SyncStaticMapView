@@ -4,9 +4,12 @@ import xuan.cat.syncstaticmapview.database.api.sql.DatabaseTable;
 import xuan.cat.syncstaticmapview.database.api.sql.MySQL;
 import xuan.cat.syncstaticmapview.database.api.sql.builder.Field;
 import xuan.cat.syncstaticmapview.database.api.sql.builder.FieldStyle;
+import xuan.cat.syncstaticmapview.database.api.sql.builder.InformationSchema;
+import xuan.cat.syncstaticmapview.database.api.sql.builder.SelectData;
 import xuan.cat.syncstaticmapview.database.code.sql.CodeDatabaseTable;
 import xuan.cat.syncstaticmapview.database.code.sql.CodeMySQL;
 import xuan.cat.syncstaticmapview.database.code.sql.builder.CodeField;
+import xuan.cat.syncstaticmapview.database.code.sql.builder.CodeSelectData;
 
 /**
  * 資料庫的一切操作
@@ -25,6 +28,13 @@ public final class Database {
      */
     public static MySQL createMySQL(String ip, int port, String user, String password) {
         return new CodeMySQL(ip, port, user, password);
+    }
+
+    /**
+     * @return 選擇訊息架構資料
+     */
+    public static SelectData selectInformationSchema(InformationSchema informationSchema){
+        return new CodeSelectData(informationSchema);
     }
 
     /**

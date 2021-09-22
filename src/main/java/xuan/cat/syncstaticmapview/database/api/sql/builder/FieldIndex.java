@@ -10,6 +10,6 @@ public interface FieldIndex {
     FieldIndex type(IndexType type);
 
     String name();
-
+    IndexType type();
     String field();
 }

@@ -13,7 +13,6 @@ import java.util.Set;
  *  創建資料表
  */
 public final class CodeCreateTable implements CodeSQLBuilder, CreateTable {
-
     private final String                name;                               // 名稱
     private final Set<CodeField>        tableList;                          // 欄位
     private final Set<CodeFieldIndex>   indexList;                          // 索引
@@ -22,7 +21,7 @@ public final class CodeCreateTable implements CodeSQLBuilder, CreateTable {
     private       Collate               collate             = Collate.NOT;
     private       String                comment             = null;         // 註解
     private       Long                  autoIncrement       = null;         // 資料表引擎
-    private       TablePartition        partition           = null;         // 分區
+    private       TablePartition        partition           = null;     // 分區
 
 
     public CodeCreateTable(DatabaseTable table) {
@@ -96,6 +95,11 @@ public final class CodeCreateTable implements CodeSQLBuilder, CreateTable {
     }
 
 
+    public CodeCreateTable comment(String comment) {
+        this.comment = comment;
+        return this;
+    }
+
     public CodeCreateTable collate(Collate collate) {
         this.collate = collate;
         return this;
@@ -116,6 +120,20 @@ public final class CodeCreateTable implements CodeSQLBuilder, CreateTable {
         return this;
     }
 
+    public CodeCreateTable foreign(ForeignKey foreignKey) {
+        this.foreignList.add((CodeForeignKey) foreignKey);
+        return this;
+    }
+
+    public CodeCreateTable autoIncrement(Integer autoIncrement) {
+        this.autoIncrement = autoIncrement != null ? (long) autoIncrement : null;
+        return this;
+    }
+    public CodeCreateTable autoIncrement(Long autoIncrement) {
+        this.autoIncrement = autoIncrement;
+        return this;
+    }
+
     public <T> CodeCreateTable partition(TablePartition<T> partition) {
         this.partition = partition;
         return this;
@@ -125,8 +143,16 @@ public final class CodeCreateTable implements CodeSQLBuilder, CreateTable {
         return name;
     }
 
+    public String comment() {
+        return comment;
+    }
+
     public Collate collate() {
         return collate;
+    }
+
+    public DatabaseEngine engine() {
+        return engine;
     }
 
     public Set<Field> field() {

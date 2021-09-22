@@ -3,6 +3,7 @@ package xuan.cat.syncstaticmapview.database.code.sql.builder;
 import xuan.cat.syncstaticmapview.database.api.sql.builder.Field;
 import xuan.cat.syncstaticmapview.database.api.sql.builder.WhereBrackets;
 import xuan.cat.syncstaticmapview.database.api.sql.builder.WhereJudge;
+import xuan.cat.syncstaticmapview.database.api.sql.builder.WhereOperator;
 
 import java.util.function.Consumer;
 
@@ -48,6 +49,9 @@ public final class CodeWhereBrackets extends CodeWhere implements WhereBrackets 
     public <T> CodeWhereBrackets and(Field<T> field , WhereJudge judge, Field<T> value) {
         return (CodeWhereBrackets) super.and(field, judge, value);
     }
+    public <T extends Number> CodeWhereBrackets and(Field<T> field, WhereJudge judge, Field<T> value, WhereOperator operator, T calculate) {
+        return (CodeWhereBrackets) super.and(field, judge, value, operator, calculate);
+    }
     public CodeWhereBrackets and(WhereBrackets whereBrackets) {
         return (CodeWhereBrackets) super.and(whereBrackets);
     }
@@ -63,13 +67,20 @@ public final class CodeWhereBrackets extends CodeWhere implements WhereBrackets 
     public <T> CodeWhereBrackets or(Field<T> field , WhereJudge judge) {
         return (CodeWhereBrackets) super.or(field, judge);
     }
-
+    public <T> CodeWhereBrackets or(Field<T> field, T value) {
+        return or(field, WhereJudge.EQUAL, value);
+    }
     public <T> CodeWhereBrackets or(Field<T> field , WhereJudge judge, Field<T> value) {
         return (CodeWhereBrackets) super.or(field, judge, value);
     }
-
+    public <T> CodeWhereBrackets or(Field<T> field, Field<T> value) {
+        return or(field, WhereJudge.EQUAL, value);
+    }
     public <T> CodeWhereBrackets or(Field<T> field , WhereJudge judge, T value) {
         return (CodeWhereBrackets) super.or(field, judge, value);
+    }
+    public <T extends Number> CodeWhereBrackets or(Field<T> field, WhereJudge judge, Field<T> value, WhereOperator operator, T calculate) {
+        return (CodeWhereBrackets) super.or(field, judge, value, operator, calculate);
     }
     public CodeWhereBrackets or(WhereBrackets whereBrackets) {
         return (CodeWhereBrackets) super.or(whereBrackets);

@@ -9,7 +9,6 @@ import xuan.cat.syncstaticmapview.database.code.sql.CodeSQLPart;
  * 索引
  */
 public final class CodeFieldIndex implements CodeSQLPart, FieldIndex {
-
     private final String        name;
     private       IndexType     type    = IndexType.UNIQUE;
     private       String        field   = null;
@@ -56,6 +55,10 @@ public final class CodeFieldIndex implements CodeSQLPart, FieldIndex {
 
     public String name() {
         return name != null ? name : field;
+    }
+
+    public IndexType type() {
+        return type;
     }
 
     public String field() {

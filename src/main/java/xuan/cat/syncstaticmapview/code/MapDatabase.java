@@ -47,6 +47,14 @@ public final class MapDatabase {
             Field<Long>     field_MapID         = Database.atField(FieldStyle.INT_UNSIGNED, "MapID");
             Field<Date>     field_TimeMark      = Database.atField(FieldStyle.DATETIME, "TimeMark");
         }
+
+        DatabaseTable table_MapStatistics = Database.atTable("MAP_STATISTICS");
+        interface MAP_STATISTICS {
+            Field<UUID>     field_PlayerUUID    = Database.atField(FieldStyle.UUID, "PlayerUUID");
+            Field<Long>     field_Used          = Database.atField(FieldStyle.INT_UNSIGNED, "Used");
+            Field<Long>     field_Capacity      = Database.atField(FieldStyle.INT_UNSIGNED, "Capacity");
+
+        }
     }
 
 
@@ -85,6 +93,17 @@ public final class MapDatabase {
                     .field(TABLE.MAP_UPDATE.field_MapID)
                     .field(TABLE.MAP_UPDATE.field_TimeMark)
                     .index(TABLE.MAP_UPDATE.field_MapID.index().type(IndexType.UNIQUE))
+                    .callSQL(configData.getDatabaseConnection())
+                    .UC();
+        }
+
+        // MAP_STATISTICS 資料表
+        if (!TABLE.table_MapStatistics.existTable(configData.getDatabaseConnection())) {
+            TABLE.table_MapStatistics.createTable().collate(Collate.utf8mb4_bin).engine(DatabaseEngine.MyISAM)
+                    .field(TABLE.MAP_STATISTICS.field_PlayerUUID)
+                    .field(TABLE.MAP_STATISTICS.field_Used)
+                    .field(TABLE.MAP_STATISTICS.field_Capacity)
+                    .index(TABLE.MAP_STATISTICS.field_PlayerUUID.index().type(IndexType.UNIQUE))
                     .callSQL(configData.getDatabaseConnection())
                     .UC();
         }
@@ -165,14 +184,16 @@ public final class MapDatabase {
     }
 
     public boolean existMapRedirects(int mapId, String permission) throws SQLException {
-        SQL sql = TABLE.table_MapRedirect.deleteData()
+        SQL sql = TABLE.table_MapRedirect.selectData()
+                .select(TABLE.MAP_REDIRECT.field_Priority)
                 .where(w -> w.and(TABLE.MAP_REDIRECT.field_MapID, (long) mapId).and(TABLE.MAP_REDIRECT.field_Permission, permission))
                 .limit(1)
                 .callSQL(configData.getDatabaseConnection());
         return sql.QC();
     }
     public boolean existMapRedirects(int mapId, int priority) throws SQLException {
-        SQL sql = TABLE.table_MapRedirect.deleteData()
+        SQL sql = TABLE.table_MapRedirect.selectData()
+                .select(TABLE.MAP_REDIRECT.field_Priority)
                 .where(w -> w.and(TABLE.MAP_REDIRECT.field_MapID, (long) mapId).and(TABLE.MAP_REDIRECT.field_Priority, priority))
                 .limit(1)
                 .callSQL(configData.getDatabaseConnection());
@@ -241,6 +262,67 @@ public final class MapDatabase {
         }
         sql.C();
         return map;
+    }
+
+
+    public boolean createStatistics(UUID playerUUID, int capacity, int used) throws SQLException {
+        SQL sql = TABLE.table_MapStatistics.insertData()
+                .insert(TABLE.MAP_STATISTICS.field_PlayerUUID,  playerUUID)
+                .insert(TABLE.MAP_STATISTICS.field_Capacity,    (long) capacity)
+                .insert(TABLE.MAP_STATISTICS.field_Used,        (long) used)
+                .callSQL(configData.getDatabaseConnection());
+        return sql.UC() > 0;
+    }
+    public boolean setStatisticsCapacity(UUID playerUUID, int capacity) throws SQLException {
+        SQL sql = TABLE.table_MapStatistics.updateData()
+                .updates(TABLE.MAP_STATISTICS.field_Capacity, (long) capacity)
+                .where(w -> w.and(TABLE.MAP_STATISTICS.field_PlayerUUID, playerUUID))
+                .callSQL(configData.getDatabaseConnection());
+        return sql.UC() > 0;
+    }
+    public boolean increaseStatisticsCapacity(UUID playerUUID, int capacity) throws SQLException {
+        SQL sql = TABLE.table_MapStatistics.updateData()
+                .updatesIncrease(TABLE.MAP_STATISTICS.field_Capacity, (long) capacity)
+                .where(w -> w.and(TABLE.MAP_STATISTICS.field_PlayerUUID, playerUUID))
+                .callSQL(configData.getDatabaseConnection());
+        return sql.UC() > 0;
+    }
+    public boolean subtractStatisticsCapacity(UUID playerUUID, int capacity) throws SQLException {
+        SQL sql = TABLE.table_MapStatistics.updateData()
+                .updatesSubtract(TABLE.MAP_STATISTICS.field_Capacity, (long) capacity)
+                .where(w -> w.and(TABLE.MAP_STATISTICS.field_PlayerUUID, playerUUID))
+                .callSQL(configData.getDatabaseConnection());
+        return sql.UC() > 0;
+    }
+    public int[] getStatistics(UUID playerUUID) throws SQLException {
+        SQL sql = TABLE.table_MapStatistics.selectData()
+                .select(TABLE.MAP_STATISTICS.field_Used)
+                .select(TABLE.MAP_STATISTICS.field_Capacity)
+                .where(w -> w.and(TABLE.MAP_STATISTICS.field_PlayerUUID, playerUUID))
+                .limit(1)
+                .callSQL(configData.getDatabaseConnection());
+        if (sql.Q()) {
+            sql.N();
+            return new int[] {sql.get(TABLE.MAP_STATISTICS.field_Used).intValue(), sql.getThenClose(TABLE.MAP_STATISTICS.field_Capacity).intValue()};
+        } else {
+            sql.C();
+            return null;
+        }
+    }
+    public boolean consumeStatisticsUsed(UUID playerUUID, int consume) throws SQLException {
+        SQL sql = TABLE.table_MapStatistics.updateData()
+                .updatesIncrease(TABLE.MAP_STATISTICS.field_Used, (long) consume)
+                .where(w -> w.and(TABLE.MAP_STATISTICS.field_PlayerUUID, playerUUID).and(TABLE.MAP_STATISTICS.field_Capacity, WhereJudge.ABOVE, TABLE.MAP_STATISTICS.field_Used, WhereOperator.INCREASE, (long) consume))
+                .callSQL(configData.getDatabaseConnection());
+        return sql.UC() > 0;
+    }
+    public boolean existStatistics(UUID playerUUID) throws SQLException {
+        SQL sql = TABLE.table_MapStatistics.selectData()
+                .select(TABLE.MAP_STATISTICS.field_Used)
+                .where(w -> w.and(TABLE.MAP_STATISTICS.field_PlayerUUID, playerUUID))
+                .limit(1)
+                .callSQL(configData.getDatabaseConnection());
+        return sql.QC();
     }
 
 

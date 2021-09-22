@@ -14,7 +14,6 @@ import java.util.function.Consumer;
  * 判斷式
  */
 public class CodeWhere implements CodeSQLPart, Where {
-
     private final Map<Object, WhereMutual> conditions;
 
 
@@ -24,8 +23,6 @@ public class CodeWhere implements CodeSQLPart, Where {
     protected CodeWhere(CodeWhere where) {
         this.conditions = CodeFunction.tryClone(where.conditions);
     }
-
-
 
 
 
@@ -62,7 +59,6 @@ public class CodeWhere implements CodeSQLPart, Where {
 
 
 
-
     private void put(Object o, WhereMutual mutual) {
         if (conditions.size() <= 0) {
             // 第一個不用加入 AND 或 OR
@@ -80,7 +76,6 @@ public class CodeWhere implements CodeSQLPart, Where {
 
 
 
-
     public <T> CodeWhere and(Field<T> field, WhereJudge judge) {
         return and(new CodeWhereCondition.Value<>(field, judge));
     }
@@ -95,6 +90,9 @@ public class CodeWhere implements CodeSQLPart, Where {
     }
     public <T> CodeWhere and(Field<T> field, WhereJudge judge, Field<T> value) {
         return and(new CodeWhereCondition.Relatively<>(field, judge, value));
+    }
+    public <T extends Number> CodeWhere and(Field<T> field, WhereJudge judge, Field<T> value, WhereOperator operator, T calculate) {
+        return and(new CodeWhereCondition.Operator<>(field, judge, value, operator, calculate));
     }
     public <T> CodeWhere and(CodeWhereCondition<T> condition) {
         put(condition, WhereMutual.AND);
@@ -117,13 +115,20 @@ public class CodeWhere implements CodeSQLPart, Where {
     public <T> CodeWhere or(Field<T> field, WhereJudge judge) {
         return or(new CodeWhereCondition.Value<>(field, judge));
     }
-
+    public <T> CodeWhere or(Field<T> field, T value) {
+        return or(field, WhereJudge.EQUAL, value);
+    }
     public <T> CodeWhere or(Field<T> field, WhereJudge judge, T value) {
         return or(new CodeWhereCondition.Value<>(field, judge, value));
     }
-
+    public <T> CodeWhere or(Field<T> field, Field<T> value) {
+        return or(field, WhereJudge.EQUAL, value);
+    }
     public <T> CodeWhere or(Field<T> field, WhereJudge judge, Field<T> value) {
         return or(new CodeWhereCondition.Relatively<>(field, judge, value));
+    }
+    public <T extends Number> CodeWhere or(Field<T> field, WhereJudge judge, Field<T> value, WhereOperator operator, T calculate) {
+        return or(new CodeWhereCondition.Operator<>(field, judge, value, operator, calculate));
     }
     public <T> CodeWhere or(CodeWhereCondition<T> condition) {
         put(condition, WhereMutual.OR);

@@ -222,6 +222,17 @@ public interface CodeFunction {
         // 去掉 - 並返回
         return new StringBuilder().append(s,0,8).append(s,9,13).append(s,14,18).append(s,19,23).append(s, 24, 36);
     }
+    /**
+     * 解壓縮UUID
+     * 交由SQL命令生成器使用即可,正常不用使用到此API
+     * @param uuid UUID
+     * @return 解壓縮後的UUID
+     */
+    private static UUID unzipUUID(String uuid) {
+        return UUID.fromString(uuid.substring(0, 8) + '-' + uuid.substring(8, 12) + '-' + uuid.substring(12, 16) + '-' + uuid.substring(16, 20) + '-' + uuid.substring(20, 32));
+    }
+
+
 
 
     /**
