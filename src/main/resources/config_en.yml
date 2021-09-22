@@ -44,6 +44,8 @@ default-player-limit: 400
 #   Avoid hacker attacks from a large number of upload requests
 #   Shutting down before processing is completed will cause all current queues to disappear
 url-rate-limit: 4
+# Instruction to create a map rate limit (millisecond)
+create-rate-limit: 2000
 
 
 
@@ -83,3 +85,4 @@ languages:
   set_successfully_now_limit: "Set up, the current upload limit: "
   now_limit: "Upload limit: "
   exceeding_allowed_size: "Exceeding the allowed size: "
+  creation_speed_too_fast: "The creation speed is too fast, wait a minute"

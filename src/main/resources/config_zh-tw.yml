@@ -44,6 +44,8 @@ default-player-limit: 400
 #   避免遭受到大量上傳請求的駭客攻擊
 #   未處理完畢卻關機, 會導致當前列隊全部消失
 url-rate-limit: 4
+# 指令創建地圖速率限制 (毫秒)
+create-rate-limit: 2000
 
 
 
@@ -83,3 +85,4 @@ languages:
   set_successfully_now_limit: "設置完畢, 當前的上傳限制: "
   now_limit: "上傳限制: "
   exceeding_allowed_size: "超出允許的尺寸: "
+  creation_speed_too_fast: "創建的速度太快了, 等一下"

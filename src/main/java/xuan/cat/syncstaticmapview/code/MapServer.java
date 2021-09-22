@@ -50,6 +50,8 @@ public final class MapServer {
     private final List<Runnable> queueSpeedLimitURL = new ArrayList<>();
     /** 等待網址處裡的延遲時間 */
     private int delaySpeedLimitURL = 0;
+    /** 玩家個別速率限制 */
+    private final Map<Player, Long> playerCoolingTime = new ConcurrentHashMap<>();
 
 
     public MapServer(Plugin plugin, ConfigData configData, MapDatabase mapDatabase, BranchMapConversion branchMapConversion, BranchMapColor branchMapColor, BranchMinecraft branchMinecraft, BranchPacket branchPacket) {
@@ -228,6 +230,19 @@ public final class MapServer {
 
 
 
+    public boolean markCoolingTime(Player player, int cooling) {
+        Long oldTime = playerCoolingTime.get(player);
+        long nowTime = System.currentTimeMillis();
+        if (oldTime == null || oldTime < nowTime) {
+            playerCoolingTime.put(player, nowTime + cooling);
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+
+
     public void createCache(Player player) {
         endShowMapId.put(player, ConcurrentHashMap.newKeySet());
         queueShowMapId.put(player, ConcurrentHashMap.newKeySet());
@@ -236,6 +251,7 @@ public final class MapServer {
     public void cleanCache(Player player) {
         endShowMapId.remove(player);
         queueShowMapId.remove(player);
+        playerCoolingTime.remove(player);
     }
 
 

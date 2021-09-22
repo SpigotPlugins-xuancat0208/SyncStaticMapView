@@ -10,6 +10,7 @@ maximum-row-allowed: 8
 maximum-column-allowed: 8
 default-player-limit: 400
 url-rate-limit: 4
+create-rate-limit: 2000
 allowed-url-source-list:
   - "https://i.imgur.com/"
 languages:
@@ -42,3 +43,4 @@ languages:
   set_successfully_now_limit: "Set up, the current upload limit: "
   now_limit: "Upload limit: "
   exceeding_allowed_size: "Exceeding the allowed size: "
+  creation_speed_too_fast: "The creation speed is too fast, wait a minute"

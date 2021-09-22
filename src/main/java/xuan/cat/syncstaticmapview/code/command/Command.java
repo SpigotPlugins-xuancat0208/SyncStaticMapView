@@ -152,28 +152,33 @@ public final class Command implements CommandExecutor {
                                                     try {
                                                         Consumer<BufferedImage> toAsync = cropImageSave(sender, parameters[2]);
                                                         if (toAsync != null) {
-                                                            mapServer.processURL(() -> {
-                                                                try {
-                                                                    HttpURLConnection connection    = (HttpURLConnection) url.openConnection();
-                                                                    connection.setRequestMethod("GET");
-                                                                    connection.setDoInput(true);
-                                                                    connection.setDoOutput(true);
-                                                                    connection.setRequestProperty("accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9");
-                                                                    connection.setRequestProperty("accept-encoding", "gzip, deflate, br");
-                                                                    connection.setRequestProperty("user-agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.82 Safari/537.36");
-                                                                    if (connection.getResponseCode() == 200) {
-                                                                        InputStream inputStream = connection.getInputStream();
-                                                                        BufferedImage bufferedImage = ImageIO.read(inputStream);
-                                                                        inputStream.close();
-                                                                        toAsync.accept(bufferedImage);
-                                                                    } else {
-                                                                        throw new IOException(connection.getResponseCode() + " " + connection.getResponseMessage());
+                                                            if (sender instanceof Player && !sender.hasPermission("mapview.ignore_create_rate_limit") && !mapServer.markCoolingTime((Player) sender, configData.getCreateRateLimit())) {
+                                                                // 創建的速度太快了, 等一下
+                                                                sender.sendMessage(ChatColor.RED + configData.getLanguage("creation_speed_too_fast"));
+                                                            } else {
+                                                                mapServer.processURL(() -> {
+                                                                    try {
+                                                                        HttpURLConnection connection    = (HttpURLConnection) url.openConnection();
+                                                                        connection.setRequestMethod("GET");
+                                                                        connection.setDoInput(true);
+                                                                        connection.setDoOutput(true);
+                                                                        connection.setRequestProperty("accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9");
+                                                                        connection.setRequestProperty("accept-encoding", "gzip, deflate, br");
+                                                                        connection.setRequestProperty("user-agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.82 Safari/537.36");
+                                                                        if (connection.getResponseCode() == 200) {
+                                                                            InputStream inputStream = connection.getInputStream();
+                                                                            BufferedImage bufferedImage = ImageIO.read(inputStream);
+                                                                            inputStream.close();
+                                                                            toAsync.accept(bufferedImage);
+                                                                        } else {
+                                                                            throw new IOException(connection.getResponseCode() + " " + connection.getResponseMessage());
+                                                                        }
+                                                                    } catch (IOException exception) {
+                                                                        // 圖片下載失敗
+                                                                        sender.sendMessage(ChatColor.RED + configData.getLanguage("image_download_failed") + exception.getMessage());
                                                                     }
-                                                                } catch (IOException exception) {
-                                                                    // 圖片下載失敗
-                                                                    sender.sendMessage(ChatColor.RED + configData.getLanguage("image_download_failed") + exception.getMessage());
-                                                                }
-                                                            });
+                                                                });
+                                                            }
                                                         }
                                                     } catch (SQLException exception) {
                                                         // 資料庫錯誤
@@ -212,14 +217,19 @@ public final class Command implements CommandExecutor {
                                             try {
                                                 Consumer<BufferedImage> toAsync = cropImageSave(sender, parameters[2]);
                                                 if (toAsync != null) {
-                                                    Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
-                                                        try {
-                                                            toAsync.accept(ImageIO.read(file));
-                                                        } catch (IOException exception) {
-                                                            // 圖片讀取失敗
-                                                            sender.sendMessage(ChatColor.RED + configData.getLanguage("image_read_failed") + exception.getMessage());
-                                                        }
-                                                    });
+                                                    if (sender instanceof Player && !sender.hasPermission("mapview.ignore_create_rate_limit") && !mapServer.markCoolingTime((Player) sender, configData.getCreateRateLimit())) {
+                                                        // 創建的速度太快了, 等一下
+                                                        sender.sendMessage(ChatColor.RED + configData.getLanguage("creation_speed_too_fast"));
+                                                    } else {
+                                                        Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
+                                                            try {
+                                                                toAsync.accept(ImageIO.read(file));
+                                                            } catch (IOException exception) {
+                                                                // 圖片讀取失敗
+                                                                sender.sendMessage(ChatColor.RED + configData.getLanguage("image_read_failed") + exception.getMessage());
+                                                            }
+                                                        });
+                                                    }
                                                 }
                                             } catch (SQLException exception) {
                                                 // 資料庫錯誤
@@ -258,6 +268,9 @@ public final class Command implements CommandExecutor {
                                                     if (statistics != null) {
                                                         // 超出允許的數量
                                                         sender.sendMessage(ChatColor.RED + configData.getLanguage("your_upload_has_reached_limit") + statistics[0] + " / " + statistics[1]);
+                                                    } else if (!player.hasPermission("mapview.ignore_create_rate_limit") && !mapServer.markCoolingTime(player, configData.getCreateRateLimit())) {
+                                                        // 創建的速度太快了, 等一下
+                                                        sender.sendMessage(ChatColor.RED + configData.getLanguage("creation_speed_too_fast"));
                                                     } else {
                                                         // 加入資料紀錄
                                                         mapDatabase.createStatistics(player.getUniqueId(), configData.getDefaultPlayerLimit(), 1);
@@ -630,7 +643,6 @@ public final class Command implements CommandExecutor {
     }
 
     public Consumer<BufferedImage> cropImageSave(CommandSender sender, String saveRatio) throws SQLException {
-
         if (saveRatio == null || saveRatio.length() == 0)
             saveRatio = "1:1";
         String[] saveRatios = saveRatio.split(":", 2);

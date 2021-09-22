@@ -26,6 +26,7 @@ public final class ConfigData {
     private int maximumColumnAllowed;
     private int defaultPlayerLimit;
     private int urlRateLimit;
+    private int createRateLimit;
     private List<String> allowedUrlSourceList;
 
     public ConfigData(JavaPlugin plugin, FileConfiguration fileConfiguration) throws SQLException {
@@ -71,6 +72,7 @@ public final class ConfigData {
         int maximumColumnAllowed = fileConfiguration.getInt("maximum-column-allowed", 8);
         int defaultPlayerLimit = fileConfiguration.getInt("default-player-limit", 400);
         int urlRateLimit = fileConfiguration.getInt("url-rate-limit", 4);
+        int createRateLimit = fileConfiguration.getInt("create-rate-limit", 2000);
         List<String> allowedUrlSourceList = fileConfiguration.getStringList("allowed-url-source-list");
 
 
@@ -86,6 +88,7 @@ public final class ConfigData {
         this.maximumColumnAllowed = maximumColumnAllowed;
         this.defaultPlayerLimit = defaultPlayerLimit;
         this.urlRateLimit = urlRateLimit;
+        this.createRateLimit = createRateLimit;
         this.allowedUrlSourceList = allowedUrlSourceList;
     }
 
@@ -120,5 +123,9 @@ public final class ConfigData {
 
     public List<String> getAllowedUrlSourceList() {
         return allowedUrlSourceList;
+    }
+
+    public int getCreateRateLimit() {
+        return createRateLimit;
     }
 }
