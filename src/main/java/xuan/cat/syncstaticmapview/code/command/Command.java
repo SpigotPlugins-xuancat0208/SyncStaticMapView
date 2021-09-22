@@ -419,17 +419,17 @@ public final class Command implements CommandExecutor {
                                     // 缺少參數
                                     sender.sendMessage(ChatColor.RED + configData.getLanguage("missing_parameters"));
                                 } else {
-                                    UUID playerUUID = parseUUID(sender, parameters[3]);
+                                    UUID playerUUID = parseUUID(sender, parameters[2]);
                                     if (playerUUID != null) {
                                         try {
-                                            int capacity = Integer.parseInt(parameters[4]);
+                                            int capacity = Integer.parseInt(parameters[3]);
                                             if (!mapDatabase.setStatisticsCapacity(playerUUID, capacity))
                                                 mapDatabase.createStatistics(playerUUID, capacity, 0);
                                             int[] statistics = mapDatabase.getStatistics(playerUUID);
                                             if (statistics == null)
                                                 statistics = new int[] {0, 0};
                                             // 設置完畢, 當前的上傳限制: ?
-                                            sender.sendMessage(ChatColor.YELLOW + configData.getLanguage("set_successfully_now_limit") + statistics[0] + "/" + statistics[1]);
+                                            sender.sendMessage(ChatColor.YELLOW + configData.getLanguage("set_successfully_now_limit") + statistics[0] + " / " + statistics[1]);
                                         } catch (SQLException exception) {
                                             // 資料庫錯誤
                                             sender.sendMessage(ChatColor.RED + configData.getLanguage("database_error"));
@@ -449,17 +449,17 @@ public final class Command implements CommandExecutor {
                                     // 缺少參數
                                     sender.sendMessage(ChatColor.RED + configData.getLanguage("missing_parameters"));
                                 } else {
-                                    UUID playerUUID = parseUUID(sender, parameters[3]);
+                                    UUID playerUUID = parseUUID(sender, parameters[2]);
                                     if (playerUUID != null) {
                                         try {
-                                            int capacity = Integer.parseInt(parameters[4]);
+                                            int capacity = Integer.parseInt(parameters[3]);
                                             if (!mapDatabase.increaseStatisticsCapacity(playerUUID, capacity))
                                                 mapDatabase.createStatistics(playerUUID, capacity, 0);
                                             int[] statistics = mapDatabase.getStatistics(playerUUID);
                                             if (statistics == null)
                                                 statistics = new int[] {0, configData.getDefaultPlayerLimit()};
                                             // 設置完畢, 當前的上傳限制: ?
-                                            sender.sendMessage(ChatColor.YELLOW + configData.getLanguage("set_successfully_now_limit") + statistics[0] + "/" + statistics[1]);
+                                            sender.sendMessage(ChatColor.YELLOW + configData.getLanguage("set_successfully_now_limit") + statistics[0] + " / " + statistics[1]);
                                         } catch (SQLException exception) {
                                             // 資料庫錯誤
                                             sender.sendMessage(ChatColor.RED + configData.getLanguage("database_error"));
@@ -479,17 +479,17 @@ public final class Command implements CommandExecutor {
                                     // 缺少參數
                                     sender.sendMessage(ChatColor.RED + configData.getLanguage("missing_parameters"));
                                 } else {
-                                    UUID playerUUID = parseUUID(sender, parameters[3]);
+                                    UUID playerUUID = parseUUID(sender, parameters[2]);
                                     if (playerUUID != null) {
                                         try {
-                                            int capacity = Integer.parseInt(parameters[4]);
+                                            int capacity = Integer.parseInt(parameters[3]);
                                             if (!mapDatabase.subtractStatisticsCapacity(playerUUID, capacity))
                                                 mapDatabase.createStatistics(playerUUID, 0, 0);
                                             int[] statistics = mapDatabase.getStatistics(playerUUID);
                                             if (statistics == null)
                                                 statistics = new int[] {0, configData.getDefaultPlayerLimit()};
                                             // 設置完畢, 當前的上傳限制: ?
-                                            sender.sendMessage(ChatColor.YELLOW + configData.getLanguage("set_successfully_now_limit") + statistics[0] + "/" + statistics[1]);
+                                            sender.sendMessage(ChatColor.YELLOW + configData.getLanguage("set_successfully_now_limit") + statistics[0] + " / " + statistics[1]);
                                         } catch (SQLException exception) {
                                             // 資料庫錯誤
                                             sender.sendMessage(ChatColor.RED + configData.getLanguage("database_error"));
@@ -515,7 +515,7 @@ public final class Command implements CommandExecutor {
                                             if (statistics == null)
                                                 statistics = new int[] {0, configData.getDefaultPlayerLimit()};
                                             // 上傳限制: ?
-                                            sender.sendMessage(ChatColor.YELLOW + configData.getLanguage("now_limit") + statistics[0] + "/" + statistics[1]);
+                                            sender.sendMessage(ChatColor.YELLOW + configData.getLanguage("now_limit") + statistics[0] + " / " + statistics[1]);
                                         } catch (SQLException exception) {
                                             // 資料庫錯誤
                                             sender.sendMessage(ChatColor.RED + configData.getLanguage("database_error"));
@@ -534,7 +534,7 @@ public final class Command implements CommandExecutor {
                                                 if (statistics == null)
                                                     statistics = new int[] {0, configData.getDefaultPlayerLimit()};
                                                 // 上傳限制: ?
-                                                sender.sendMessage(ChatColor.YELLOW + configData.getLanguage("now_limit") + statistics[0] + "/" + statistics[1]);
+                                                sender.sendMessage(ChatColor.YELLOW + configData.getLanguage("now_limit") + statistics[0] + " / " + statistics[1]);
                                             } catch (SQLException exception) {
                                                 // 資料庫錯誤
                                                 sender.sendMessage(ChatColor.RED + configData.getLanguage("database_error"));
