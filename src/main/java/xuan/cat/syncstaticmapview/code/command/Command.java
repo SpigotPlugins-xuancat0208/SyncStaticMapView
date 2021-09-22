@@ -513,7 +513,7 @@ public final class Command implements CommandExecutor {
                                         // 無權限
                                         sender.sendMessage(ChatColor.RED + configData.getLanguage("no_permission"));
                                     } else {
-                                        UUID playerUUID = parseUUID(sender, parameters[3]);
+                                        UUID playerUUID = parseUUID(sender, parameters[2]);
                                         if (playerUUID != null) {
                                             try {
                                                 int[] statistics = mapDatabase.getStatistics(((Player) sender).getUniqueId());
