@@ -291,6 +291,10 @@ public final class Command implements CommandExecutor {
                                                                 sender.sendMessage(ChatColor.RED + configData.getLanguage("your_upload_has_reached_limit") + statistics[1] + " + 1 / " + statistics[2]);
                                                                 return true;
                                                             }
+                                                        } else if (1 > configData.getDefaultPlayerLimit() && !player.hasPermission("mapview.ignore_upload_limit")) {
+                                                            // 超出允許的數量
+                                                            sender.sendMessage(ChatColor.RED + configData.getLanguage("your_upload_has_reached_limit") + " 0 + 1 / " + configData.getDefaultPlayerLimit());
+                                                            return true;
                                                         } else {
                                                             // 加入資料紀錄
                                                             mapDatabase.createStatistics(player.getUniqueId(), configData.getDefaultPlayerLimit(), 1);
@@ -693,6 +697,10 @@ public final class Command implements CommandExecutor {
                                         sender.sendMessage(ChatColor.RED + configData.getLanguage("your_upload_has_reached_limit") + statistics[1] + " + " + (spaceRow * spaceColumn) + " / " + statistics[2]);
                                         return null;
                                     }
+                                } else if ((spaceRow * spaceColumn) > configData.getDefaultPlayerLimit() && !player.hasPermission("mapview.ignore_upload_limit")) {
+                                    // 超出允許的數量
+                                    sender.sendMessage(ChatColor.RED + configData.getLanguage("your_upload_has_reached_limit") + " 0 + " + (spaceRow * spaceColumn) + " / " + configData.getDefaultPlayerLimit());
+                                    return null;
                                 } else {
                                     // 加入資料紀錄
                                     mapDatabase.createStatistics(player.getUniqueId(), configData.getDefaultPlayerLimit(), spaceRow * spaceColumn);
