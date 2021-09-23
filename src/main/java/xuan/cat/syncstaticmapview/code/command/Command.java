@@ -164,6 +164,7 @@ public final class Command implements CommandExecutor {
                                     }
 
                                     mapDatabase.removeMapData(mapId);
+                                    mapDatabase.removeMapRedirect(mapId);
                                     // 已刪除: ?
                                     sender.sendMessage(ChatColor.YELLOW + configData.getLanguage("deleted") + mapId);
 
