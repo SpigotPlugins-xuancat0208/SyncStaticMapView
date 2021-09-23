@@ -370,7 +370,7 @@ public final class MapDatabase {
     public boolean releaseStatisticsUsed(UUID playerUUID) throws SQLException {
         SQL sql = TABLE.table_MapStatistics.updateData()
                 .updatesSubtract(TABLE.MAP_STATISTICS.field_Used, 1L)
-                .where(w -> w.and(TABLE.MAP_STATISTICS.field_PlayerUUID, playerUUID).and(TABLE.MAP_STATISTICS.field_Used, WhereJudge.ABOVE, 0L))
+                .where(w -> w.and(TABLE.MAP_STATISTICS.field_PlayerUUID, playerUUID).and(TABLE.MAP_STATISTICS.field_Used, WhereJudge.ABOVE, 1L))
                 .limit(1)
                 .callSQL(configData.getDatabaseConnection());
         return sql.UC() > 0;
