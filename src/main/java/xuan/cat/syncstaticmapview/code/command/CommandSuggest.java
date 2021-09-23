@@ -56,6 +56,7 @@ public final class CommandSuggest implements TabCompleter {
                     break;
                 case "get":
                     list.add("1");
+                    break;
                 case "delete":
                     list.add("1");
                     break;
