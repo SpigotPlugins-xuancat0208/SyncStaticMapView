@@ -146,7 +146,8 @@ public final class Command implements CommandExecutor {
                                 if (mapDatabase.existMapData(mapId)) {
                                     if (sender instanceof Player) {
                                         Player player = (Player) sender;
-                                        if (mapDatabase.getPlayerId(player.getUniqueId()) != mapDatabase.getMapUploaderID(mapId)) {
+                                        int uploaderID = mapDatabase.getMapUploaderID(mapId);
+                                        if (mapDatabase.getPlayerId(player.getUniqueId()) != uploaderID) {
                                             if (!sender.hasPermission("command.mapview.*") && !sender.hasPermission("command.mapview.delete_all")) {
                                                 // 你無法刪除此地圖
                                                 sender.sendMessage(ChatColor.RED + configData.getLanguage("can_not_delete_this_map"));
@@ -160,7 +161,7 @@ public final class Command implements CommandExecutor {
                                             }
                                         }
 
-                                        mapDatabase.releaseStatisticsUsed(player.getUniqueId());
+                                        mapDatabase.releaseStatisticsUsed(uploaderID);
                                     }
 
                                     mapDatabase.removeMapData(mapId);

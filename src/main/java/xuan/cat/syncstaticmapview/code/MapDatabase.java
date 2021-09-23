@@ -376,6 +376,14 @@ public final class MapDatabase {
                 .callSQL(configData.getDatabaseConnection());
         return sql.UC() > 0;
     }
+    public boolean releaseStatisticsUsed(int playerID) throws SQLException {
+        SQL sql = TABLE.table_MapStatistics.updateData()
+                .updatesSubtract(TABLE.MAP_STATISTICS.field_Used, 1L)
+                .where(w -> w.and(TABLE.MAP_STATISTICS.field_PlayerID, (long) playerID).and(TABLE.MAP_STATISTICS.field_Used, WhereJudge.ABOVE, 1L))
+                .limit(1)
+                .callSQL(configData.getDatabaseConnection());
+        return sql.UC() > 0;
+    }
     public boolean existStatistics(UUID playerUUID) throws SQLException {
         SQL sql = TABLE.table_MapStatistics.selectData()
                 .select(TABLE.MAP_STATISTICS.field_Used)
