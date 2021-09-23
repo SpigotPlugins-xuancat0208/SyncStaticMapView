@@ -144,9 +144,10 @@ public final class Command implements CommandExecutor {
                             try {
                                 int mapId = Integer.parseInt(parameters[1]);
                                 if (mapDatabase.existMapData(mapId)) {
+                                    int uploaderID = mapDatabase.getMapUploaderID(mapId);
+
                                     if (sender instanceof Player) {
                                         Player player = (Player) sender;
-                                        int uploaderID = mapDatabase.getMapUploaderID(mapId);
                                         if (mapDatabase.getPlayerId(player.getUniqueId()) != uploaderID) {
                                             if (!sender.hasPermission("command.mapview.*") && !sender.hasPermission("command.mapview.delete_all")) {
                                                 // 你無法刪除此地圖
@@ -160,10 +161,9 @@ public final class Command implements CommandExecutor {
                                                 return true;
                                             }
                                         }
-
-                                        mapDatabase.releaseStatisticsUsed(uploaderID);
                                     }
 
+                                    mapDatabase.releaseStatisticsUsed(uploaderID);
                                     mapDatabase.removeMapData(mapId);
                                     mapDatabase.removeMapRedirect(mapId);
                                     // 已刪除: ?
