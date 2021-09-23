@@ -184,6 +184,7 @@ public final class MapDatabase {
     public boolean removeMapData(int mapId) throws SQLException {
         SQL sql = TABLE.table_MapData.deleteData()
                 .where(w -> w.and(TABLE.MAP_DATA.field_MapID, (long) mapId))
+                .limit(1)
                 .callSQL(configData.getDatabaseConnection());
         return sql.UC() > 0;
     }
