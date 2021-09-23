@@ -29,6 +29,7 @@ languages:
   map_no_original_data: "This map has no original data"
   parameter_not_number: "Parameter is not a number: "
   given: "Given: "
+  deleted: "Deleted: "
   map_data_not_exist: "Map data does not exist: "
   not_set_any_redirect: "Not set any redirect"
   redirect_set_successfully: "Redirect set successfully"
@@ -45,3 +46,4 @@ languages:
   exceeding_allowed_size: "Exceeding the allowed size: "
   creation_speed_too_fast: "The creation speed is too fast, wait a minute"
   can_not_get_this_map: "You can't get this map"
+  can_not_delete_this_map: "You can't delete this map"

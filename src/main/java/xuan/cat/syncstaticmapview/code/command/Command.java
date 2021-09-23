@@ -134,6 +134,58 @@ public final class Command implements CommandExecutor {
                     }
                     break;
 
+                case "delete":
+                    // 重新讀取配置文件
+                    if (!sender.hasPermission("command.mapview.*") && !sender.hasPermission("command.mapview.delete_own") && !sender.hasPermission("command.mapview.delete_all")) {
+                        // 無權限
+                        sender.sendMessage(ChatColor.RED + configData.getLanguage("no_permission"));
+                    } else {
+                        if (parameters.length >= 2) {
+                            try {
+                                int mapId = Integer.parseInt(parameters[1]);
+                                if (mapDatabase.existMapData(mapId)) {
+                                    if (sender instanceof Player) {
+                                        Player player = (Player) sender;
+                                        if (mapDatabase.getPlayerId(player.getUniqueId()) != mapDatabase.getMapUploaderID(mapId)) {
+                                            if (!sender.hasPermission("command.mapview.*") && !sender.hasPermission("command.mapview.delete_all")) {
+                                                // 你無法刪除此地圖
+                                                sender.sendMessage(ChatColor.RED + configData.getLanguage("can_not_delete_this_map"));
+                                                return true;
+                                            }
+                                        } else {
+                                            if (!sender.hasPermission("command.mapview.*") && !sender.hasPermission("command.mapview.delete_own")) {
+                                                // 你無法刪除此地圖
+                                                sender.sendMessage(ChatColor.RED + configData.getLanguage("can_not_delete_this_map"));
+                                                return true;
+                                            }
+                                        }
+
+                                        mapDatabase.releaseStatisticsUsed(player.getUniqueId());
+                                    }
+
+                                    mapDatabase.removeMapData(mapId);
+                                    // 已刪除: ?
+                                    sender.sendMessage(ChatColor.YELLOW + configData.getLanguage("deleted") + mapId);
+
+                                } else {
+                                    // 地圖資料不存在: ?
+                                    sender.sendMessage(ChatColor.RED + configData.getLanguage("map_data_not_exist") + mapId);
+                                }
+                            } catch (NumberFormatException exception) {
+                                // 參數不是數字
+                                sender.sendMessage(ChatColor.RED + configData.getLanguage("parameter_not_number") + parameters[1]);
+                            } catch (SQLException exception) {
+                                // 資料庫錯誤
+                                sender.sendMessage(ChatColor.RED + configData.getLanguage("database_error"));
+                                exception.printStackTrace();
+                            }
+                        } else {
+                            // 缺少參數
+                            sender.sendMessage(ChatColor.RED + configData.getLanguage("missing_parameters"));
+                        }
+                    }
+                    break;
+
                 case "create":
                     // 創建地圖
                     // 檢查

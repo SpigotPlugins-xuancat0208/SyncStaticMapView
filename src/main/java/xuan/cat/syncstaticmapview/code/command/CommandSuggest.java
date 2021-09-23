@@ -29,6 +29,9 @@ public final class CommandSuggest implements TabCompleter {
             if (sender.hasPermission("command.mapview.*") || sender.hasPermission("command.mapview.get_own") || sender.hasPermission("command.mapview.get_all")) {
                 list.add("get");
             }
+            if (sender.hasPermission("command.mapview.*") || sender.hasPermission("command.mapview.delete_own") || sender.hasPermission("command.mapview.delete_all")) {
+                list.add("delete");
+            }
             if (sender.hasPermission("command.mapview.*") || sender.hasPermission("command.mapview.create.*") || sender.hasPermission("command.mapview.create.url") || sender.hasPermission("command.mapview.create.file") || sender.hasPermission("command.mapview.create.hand")) {
                 list.add("create");
             }
@@ -52,6 +55,8 @@ public final class CommandSuggest implements TabCompleter {
                     }
                     break;
                 case "get":
+                    list.add("1");
+                case "delete":
                     list.add("1");
                     break;
                 case "redirect":

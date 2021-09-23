@@ -71,6 +71,7 @@ languages:
   map_no_original_data: "此地圖沒有原始資料"
   parameter_not_number: "參數不是數字: "
   given: "已給予: "
+  deleted: "已刪除: "
   map_data_not_exist: "地圖資料不存在: "
   not_set_any_redirect: "沒有設置任何的重定向"
   redirect_set_successfully: "重導向設置成功"
@@ -87,3 +88,4 @@ languages:
   exceeding_allowed_size: "超出允許的尺寸: "
   creation_speed_too_fast: "創建的速度太快了, 等一下"
   can_not_get_this_map: "你無法獲取此地圖"
+  can_not_delete_this_map: "你無法刪除此地圖"
