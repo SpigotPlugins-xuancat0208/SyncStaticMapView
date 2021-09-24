@@ -24,6 +24,7 @@ public final class CodeBranchPacket implements BranchPacket {
     public void sendPacket(Player player, PacketContainer container) {
         try {
             protocolManager.sendServerPacket(player, container, true);
+        } catch (IllegalArgumentException ignored) {
         } catch (InvocationTargetException exception) {
             exception.printStackTrace();
         }
