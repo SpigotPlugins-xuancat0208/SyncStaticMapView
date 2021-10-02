@@ -3,9 +3,9 @@ package xuan.cat.syncstaticmapview.code.data;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
-import xuan.cat.syncstaticmapview.database.api.Database;
-import xuan.cat.syncstaticmapview.database.api.sql.DatabaseConnection;
-import xuan.cat.syncstaticmapview.database.api.sql.MySQL;
+import xuan.cat.syncstaticmapview.database.Database;
+import xuan.cat.syncstaticmapview.database.sql.DatabaseConnection;
+import xuan.cat.syncstaticmapview.database.sql.MySQL;
 
 import java.sql.SQLException;
 import java.util.HashMap;
