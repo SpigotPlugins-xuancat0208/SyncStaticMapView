@@ -108,11 +108,13 @@ public final class Index extends JavaPlugin {
     }
 
     public void onDisable() {
-        mapServer.close();
-        try {
-            configData.getDatabaseConnection().disconnect();
-        } catch (Exception exception) {
-        }
+        if (mapServer != null)
+            mapServer.close();
+        if (configData != null)
+            try {
+                configData.getDatabaseConnection().disconnect();
+            } catch (Exception exception) {
+            }
     }
 
     @Override
