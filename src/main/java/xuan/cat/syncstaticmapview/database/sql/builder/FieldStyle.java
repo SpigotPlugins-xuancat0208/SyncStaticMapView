@@ -23,7 +23,6 @@ public class FieldStyle<T> {
         else
             return '\'' + dateFormat.format(value.getTime()) + '\'';
     }
-    public static final FieldStyle<String>      TINYTEXT                    = new FieldStyle<>(" tinytext", (value) -> '\'' + SQLTool.safetyValue(value) + '\'', (sql, field) -> sql.getString(field.name()));
     public static final FieldStyle<String>      TEXT                        = new FieldStyle<>(" text", (value) -> '\'' + SQLTool.safetyValue(value) + '\'', (sql, field) -> sql.getString(field.name()));
     public static final FieldStyle<byte[]>      BLOB                        = new FieldStyle<>(" blob", (value) -> new Variable.UNHEX(value).part().toString(), (sql, field) -> sql.getBytes(field.name()));
     public static final FieldStyle<UUID>        UUID                        = new FieldStyle<>(

@@ -3,8 +3,6 @@ package xuan.cat.syncstaticmapview.database.sql;
 import xuan.cat.syncstaticmapview.database.sql.builder.Field;
 import xuan.cat.syncstaticmapview.database.sql.builder.FieldStyle;
 
-import java.io.ByteArrayOutputStream;
-import java.nio.charset.Charset;
 import java.util.*;
 
 public interface SQLTool {
@@ -52,7 +50,6 @@ public interface SQLTool {
 
 
 
-
     static <T> T copySQLPart(T o) {
         return o instanceof SQLPart ? (T) ((SQLPart) o).clone() : o;
     }
@@ -63,12 +60,8 @@ public interface SQLTool {
 
 
 
-
     interface ToStringFromListHandle<T> {
         void run(StringBuilder merge, T part);
-    }
-    static <T> StringBuilder toStringFromArray(T[] list, ToStringFromListHandle<T> handle) {
-        return toStringFromList(Arrays.asList(list), handle);
     }
     static <T> StringBuilder toStringFromList(Collection<T> list, ToStringFromListHandle<T> handle) {
         StringBuilder builder = new StringBuilder();
@@ -94,33 +87,6 @@ public interface SQLTool {
         }));
         return builder;
     }
-
-
-
-
-//    interface ToListHandle<T> {
-//        T run(String part);
-//    }
-//    static <T> List<T> toList(String string, ToListHandle<T> handle) {
-//        List<String>    split   = split(string, ',', StandardCharsets.UTF_8, 256);
-//        List<T>         list    = new ArrayList<>(split.size());
-//
-//        for (String part : split)
-//            list.add(handle.run(part));
-//
-//        return list;
-//    }
-//
-//
-//
-//
-//    static String[] toStringList(Enum<?>[] enums) {
-//        String[] strings = new String[ enums.length ];
-//        for (int i = 0 ; i < enums.length ; ++i)
-//            strings[ i ] = enums[ i ].name();
-//        return strings;
-//    }
-
 
 
 
@@ -162,7 +128,7 @@ public interface SQLTool {
         if (field == null) {
             return "NULL";
         } else {
-            return new StringBuilder().append('`').append(safetyField(field)).append('`').toString();
+            return '`' + safetyField(field) + '`';
         }
     }
     /**
@@ -219,52 +185,6 @@ public interface SQLTool {
         // 去掉 - 並返回
         return new StringBuilder().append(s,0,8).append(s,9,13).append(s,14,18).append(s,19,23).append(s, 24, 36);
     }
-    /**
-     * 解壓縮UUID
-     * 交由SQL命令生成器使用即可,正常不用使用到此API
-     * @param uuid UUID
-     * @return 解壓縮後的UUID
-     */
-    private static UUID unzipUUID(String uuid) {
-        return UUID.fromString(uuid.substring(0, 8) + '-' + uuid.substring(8, 12) + '-' + uuid.substring(12, 16) + '-' + uuid.substring(16, 20) + '-' + uuid.substring(20, 32));
-    }
-
-
-
-
-    /**
-     * 分割字串
-     * @param text 原始字串
-     * @param breakpoint 斷點字符
-     * @param charset 編碼方式
-     * @param limit 切割限制
-     * @return 已分割字串陣列
-     */
-    static List<String> split(String text, char breakpoint, Charset charset, int limit) {
-        return split(text, breakpoint, charset, limit, (conversion) -> conversion);
-    }
-    static List<String> split(String text, char breakpoint, Charset charset, int limit, java.util.function.Function<String, String> conversion) {
-        List<String>            list    = new ArrayList<>();
-        int                     read;
-        int                     sweep   = 0;
-        char[]                  chars   = text.toCharArray();
-        ByteArrayOutputStream output  = new ByteArrayOutputStream();
-        while (sweep < chars.length && list.size() < limit) {
-            if ((read = chars[sweep]) == breakpoint) {
-                if (output.size() > 0) {
-                    list.add(conversion.apply(output.toString(charset)));
-                    output.reset();
-                }
-            } else {
-                output.write(read);
-            }
-            sweep++;
-        }
-        if (output.size() > 0)
-            list.add(conversion.apply(output.toString(charset)));
-        return Collections.unmodifiableList(list);
-    }
-
 
 
     static <T> T[] tryClone(T[] t) {
