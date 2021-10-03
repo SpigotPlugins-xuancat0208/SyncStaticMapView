@@ -13,7 +13,6 @@ public final class InsertData implements SQLCommand {
     private final Map<Field, List<Object>>  values;            // 欄位對應值清單
     private final Map<Field, Change>        updates;           // 欄位對應值清單
     private final String                    name;
-    private       boolean                   lowPriority = false;
 
 
     private static class Change<T> {
@@ -38,7 +37,6 @@ public final class InsertData implements SQLCommand {
         this.values         = SQLTool.tryClone(insertData.values);
         this.updates        = SQLTool.tryClone(insertData.updates);
         this.name           = SQLTool.tryClone(insertData.name);
-        this.lowPriority    = SQLTool.tryClone(insertData.lowPriority);
     }
 
 
@@ -46,9 +44,6 @@ public final class InsertData implements SQLCommand {
         StringBuilder builder = new StringBuilder();
 
         builder.append("INSERT ");
-        if (lowPriority) {
-            builder.append("DELAYED ");
-        }
         builder.append("INTO ");
         builder.append(SQLTool.toField(name));
         builder.append(' ');
@@ -126,31 +121,9 @@ public final class InsertData implements SQLCommand {
     public <T> InsertData insertOrUpdate(Field<T> field, T value) {
         return insertOrUpdate(field, value, UpdateAlgorithm.EQUAL);
     }
-    public <T extends Number> InsertData insertOrUpdateIncrease(Field<T> field, T value) {
-        return insertOrUpdate(field, value, UpdateAlgorithm.INCREASE);
-    }
-    public <T extends Number> InsertData insertOrUpdateSubtract(Field<T> field, T value) {
-        return insertOrUpdate(field, value, UpdateAlgorithm.SUBTRACT);
-    }
     public <T> InsertData insertOrUpdate(Field<T> field, T value, UpdateAlgorithm algorithm) {
         insert(field, value);
         updates.put(field, new Change<>(field, value, algorithm));
         return this;
-    }
-
-    public InsertData lowPriority(boolean lowPriority) {
-        this.lowPriority = lowPriority;
-        return this;
-    }
-
-
-
-
-    public boolean lowPriority() {
-        return lowPriority;
-    }
-
-    public String name() {
-        return name;
     }
 }

@@ -3,9 +3,6 @@ package xuan.cat.syncstaticmapview.database.sql.builder;
 import xuan.cat.syncstaticmapview.database.sql.SQLPart;
 import xuan.cat.syncstaticmapview.database.sql.SQLTool;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
-
 /**
  * 分區
  */
@@ -55,41 +52,8 @@ public abstract class TablePartition<T> implements SQLPart {
         public Field<T> field() {
             return field;
         }
-
-        public boolean linear() {
-            return linear;
-        }
-
-        public int rows() {
-            return rows;
-        }
     }
 
-
-    public static final class Hash<T> extends Independent<T> {
-        public Hash(Field<T> field) {
-            super(field);
-        }
-        public Hash(Hash<T> independent) {
-            super(independent);
-        }
-
-        public Hash<T> clone() {
-            return new Hash<>(this);
-        }
-
-        protected String getName() {
-            return "HASH";
-        }
-
-        public Hash<T> rows(int rows) {
-            return (Hash<T>) super.rows(rows);
-        }
-
-        public Hash<T> linear(boolean linear) {
-            return (Hash<T>) super.linear(linear);
-        }
-    }
 
 
     public static final class Key<T> extends Independent<T> {
@@ -114,134 +78,6 @@ public abstract class TablePartition<T> implements SQLPart {
 
         public Key<T> linear(boolean linear) {
             return (Key<T>) super.linear(linear);
-        }
-    }
-
-
-
-
-
-
-
-
-
-    /**
-     * 有清單
-     */
-    public static abstract class Combination<T> extends TablePartition<T> {
-        protected static final String       isMaxValue  = "MAXVALUE";
-        protected final Field<T>            field;
-        protected final Map<String, T[]>    sortList;
-
-
-        public Combination(Field<T> field) {
-            this.field          = field;
-            this.sortList       = new LinkedHashMap<>();
-        }
-        private Combination(Combination<T> combination) {
-            this.field          = SQLTool.tryClone(combination.field);
-            this.sortList       = SQLTool.tryClone(combination.sortList);
-        }
-
-
-        public StringBuilder part() {
-            StringBuilder builder = new StringBuilder("PARTITION BY ");
-            builder.append(getName()).append('(').append(SQLTool.toField(field.name())).append(") (");
-
-            SQLTool.toStringFromMap(sortList, (merge, name, values) -> {
-                merge.append("PARTITION ");
-                merge.append(SQLTool.toField(name));
-                merge.append(" VALUES ");
-                merge.append(getValuesName());
-                merge.append(SQLTool.brackets(SQLTool.toStringFromArray(values, (mergeChild, value) -> {
-                    mergeChild.append(value == null ? isMaxValue : SQLTool.toValue(field, (T) value));
-                })));
-            });
-
-            builder.append(')');
-            return builder;
-        }
-
-        public abstract Combination<T> clone();
-
-        protected abstract String getName();
-
-        protected abstract String getValuesName();
-
-        public Field<T> field() {
-            return field;
-        }
-
-        public Combination<T> slice(String name, T... values) {
-            if (values == null)
-                throw new NullPointerException("values");
-            sortList.put(name, values);
-            return this;
-        }
-
-        public Combination<T> sliceMax(String name) {
-            sortList.put(name, null);
-            return this;
-        }
-    }
-
-
-    public static final class Range<T> extends Combination<T> {
-        public Range(Field<T> field) {
-            super(field);
-        }
-        private Range(Range<T> combination) {
-            super(combination);
-        }
-
-        protected String getName() {
-            return "KEY";
-        }
-
-        protected String getValuesName() {
-            return "LESS THAN";
-        }
-
-        public Range<T> clone() {
-            return new Range<>(this);
-        }
-
-        public Range<T> slice(String name, T... values) {
-            return (Range<T>) super.slice(name, values);
-        }
-
-        public Range<T> sliceMax(String name) {
-            return (Range<T>) super.sliceMax(name);
-        }
-    }
-
-
-    public static final class List<T> extends Combination<T> {
-        public List(Field<T> field) {
-            super(field);
-        }
-        private List(List<T> combination) {
-            super(combination);
-        }
-
-        protected String getName() {
-            return "KEY";
-        }
-
-        protected String getValuesName() {
-            return "IN";
-        }
-
-        public List<T> clone() {
-            return new List<>(this);
-        }
-
-        public List<T> slice(String name, T... values) {
-            return (List<T>) super.slice(name, values);
-        }
-
-        public List<T> sliceMax(String name) {
-            return (List<T>) super.sliceMax(name);
         }
     }
 }

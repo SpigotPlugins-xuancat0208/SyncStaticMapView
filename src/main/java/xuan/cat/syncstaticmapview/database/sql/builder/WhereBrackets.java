@@ -18,7 +18,7 @@ public final class WhereBrackets extends Where {
     }
 
 
-    protected final StringBuilder partOriginal() {
+    protected StringBuilder partOriginal() {
         return SQLTool.brackets(super.partOriginal());
     }
     public StringBuilder part() {
@@ -64,14 +64,8 @@ public final class WhereBrackets extends Where {
     public <T> WhereBrackets or(Field<T> field , WhereJudge judge) {
         return (WhereBrackets) super.or(field, judge);
     }
-    public <T> WhereBrackets or(Field<T> field, T value) {
-        return or(field, WhereJudge.EQUAL, value);
-    }
     public <T> WhereBrackets or(Field<T> field , WhereJudge judge, Field<T> value) {
         return (WhereBrackets) super.or(field, judge, value);
-    }
-    public <T> WhereBrackets or(Field<T> field, Field<T> value) {
-        return or(field, WhereJudge.EQUAL, value);
     }
     public <T> WhereBrackets or(Field<T> field , WhereJudge judge, T value) {
         return (WhereBrackets) super.or(field, judge, value);

@@ -1,12 +1,12 @@
 package xuan.cat.syncstaticmapview.database.sql;
 
 import xuan.cat.syncstaticmapview.database.sql.builder.Field;
-import xuan.cat.syncstaticmapview.database.sql.builder.Variable;
 
-import java.nio.charset.StandardCharsets;
-import java.sql.Date;
-import java.sql.*;
-import java.util.*;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.sql.Timestamp;
+import java.util.UUID;
 
 
 /**
@@ -199,15 +199,6 @@ public final class SQL {
      * @deprecated
      */
     @Deprecated
-    public Object getObject(String table) throws SQLException {
-        return resultSet.getObject(table);
-    }
-
-    /**
-     * 不推薦使用
-     * @deprecated
-     */
-    @Deprecated
     public String getString(String table) throws SQLException {
         return resultSet.getString(table);
     }
@@ -235,33 +226,6 @@ public final class SQL {
      * @deprecated
      */
     @Deprecated
-    public double getDouble(String table) throws SQLException {
-        return resultSet.getDouble(table);
-    }
-
-    /**
-     * 不推薦使用
-     * @deprecated
-     */
-    @Deprecated
-    public float getFloat(String table) throws SQLException {
-        return resultSet.getFloat(table);
-    }
-
-    /**
-     * 不推薦使用
-     * @deprecated
-     */
-    @Deprecated
-    public Time getTime(String table) throws SQLException {
-        return resultSet.getTime(table);
-    }
-
-    /**
-     * 不推薦使用
-     * @deprecated
-     */
-    @Deprecated
     public Timestamp getTimestamp(String table) throws SQLException {
         return resultSet.getTimestamp(table);
     }
@@ -271,73 +235,8 @@ public final class SQL {
      * @deprecated
      */
     @Deprecated
-    public boolean getBoolean(String table) throws SQLException {
-        return resultSet.getBoolean(table);
-    }
-    /**
-     * 不推薦使用
-     * @deprecated
-     */
-    @Deprecated
-    public int getBooleanByInt(String table) throws SQLException {
-        if ( resultSet.getBoolean(table) ) {
-            return 1;
-        } else {
-            return 0;
-        }
-    }
-    /**
-     * 不推薦使用
-     * @deprecated
-     */
-    @Deprecated
-    public boolean getBooleanFromString(String table) throws SQLException {
-        return Boolean.valueOf(true).toString().equals(resultSet.getString(table));
-    }
-
-    /**
-     * 不推薦使用
-     * @deprecated
-     */
-    @Deprecated
-    public byte getByte(String table) throws SQLException {
-        return resultSet.getByte(table);
-    }
-
-    /**
-     * 不推薦使用
-     * @deprecated
-     */
-    @Deprecated
-    public short getShort(String table) throws SQLException {
-        return resultSet.getShort(table);
-    }
-
-    /**
-     * 不推薦使用
-     * @deprecated
-     */
-    @Deprecated
-    public Date getDate(String table) throws SQLException {
-        return resultSet.getDate(table);
-    }
-
-    /**
-     * 不推薦使用
-     * @deprecated
-     */
-    @Deprecated
     public byte[] getBytes(String table) throws SQLException {
         return resultSet.getBytes(table);
-    }
-
-    /**
-     * 不推薦使用
-     * @deprecated
-     */
-    @Deprecated
-    public byte[] getHex(String table) throws SQLException {
-        return Variable.HEX(resultSet.getString("HEX(`" + table + "`)"));
     }
 
     /**
@@ -355,42 +254,6 @@ public final class SQL {
         for(read = 8; read < 16; ++read)
             lsb = lsb << 8 | (long)(data[read] & 255);
         return new UUID(msb, lsb);
-    }
-
-    /**
-     * 不推薦使用
-     * @deprecated
-     */
-    @Deprecated
-    public <T extends Enum<T>> T getEnum(String table, T[] reference) throws SQLException {
-        String value = resultSet.getString(table);
-        if (value == null)
-            return null;
-        for (T r : reference)
-            if (r.toString().equals(value))
-                return r;
-        return null;
-    }
-
-    /**
-     * 不推薦使用
-     * @deprecated
-     */
-    @Deprecated
-    public <T extends Enum<T>> Set<T> getEnumSet(String table, T[] reference) throws SQLException {
-        String value = resultSet.getString(table);
-        if (value == null)
-            return new HashSet<>(0);
-
-        List<String>    split   = SQLTool.split(value, ',', StandardCharsets.UTF_8, 256);
-        Set<T>          list    = new LinkedHashSet<>(split.size());
-
-        for (String s : split)
-            for (T r : reference)
-                if (r.toString().equals(s))
-                    list.add(r);
-
-        return list;
     }
 
 
@@ -467,10 +330,5 @@ public final class SQL {
                 return generatedKeys.getInt(1);
         }
         return null;
-    }
-
-
-    interface IndifferentExceptionHandle {
-        void run() throws SQLException;
     }
 }

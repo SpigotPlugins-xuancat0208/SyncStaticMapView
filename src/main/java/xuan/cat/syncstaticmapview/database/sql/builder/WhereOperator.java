@@ -3,12 +3,6 @@ package xuan.cat.syncstaticmapview.database.sql.builder;
 public enum WhereOperator {
     /** 加 */
     INCREASE    ("+"),
-    /** 減 */
-    SUBTRACT    ("-"),
-    /** 乘 */
-    MULTIPLIER  ("*"),
-    /** 除 */
-    DIVISION    ("/"),
     ;
 
 

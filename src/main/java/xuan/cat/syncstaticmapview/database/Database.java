@@ -4,8 +4,6 @@ import xuan.cat.syncstaticmapview.database.sql.DatabaseTable;
 import xuan.cat.syncstaticmapview.database.sql.MySQL;
 import xuan.cat.syncstaticmapview.database.sql.builder.Field;
 import xuan.cat.syncstaticmapview.database.sql.builder.FieldStyle;
-import xuan.cat.syncstaticmapview.database.sql.builder.InformationSchema;
-import xuan.cat.syncstaticmapview.database.sql.builder.SelectData;
 
 /**
  * 資料庫的一切操作

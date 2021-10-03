@@ -22,7 +22,7 @@ public interface SQLCommand {
      * @return SQL操作器
      */
     default SQL callSQL(DatabaseConnection connection) throws SQLException {
-        SQL sql = ((DatabaseConnection) connection).createSQL();
+        SQL sql = connection.createSQL();
         sql.setSQL(this);
         return sql;
     }

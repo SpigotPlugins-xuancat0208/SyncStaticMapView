@@ -1,8 +1,5 @@
 package xuan.cat.syncstaticmapview.database.sql;
 
-import xuan.cat.syncstaticmapview.database.sql.builder.CreateDatabase;
-import xuan.cat.syncstaticmapview.database.sql.builder.DeleteDatabase;
-
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;

@@ -115,14 +115,8 @@ public class Where implements SQLPart {
     public <T> Where or(Field<T> field, WhereJudge judge) {
         return or(new WhereCondition.Value<>(field, judge));
     }
-    public <T> Where or(Field<T> field, T value) {
-        return or(field, WhereJudge.EQUAL, value);
-    }
     public <T> Where or(Field<T> field, WhereJudge judge, T value) {
         return or(new WhereCondition.Value<>(field, judge, value));
-    }
-    public <T> Where or(Field<T> field, Field<T> value) {
-        return or(field, WhereJudge.EQUAL, value);
     }
     public <T> Where or(Field<T> field, WhereJudge judge, Field<T> value) {
         return or(new WhereCondition.Relatively<>(field, judge, value));
