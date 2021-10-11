@@ -9,7 +9,7 @@ import net.minecraft.server.network.ServerPlayerConnection;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.ItemStack;
 import org.bukkit.World;
-import org.bukkit.craftbukkit.libs.it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import org.bukkit.craftbukkit.v1_17_R1.CraftWorld;
 import org.bukkit.craftbukkit.v1_17_R1.inventory.CraftItemStack;
 import org.bukkit.entity.Player;
