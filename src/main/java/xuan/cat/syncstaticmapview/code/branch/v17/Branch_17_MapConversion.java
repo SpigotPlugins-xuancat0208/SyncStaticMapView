@@ -1,4 +1,4 @@
-package xuan.cat.syncstaticmapview.code.branch;
+package xuan.cat.syncstaticmapview.code.branch.v17;
 
 import net.minecraft.world.level.saveddata.maps.WorldMap;
 import org.bukkit.craftbukkit.v1_17_R1.map.CraftMapView;
@@ -11,13 +11,13 @@ import xuan.cat.syncstaticmapview.code.data.CodeMapData;
 import java.awt.image.BufferedImage;
 import java.lang.reflect.Field;
 
-public final class CodeBranchMapConversion implements BranchMapConversion {
+public final class Branch_17_MapConversion implements BranchMapConversion {
     private final BranchMapColor branchMapColor;
     private final BranchMapConversion branchMapConversion;
     private final Field field_CraftMapView_WorldMap;
 
 
-    public CodeBranchMapConversion(BranchMapColor branchMapColor, BranchMapConversion branchMapConversion) throws NoSuchFieldException {
+    public Branch_17_MapConversion(BranchMapColor branchMapColor, BranchMapConversion branchMapConversion) throws NoSuchFieldException {
         this.branchMapColor = branchMapColor;
         this.branchMapConversion = branchMapConversion;
 

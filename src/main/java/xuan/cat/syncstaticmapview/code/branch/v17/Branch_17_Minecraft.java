@@ -1,4 +1,4 @@
-package xuan.cat.syncstaticmapview.code.branch;
+package xuan.cat.syncstaticmapview.code.branch.v17;
 
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.level.ChunkProviderServer;
@@ -20,12 +20,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-public final class CodeBranchMinecraft implements BranchMinecraft {
+public final class Branch_17_Minecraft implements BranchMinecraft {
     private final Field field_CraftItemStack_handle;
     private final Field field_ItemStack_tag;
 
 
-   public CodeBranchMinecraft() throws NoSuchFieldException {
+   public Branch_17_Minecraft() throws NoSuchFieldException {
        field_CraftItemStack_handle = CraftItemStack.class.getDeclaredField("handle");
        field_ItemStack_tag = net.minecraft.world.item.ItemStack.class.getDeclaredField("u");
        field_CraftItemStack_handle.setAccessible(true);

@@ -1,4 +1,4 @@
-package xuan.cat.syncstaticmapview.code.branch;
+package xuan.cat.syncstaticmapview.code.branch.v17;
 
 import xuan.cat.syncstaticmapview.api.branch.BranchMapColor;
 
@@ -6,12 +6,12 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public final class CodeBranchMapColor implements BranchMapColor {
+public final class Branch_17_MapColor implements BranchMapColor {
     private final byte[] colorIndexRGB = new byte[262144];
     private final List<Color> colorRegistry      = new ArrayList<>();
     private final int registryColorAmount;
 
-    public CodeBranchMapColor() {
+    public Branch_17_MapColor() {
         colorRegistry.add(new Color(0,   0,   0));    //   0
         colorRegistry.add(new Color(0,   0,   0));    //   1
         colorRegistry.add(new Color(0,   0,   0));    //   2

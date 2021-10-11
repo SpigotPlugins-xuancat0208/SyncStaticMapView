@@ -1,10 +1,9 @@
-package xuan.cat.syncstaticmapview.code.branch;
+package xuan.cat.syncstaticmapview.code.branch.v15_R1;
 
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
 import com.comphenix.protocol.events.PacketContainer;
-import net.minecraft.network.protocol.game.PacketPlayOutMap;
-import net.minecraft.world.level.saveddata.maps.WorldMap;
+import net.minecraft.server.v1_15_R1.PacketPlayOutMap;
 import org.bukkit.entity.Player;
 import xuan.cat.syncstaticmapview.api.branch.BranchPacket;
 import xuan.cat.syncstaticmapview.api.data.MapData;
@@ -12,7 +11,7 @@ import xuan.cat.syncstaticmapview.api.data.MapData;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 
-public final class CodeBranchPacket implements BranchPacket {
+public final class Branch_15_R1_Packet implements BranchPacket {
     private final ProtocolManager protocolManager     = ProtocolLibrary.getProtocolManager();
 
 
@@ -32,6 +31,6 @@ public final class CodeBranchPacket implements BranchPacket {
 
 
     public void sendMapView(Player player, int mapId, MapData mapData) {
-        sendPacket(player, PacketContainer.fromPacket(new PacketPlayOutMap(mapId, (byte) 0, false, new ArrayList<>(), new WorldMap.b(0, 0, 128, 128, mapData.getPixels()))));
+        sendPacket(player, PacketContainer.fromPacket(new PacketPlayOutMap(mapId, (byte) 0, false, false, new ArrayList<>(), mapData.getPixels(), 0, 0, 128, 128)));
     }
 }

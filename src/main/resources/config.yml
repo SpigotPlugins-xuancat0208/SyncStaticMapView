@@ -1,49 +1,51 @@
+# 資料庫
+# database
 database:
   ip: "127.0.0.1"
   port: 3306
   database: "!! YOUR_DATABASE_NAME !!"
   user: "!! YOUR_USER_NAME !!"
   password: "!! YOUR_USER_PASSWORD !!"
+
+# 快取能保留多少時間 (毫秒)
+# How long can the cache be retained (milliseconds)
 cache-vitality-time: 60000
+
+# 創建資料表時允許加入分區支持
+#   如果資料庫是使用 MariaDB 可以啟用此選項
+# Partition support is allowed when creating data tables
+#   If the database is MariaDB can enable
 create-table-can-partition: true
+
+# 單次上傳允許的最大行數量
+# Maximum number of rows allowed in a single upload
 maximum-row-allowed: 8
+
+# 單次上傳允許的最大欄數量
+# Maximum number of columns allowed in a single upload
 maximum-column-allowed: 8
+
+# 預設玩家能上傳最大的地圖數量
+#   如果裁切 2:2 那會是 4 個而不是 1 個
+# Default player can upload the maximum number of maps
+#   If cut 2:2 it will be 4 instead of 1
 default-player-limit: 400
+
+# 網址訪問速度限制 (秒)
+#   全部網址共享一個速率限制棄
+#   避免遭受到大量上傳請求的駭客攻擊
+#   未處理完畢卻關機, 會導致當前列隊全部消失
+# URL access speed limit (second)
+#   All url share a rate limit discard
+#   Avoid hacker attacks from a large number of upload requests
+#   Shutting down before processing is completed will cause all current queues to disappear
 url-rate-limit: 4
+
+# 指令創建地圖速率限制 (毫秒)
+# Instruction to create a map rate limit (millisecond)
 create-rate-limit: 2000
+
+# 允許的網址來源清單
+# List of allowed URL sources
 allowed-url-source-list:
   - "https://i.imgur.com/"
-languages:
-  no_permission: "No permission"
-  missing_parameters: "Missing parameters"
-  reread_configuration_successfully: "Reread configuration successfully"
-  reread_configuration_error: "Reread configuration an error occurred"
-  unknown_parameter_type: "Unknown parameter type"
-  only_be_used_by_player: "This command can only be executed as a player"
-  parameter_not_url: "The parameter entered is not a URL: "
-  image_download_failed: "Image download failed: "
-  image_read_failed: "Image read failed: "
-  database_error: "Database error"
-  created_successfully: "Created successfully, map id: "
-  not_filled_map_on_hand: "Not filled map on hand"
-  map_no_original_data: "This map has no original data"
-  parameter_not_number: "Parameter is not a number: "
-  given: "Given: "
-  deleted: "Deleted: "
-  map_data_not_exist: "Map data does not exist: "
-  not_set_any_redirect: "Not set any redirect"
-  redirect_set_successfully: "Redirect set successfully"
-  redirect_delete_successfully: "Redirect delete successfully"
-  redirect_list: "Redirect list:\n   Priority: Permission => MapId"
-  parameter_not_aspect_ratio: "Parameter is not a aspect ratio: "
-  map_cannot_copy: "This map cannot copy"
-  your_upload_has_reached_limit: "Your upload has reached the limit: "
-  url_not_allowed: "This URL is not allowed"
-  player_not_online_use_uuid: "This player is not online, use UUID"
-  parameter_not_player_name_or_uuid: "Parameter is not a player name or UUID: "
-  set_successfully_now_limit: "Set up, the current upload limit: "
-  now_limit: "Upload limit: "
-  exceeding_allowed_size: "Exceeding the allowed size: "
-  creation_speed_too_fast: "The creation speed is too fast, wait a minute"
-  can_not_get_this_map: "You can't get this map"
-  can_not_delete_this_map: "You can't delete this map"

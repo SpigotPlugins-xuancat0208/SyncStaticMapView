@@ -10,15 +10,25 @@ import xuan.cat.syncstaticmapview.api.branch.BranchMapColor;
 import xuan.cat.syncstaticmapview.api.branch.BranchMapConversion;
 import xuan.cat.syncstaticmapview.api.branch.BranchMinecraft;
 import xuan.cat.syncstaticmapview.api.branch.BranchPacket;
-import xuan.cat.syncstaticmapview.code.branch.CodeBranchMapColor;
-import xuan.cat.syncstaticmapview.code.branch.CodeBranchMapConversion;
-import xuan.cat.syncstaticmapview.code.branch.CodeBranchMinecraft;
-import xuan.cat.syncstaticmapview.code.branch.CodeBranchPacket;
+import xuan.cat.syncstaticmapview.code.branch.v14_R1.Branch_14_R1_BranchMinecraft;
+import xuan.cat.syncstaticmapview.code.branch.v14_R1.Branch_14_R1_MapColor;
+import xuan.cat.syncstaticmapview.code.branch.v14_R1.Branch_14_R1_MapConversion;
+import xuan.cat.syncstaticmapview.code.branch.v14_R1.Branch_14_R1_Packet;
+import xuan.cat.syncstaticmapview.code.branch.v15_R1.Branch_15_R1_BranchMinecraft;
+import xuan.cat.syncstaticmapview.code.branch.v15_R1.Branch_15_R1_MapColor;
+import xuan.cat.syncstaticmapview.code.branch.v15_R1.Branch_15_R1_MapConversion;
+import xuan.cat.syncstaticmapview.code.branch.v15_R1.Branch_15_R1_Packet;
+import xuan.cat.syncstaticmapview.code.branch.v16_R3.Branch_16_R3_BranchMinecraft;
+import xuan.cat.syncstaticmapview.code.branch.v16_R3.Branch_16_R3_MapColor;
+import xuan.cat.syncstaticmapview.code.branch.v16_R3.Branch_16_R3_MapConversion;
+import xuan.cat.syncstaticmapview.code.branch.v16_R3.Branch_16_R3_Packet;
+import xuan.cat.syncstaticmapview.code.branch.v17.Branch_17_MapColor;
+import xuan.cat.syncstaticmapview.code.branch.v17.Branch_17_MapConversion;
+import xuan.cat.syncstaticmapview.code.branch.v17.Branch_17_Minecraft;
+import xuan.cat.syncstaticmapview.code.branch.v17.Branch_17_Packet;
 import xuan.cat.syncstaticmapview.code.command.Command;
 import xuan.cat.syncstaticmapview.code.command.CommandSuggest;
 import xuan.cat.syncstaticmapview.code.data.ConfigData;
-
-import java.io.*;
 
 public final class Index extends JavaPlugin {
 
@@ -39,12 +49,30 @@ public final class Index extends JavaPlugin {
         try {
             // 檢測版本
             String bukkitVersion = Bukkit.getBukkitVersion();
-            if        (bukkitVersion.matches("1\\.17.*\\-R0\\.1.*")) {
+            if (bukkitVersion.matches("1\\.14.*\\-R0\\.1.*")) {
+                // 1.14
+                branchMapColor      = new Branch_14_R1_MapColor();
+                branchMapConversion = new Branch_14_R1_MapConversion(branchMapColor, branchMapConversion);
+                branchMinecraft     = new Branch_14_R1_BranchMinecraft();
+                branchPacket        = new Branch_14_R1_Packet();
+            } else if (bukkitVersion.matches("1\\.15.*\\-R0\\.1.*")) {
+                // 1.15
+                branchMapColor      = new Branch_15_R1_MapColor();
+                branchMapConversion = new Branch_15_R1_MapConversion(branchMapColor, branchMapConversion);
+                branchMinecraft     = new Branch_15_R1_BranchMinecraft();
+                branchPacket        = new Branch_15_R1_Packet();
+            } else if (bukkitVersion.matches("1\\.16.*\\-R0\\.1.*")) {
+                // 1.16
+                branchMapColor      = new Branch_16_R3_MapColor();
+                branchMapConversion = new Branch_16_R3_MapConversion(branchMapColor, branchMapConversion);
+                branchMinecraft     = new Branch_16_R3_BranchMinecraft();
+                branchPacket        = new Branch_16_R3_Packet();
+            } else if (bukkitVersion.matches("1\\.17.*\\-R0\\.1.*")) {
                 // 1.17
-                branchMapColor      = new CodeBranchMapColor();
-                branchMapConversion = new CodeBranchMapConversion(branchMapColor, branchMapConversion);
-                branchMinecraft     = new CodeBranchMinecraft();
-                branchPacket        = new CodeBranchPacket();
+                branchMapColor      = new Branch_17_MapColor();
+                branchMapConversion = new Branch_17_MapConversion(branchMapColor, branchMapConversion);
+                branchMinecraft     = new Branch_17_Minecraft();
+                branchPacket        = new Branch_17_Packet();
             } else {
                 throw new NullPointerException("Unsupported MC version");
             }
@@ -52,9 +80,6 @@ public final class Index extends JavaPlugin {
             protocolManager = ProtocolLibrary.getProtocolManager();
 
             saveDefaultConfig();
-            saveResource("config_en.yml",       false);
-            saveResource("config_zh-tw.yml",    false);
-            saveResource("config_zh-cn.yml",    false);
 
             configData      = new ConfigData(this, getConfig());
             mapDatabase     = new MapDatabase(configData, branchMapConversion, branchMapColor);
@@ -115,44 +140,5 @@ public final class Index extends JavaPlugin {
                 configData.getDatabaseConnection().disconnect();
             } catch (Exception exception) {
             }
-    }
-
-    @Override
-    public void saveResource(String resourcePath, boolean replace) {
-        if (resourcePath != null && !resourcePath.equals("")) {
-            resourcePath = resourcePath.replace('\\', '/');
-            InputStream in = this.getResource(resourcePath);
-            if (in == null) {
-                throw new IllegalArgumentException("The embedded resource '" + resourcePath + "' cannot be found in " + this.getFile());
-            } else {
-                File outFile = new File(this.getDataFolder(), resourcePath);
-                int lastIndex = resourcePath.lastIndexOf(47);
-                File outDir = new File(this.getDataFolder(), resourcePath.substring(0, lastIndex >= 0 ? lastIndex : 0));
-                if (!outDir.exists()) {
-                    outDir.mkdirs();
-                }
-
-                try {
-                    if (outFile.exists() && !replace) {
-                    } else {
-                        OutputStream out = new FileOutputStream(outFile);
-                        byte[] buf = new byte[1024];
-
-                        int len;
-                        while((len = in.read(buf)) > 0) {
-                            out.write(buf, 0, len);
-                        }
-
-                        out.close();
-                        in.close();
-                    }
-                } catch (IOException var10) {
-                    //this.logger.log(Level.SEVERE, "Could not save " + outFile.getName() + " to " + outFile, var10);
-                }
-
-            }
-        } else {
-            throw new IllegalArgumentException("ResourcePath cannot be null or empty");
-        }
     }
 }
