@@ -8,15 +8,12 @@ import xuan.cat.syncstaticmapview.database.sql.DatabaseConnection;
 import xuan.cat.syncstaticmapview.database.sql.MySQL;
 
 import java.sql.SQLException;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 
 public final class ConfigData {
     private FileConfiguration fileConfiguration;
     private final JavaPlugin plugin;
-    private Map<String, String> languagesMap = new HashMap<>();
     private MySQL mySQL;
     private String databaseName;
     private DatabaseConnection databaseConnection;
@@ -33,10 +30,6 @@ public final class ConfigData {
         this.plugin = plugin;
         this.fileConfiguration = fileConfiguration;
         load();
-    }
-
-    public String getLanguage(String key) {
-        return languagesMap.computeIfAbsent(key, v -> "");
     }
 
     public void reload() throws SQLException {
@@ -58,15 +51,6 @@ public final class ConfigData {
         }
 
         boolean createTableCanPartition = fileConfiguration.getBoolean("create-table-can-partition", true);
-
-        Map<String, String> languagesMap = new HashMap<>();
-        ConfigurationSection languages = fileConfiguration.getConfigurationSection("languages");
-        if (languages == null)
-            throw new NullPointerException("config.yml>languages");
-        for (String key : languages.getKeys(false)) {
-            languagesMap.put(key, languages.getString(key, ""));
-        }
-
         long cacheVitalityTime = fileConfiguration.getLong("cache-vitality-time", 60000L);
         int maximumRowAllowed = fileConfiguration.getInt("maximum-row-allowed", 8);
         int maximumColumnAllowed = fileConfiguration.getInt("maximum-column-allowed", 8);
@@ -82,7 +66,6 @@ public final class ConfigData {
         this.createTableCanPartition = createTableCanPartition;
         this.databaseName = databaseName;
         this.databaseConnection = databaseConnection;
-        this.languagesMap = languagesMap;
         this.cacheVitalityTime = cacheVitalityTime;
         this.maximumRowAllowed = maximumRowAllowed;
         this.maximumColumnAllowed = maximumColumnAllowed;

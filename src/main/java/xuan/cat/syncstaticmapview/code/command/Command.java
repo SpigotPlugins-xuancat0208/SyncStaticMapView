@@ -61,23 +61,23 @@ public final class Command implements CommandExecutor {
     public boolean onCommand(CommandSender sender, org.bukkit.command.Command command, String message, String[] parameters) {
         if (parameters.length < 1) {
             // 缺少參數
-            sender.sendMessage(ChatColor.RED + configData.getLanguage("missing_parameters"));
+            sender.sendMessage(ChatColor.RED + mapServer.getLang(sender, "command.missing_parameters"));
         } else {
             switch (parameters[0]) {
                 case "reload":
                     // 重新讀取配置文件
                     if (!sender.hasPermission("command.mapview.*") && !sender.hasPermission("command.mapview.reload")) {
                         // 無權限
-                        sender.sendMessage(ChatColor.RED + configData.getLanguage("no_permission"));
+                        sender.sendMessage(ChatColor.RED + mapServer.getLang(sender, "command.no_permission"));
                     } else {
                         try {
                             configData.reload();
                             // 已重新讀取設定
-                            sender.sendMessage(ChatColor.YELLOW + configData.getLanguage("reread_configuration_successfully"));
+                            sender.sendMessage(ChatColor.YELLOW + mapServer.getLang(sender, "command.reread_configuration_successfully"));
                         } catch (Exception ex) {
                             ex.printStackTrace();
                             // 重新讀取設定時發生錯誤
-                            sender.sendMessage(ChatColor.RED + configData.getLanguage("reread_configuration_error"));
+                            sender.sendMessage(ChatColor.RED + mapServer.getLang(sender, "command.reread_configuration_error"));
                         }
                     }
                     break;
@@ -86,10 +86,10 @@ public final class Command implements CommandExecutor {
                     // 重新讀取配置文件
                     if (!sender.hasPermission("command.mapview.*") && !sender.hasPermission("command.mapview.get_own") && !sender.hasPermission("command.mapview.get_all")) {
                         // 無權限
-                        sender.sendMessage(ChatColor.RED + configData.getLanguage("no_permission"));
+                        sender.sendMessage(ChatColor.RED + mapServer.getLang(sender, "command.no_permission"));
                     } else if (!(sender instanceof Player)) {
                         // 只能以玩家身分執行此指令
-                        sender.sendMessage(ChatColor.RED + configData.getLanguage("only_be_used_by_player"));
+                        sender.sendMessage(ChatColor.RED + mapServer.getLang(sender, "command.only_be_used_by_player"));
                     } else {
                         Player player = (Player) sender;
                         if (parameters.length >= 2) {
@@ -99,37 +99,37 @@ public final class Command implements CommandExecutor {
                                     if (mapDatabase.getPlayerId(player.getUniqueId()) != mapDatabase.getMapUploaderID(mapId)) {
                                         if (!sender.hasPermission("command.mapview.*") && !sender.hasPermission("command.mapview.get_all")) {
                                             // 你無法獲取此地圖
-                                            sender.sendMessage(ChatColor.RED + configData.getLanguage("can_not_get_this_map"));
+                                            sender.sendMessage(ChatColor.RED + mapServer.getLang(sender, "command.can_not_get_this_map"));
                                         } else {
                                             giveMapItem(player, branchMinecraft.setMapId(new ItemStack(Material.FILLED_MAP), -mapId));
                                             // 已給予: ?
-                                            sender.sendMessage(ChatColor.YELLOW + configData.getLanguage("given") + mapId);
+                                            sender.sendMessage(ChatColor.YELLOW + mapServer.getLang(sender, "command.given") + mapId);
                                         }
                                     } else {
                                         if (!sender.hasPermission("command.mapview.*") && !sender.hasPermission("command.mapview.get_own")) {
                                             // 你無法獲取此地圖
-                                            sender.sendMessage(ChatColor.RED + configData.getLanguage("can_not_get_this_map"));
+                                            sender.sendMessage(ChatColor.RED + mapServer.getLang(sender, "command.can_not_get_this_map"));
                                         } else {
                                             giveMapItem(player, branchMinecraft.setMapId(new ItemStack(Material.FILLED_MAP), -mapId));
                                             // 已給予: ?
-                                            sender.sendMessage(ChatColor.YELLOW + configData.getLanguage("given") + mapId);
+                                            sender.sendMessage(ChatColor.YELLOW + mapServer.getLang(sender, "command.given") + mapId);
                                         }
                                     }
                                 } else {
                                     // 地圖資料不存在: ?
-                                    sender.sendMessage(ChatColor.RED + configData.getLanguage("map_data_not_exist") + mapId);
+                                    sender.sendMessage(ChatColor.RED + mapServer.getLang(sender, "command.map_data_not_exist") + mapId);
                                 }
                             } catch (NumberFormatException exception) {
                                 // 參數不是數字
-                                sender.sendMessage(ChatColor.RED + configData.getLanguage("parameter_not_number") + parameters[1]);
+                                sender.sendMessage(ChatColor.RED + mapServer.getLang(sender, "command.parameter_not_number") + parameters[1]);
                             } catch (SQLException exception) {
                                 // 資料庫錯誤
-                                sender.sendMessage(ChatColor.RED + configData.getLanguage("database_error"));
+                                sender.sendMessage(ChatColor.RED + mapServer.getLang(sender, "command.database_error"));
                                 exception.printStackTrace();
                             }
                         } else {
                             // 缺少參數
-                            sender.sendMessage(ChatColor.RED + configData.getLanguage("missing_parameters"));
+                            sender.sendMessage(ChatColor.RED + mapServer.getLang(sender, "command.missing_parameters"));
                         }
                     }
                     break;
@@ -138,7 +138,7 @@ public final class Command implements CommandExecutor {
                     // 重新讀取配置文件
                     if (!sender.hasPermission("command.mapview.*") && !sender.hasPermission("command.mapview.delete_own") && !sender.hasPermission("command.mapview.delete_all")) {
                         // 無權限
-                        sender.sendMessage(ChatColor.RED + configData.getLanguage("no_permission"));
+                        sender.sendMessage(ChatColor.RED + mapServer.getLang(sender, "command.no_permission"));
                     } else {
                         if (parameters.length >= 2) {
                             try {
@@ -151,13 +151,13 @@ public final class Command implements CommandExecutor {
                                         if (mapDatabase.getPlayerId(player.getUniqueId()) != uploaderID) {
                                             if (!sender.hasPermission("command.mapview.*") && !sender.hasPermission("command.mapview.delete_all")) {
                                                 // 你無法刪除此地圖
-                                                sender.sendMessage(ChatColor.RED + configData.getLanguage("can_not_delete_this_map"));
+                                                sender.sendMessage(ChatColor.RED + mapServer.getLang(sender, "command.can_not_delete_this_map"));
                                                 return true;
                                             }
                                         } else {
                                             if (!sender.hasPermission("command.mapview.*") && !sender.hasPermission("command.mapview.delete_own")) {
                                                 // 你無法刪除此地圖
-                                                sender.sendMessage(ChatColor.RED + configData.getLanguage("can_not_delete_this_map"));
+                                                sender.sendMessage(ChatColor.RED + mapServer.getLang(sender, "command.can_not_delete_this_map"));
                                                 return true;
                                             }
                                         }
@@ -167,23 +167,23 @@ public final class Command implements CommandExecutor {
                                     mapDatabase.removeMapData(mapId);
                                     mapDatabase.removeMapRedirect(mapId);
                                     // 已刪除: ?
-                                    sender.sendMessage(ChatColor.YELLOW + configData.getLanguage("deleted") + mapId);
+                                    sender.sendMessage(ChatColor.YELLOW + mapServer.getLang(sender, "command.deleted") + mapId);
 
                                 } else {
                                     // 地圖資料不存在: ?
-                                    sender.sendMessage(ChatColor.RED + configData.getLanguage("map_data_not_exist") + mapId);
+                                    sender.sendMessage(ChatColor.RED + mapServer.getLang(sender, "command.map_data_not_exist") + mapId);
                                 }
                             } catch (NumberFormatException exception) {
                                 // 參數不是數字
-                                sender.sendMessage(ChatColor.RED + configData.getLanguage("parameter_not_number") + parameters[1]);
+                                sender.sendMessage(ChatColor.RED + mapServer.getLang(sender, "command.parameter_not_number") + parameters[1]);
                             } catch (SQLException exception) {
                                 // 資料庫錯誤
-                                sender.sendMessage(ChatColor.RED + configData.getLanguage("database_error"));
+                                sender.sendMessage(ChatColor.RED + mapServer.getLang(sender, "command.database_error"));
                                 exception.printStackTrace();
                             }
                         } else {
                             // 缺少參數
-                            sender.sendMessage(ChatColor.RED + configData.getLanguage("missing_parameters"));
+                            sender.sendMessage(ChatColor.RED + mapServer.getLang(sender, "command.missing_parameters"));
                         }
                     }
                     break;
@@ -197,13 +197,13 @@ public final class Command implements CommandExecutor {
                                 // 網址
                                 if (!sender.hasPermission("command.mapview.*") && !sender.hasPermission("command.mapview.create.*") && !sender.hasPermission("command.mapview.create.url")) {
                                     // 無權限
-                                    sender.sendMessage(ChatColor.RED + configData.getLanguage("no_permission"));
+                                    sender.sendMessage(ChatColor.RED + mapServer.getLang(sender, "command.no_permission"));
                                 } else {
                                     if (parameters.length >= 4) {
                                         String stitched = stitchedRight(parameters, 3);
                                         if (stitched.length() == 0) {
                                             // 缺少參數
-                                            sender.sendMessage(ChatColor.RED + configData.getLanguage("missing_parameters"));
+                                            sender.sendMessage(ChatColor.RED + mapServer.getLang(sender, "command.missing_parameters"));
                                         } else {
                                             boolean allowed = false;
                                             if (sender.hasPermission("mapview.ignore_url_allowed")) {
@@ -224,7 +224,7 @@ public final class Command implements CommandExecutor {
                                                         if (toAsync != null) {
                                                             if (sender instanceof Player && !sender.hasPermission("mapview.ignore_create_rate_limit") && !mapServer.markCoolingTime((Player) sender, configData.getCreateRateLimit())) {
                                                                 // 創建的速度太快了, 等一下
-                                                                sender.sendMessage(ChatColor.RED + configData.getLanguage("creation_speed_too_fast"));
+                                                                sender.sendMessage(ChatColor.RED + mapServer.getLang(sender, "command.creation_speed_too_fast"));
                                                             } else {
                                                                 mapServer.processURL(() -> {
                                                                     try {
@@ -245,28 +245,28 @@ public final class Command implements CommandExecutor {
                                                                         }
                                                                     } catch (IOException exception) {
                                                                         // 圖片下載失敗
-                                                                        sender.sendMessage(ChatColor.RED + configData.getLanguage("image_download_failed") + exception.getMessage());
+                                                                        sender.sendMessage(ChatColor.RED + mapServer.getLang(sender, "command.image_download_failed") + exception.getMessage());
                                                                     }
                                                                 });
                                                             }
                                                         }
                                                     } catch (SQLException exception) {
                                                         // 資料庫錯誤
-                                                        sender.sendMessage(ChatColor.RED + configData.getLanguage("database_error"));
+                                                        sender.sendMessage(ChatColor.RED + mapServer.getLang(sender, "command.database_error"));
                                                         exception.printStackTrace();
                                                     }
                                                 } catch (MalformedURLException exception) {
                                                     // 輸入的參數不是網址
-                                                    sender.sendMessage(ChatColor.RED + configData.getLanguage("parameter_not_url") + stitched);
+                                                    sender.sendMessage(ChatColor.RED + mapServer.getLang(sender, "command.parameter_not_url") + stitched);
                                                 }
                                             } else {
                                                 // 不允許使用此網址
-                                                sender.sendMessage(ChatColor.RED + configData.getLanguage("url_not_allowed"));
+                                                sender.sendMessage(ChatColor.RED + mapServer.getLang(sender, "command.url_not_allowed"));
                                             }
                                         }
                                     } else {
                                         // 缺少參數
-                                        sender.sendMessage(ChatColor.RED + configData.getLanguage("missing_parameters"));
+                                        sender.sendMessage(ChatColor.RED + mapServer.getLang(sender, "command.missing_parameters"));
                                     }
                                 }
                                 break;
@@ -275,13 +275,13 @@ public final class Command implements CommandExecutor {
                                 // 文件
                                 if (!sender.hasPermission("command.mapview.*") && !sender.hasPermission("command.mapview.create.*") && !sender.hasPermission("command.mapview.create.file")) {
                                     // 無權限
-                                    sender.sendMessage(ChatColor.RED + configData.getLanguage("no_permission"));
+                                    sender.sendMessage(ChatColor.RED + mapServer.getLang(sender, "command.no_permission"));
                                 } else {
                                     if (parameters.length >= 4) {
                                         String stitched = stitchedRight(parameters, 3);
                                         if (stitched.length() == 0) {
                                             // 缺少參數
-                                            sender.sendMessage(ChatColor.RED + configData.getLanguage("missing_parameters"));
+                                            sender.sendMessage(ChatColor.RED + mapServer.getLang(sender, "command.missing_parameters"));
                                         } else {
                                             File file = new File(stitched);
                                             try {
@@ -289,27 +289,27 @@ public final class Command implements CommandExecutor {
                                                 if (toAsync != null) {
                                                     if (sender instanceof Player && !sender.hasPermission("mapview.ignore_create_rate_limit") && !mapServer.markCoolingTime((Player) sender, configData.getCreateRateLimit())) {
                                                         // 創建的速度太快了, 等一下
-                                                        sender.sendMessage(ChatColor.RED + configData.getLanguage("creation_speed_too_fast"));
+                                                        sender.sendMessage(ChatColor.RED + mapServer.getLang(sender, "command.creation_speed_too_fast"));
                                                     } else {
                                                         Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
                                                             try {
                                                                 toAsync.accept(ImageIO.read(file));
                                                             } catch (IOException exception) {
                                                                 // 圖片讀取失敗
-                                                                sender.sendMessage(ChatColor.RED + configData.getLanguage("image_read_failed") + exception.getMessage());
+                                                                sender.sendMessage(ChatColor.RED + mapServer.getLang(sender, "command.image_read_failed") + exception.getMessage());
                                                             }
                                                         });
                                                     }
                                                 }
                                             } catch (SQLException exception) {
                                                 // 資料庫錯誤
-                                                sender.sendMessage(ChatColor.RED + configData.getLanguage("database_error"));
+                                                sender.sendMessage(ChatColor.RED + mapServer.getLang(sender, "command.database_error"));
                                                 exception.printStackTrace();
                                             }
                                         }
                                     } else {
                                         // 缺少參數
-                                        sender.sendMessage(ChatColor.RED + configData.getLanguage("missing_parameters"));
+                                        sender.sendMessage(ChatColor.RED + mapServer.getLang(sender, "command.missing_parameters"));
                                     }
                                 }
                                 break;
@@ -318,10 +318,10 @@ public final class Command implements CommandExecutor {
                                 // 手上
                                 if (!sender.hasPermission("command.mapview.*") && !sender.hasPermission("command.mapview.create.*") && !sender.hasPermission("command.mapview.create.hand")) {
                                     // 無權限
-                                    sender.sendMessage(ChatColor.RED + configData.getLanguage("no_permission"));
+                                    sender.sendMessage(ChatColor.RED + mapServer.getLang(sender, "command.no_permission"));
                                 } else if (!(sender instanceof Player)) {
                                     // 只能以玩家身分執行此指令
-                                    sender.sendMessage(ChatColor.RED + configData.getLanguage("only_be_used_by_player"));
+                                    sender.sendMessage(ChatColor.RED + mapServer.getLang(sender, "command.only_be_used_by_player"));
                                 } else {
                                     Player player = (Player) sender;
                                     ItemStack item = player.getInventory().getItemInMainHand();
@@ -330,11 +330,11 @@ public final class Command implements CommandExecutor {
                                         MapView mapView = mapMeta.hasMapView() ? mapMeta.getMapView() : null;
                                         if (branchMinecraft.isDisableCopy(item)) {
                                             // 此地圖不可複製
-                                            sender.sendMessage(ChatColor.RED + configData.getLanguage("map_cannot_copy"));
+                                            sender.sendMessage(ChatColor.RED + mapServer.getLang(sender, "command.map_cannot_copy"));
                                         } else if (mapView != null) {
                                             if (!player.hasPermission("mapview.ignore_create_rate_limit") && !mapServer.markCoolingTime(player, configData.getCreateRateLimit())) {
                                                 // 創建的速度太快了, 等一下
-                                                sender.sendMessage(ChatColor.RED + configData.getLanguage("creation_speed_too_fast"));
+                                                sender.sendMessage(ChatColor.RED + mapServer.getLang(sender, "command.creation_speed_too_fast"));
                                             } else {
                                                 try {
                                                     if (!mapDatabase.consumeStatisticsUsed(player.getUniqueId(), 1)) {
@@ -342,12 +342,12 @@ public final class Command implements CommandExecutor {
                                                         if (statistics != null) {
                                                             if (!player.hasPermission("mapview.ignore_upload_limit")) {
                                                                 // 超出允許的數量
-                                                                sender.sendMessage(ChatColor.RED + configData.getLanguage("your_upload_has_reached_limit") + statistics[1] + " + 1 / " + statistics[2]);
+                                                                sender.sendMessage(ChatColor.RED + mapServer.getLang(sender, "command.your_upload_has_reached_limit") + statistics[1] + " + 1 / " + statistics[2]);
                                                                 return true;
                                                             }
                                                         } else if (1 > configData.getDefaultPlayerLimit() && !player.hasPermission("mapview.ignore_upload_limit")) {
                                                             // 超出允許的數量
-                                                            sender.sendMessage(ChatColor.RED + configData.getLanguage("your_upload_has_reached_limit") + " 0 + 1 / " + configData.getDefaultPlayerLimit());
+                                                            sender.sendMessage(ChatColor.RED + mapServer.getLang(sender, "command.your_upload_has_reached_limit") + " 0 + 1 / " + configData.getDefaultPlayerLimit());
                                                             return true;
                                                         } else {
                                                             // 加入資料紀錄
@@ -360,39 +360,39 @@ public final class Command implements CommandExecutor {
                                                         try {
                                                             int mapId = mapDatabase.addMapData(mapData, mapDatabase.getPlayerId(player.getUniqueId()));
                                                             // 創建完畢, 資料庫地圖編號為:
-                                                            sender.sendMessage(ChatColor.YELLOW + configData.getLanguage("created_successfully") + mapId);
+                                                            sender.sendMessage(ChatColor.YELLOW + mapServer.getLang(sender, "command.created_successfully") + mapId);
                                                             giveMapItem(player, branchMinecraft.setMapId(new ItemStack(Material.FILLED_MAP), -mapId));
                                                         } catch (SQLException exception) {
                                                             // 資料庫錯誤
-                                                            sender.sendMessage(ChatColor.RED + configData.getLanguage("database_error"));
+                                                            sender.sendMessage(ChatColor.RED + mapServer.getLang(sender, "command.database_error"));
                                                             exception.printStackTrace();
                                                         }
                                                     });
 
                                                 } catch (SQLException exception) {
                                                     // 資料庫錯誤
-                                                    sender.sendMessage(ChatColor.RED + configData.getLanguage("database_error"));
+                                                    sender.sendMessage(ChatColor.RED + mapServer.getLang(sender, "command.database_error"));
                                                     exception.printStackTrace();
                                                 }
                                             }
                                         } else {
                                             // 此地圖沒有原始資料
-                                            sender.sendMessage(ChatColor.RED + configData.getLanguage("map_no_original_data"));
+                                            sender.sendMessage(ChatColor.RED + mapServer.getLang(sender, "command.map_no_original_data"));
                                         }
                                     } else {
                                         // 手上拿著的物品不是地圖
-                                        sender.sendMessage(ChatColor.RED + configData.getLanguage("not_filled_map_on_hand"));
+                                        sender.sendMessage(ChatColor.RED + mapServer.getLang(sender, "command.not_filled_map_on_hand"));
                                     }
                                 }
                                 break;
                             default:
                                 // 未知的參數類型
-                                sender.sendMessage(ChatColor.RED + configData.getLanguage("unknown_parameter_type") + " " + parameters[1]);
+                                sender.sendMessage(ChatColor.RED + mapServer.getLang(sender, "command.unknown_parameter_type") + " " + parameters[1]);
                                 break;
                         }
                     } else {
                         // 缺少參數
-                        sender.sendMessage(ChatColor.RED + configData.getLanguage("missing_parameters"));
+                        sender.sendMessage(ChatColor.RED + mapServer.getLang(sender, "command.missing_parameters"));
                     }
                     break;
 
@@ -405,18 +405,18 @@ public final class Command implements CommandExecutor {
                                 case "list":
                                     if (!sender.hasPermission("command.mapview.*") && !sender.hasPermission("command.mapview.redirect.*") && !sender.hasPermission("command.mapview.redirect.list")) {
                                         // 無權限
-                                        sender.sendMessage(ChatColor.RED + configData.getLanguage("no_permission"));
+                                        sender.sendMessage(ChatColor.RED + mapServer.getLang(sender, "command.no_permission"));
                                     } else if (!mapDatabase.existMapData(mapId)) {
                                         // 地圖資料不存在: ?
-                                        sender.sendMessage(ChatColor.RED + configData.getLanguage("map_data_not_exist") + mapId);
+                                        sender.sendMessage(ChatColor.RED + mapServer.getLang(sender, "command.map_data_not_exist") + mapId);
                                     } else {
                                         List<MapRedirect> redirects = mapServer.cacheMapRedirects(mapId).redirects;
                                         if (redirects.size() == 0) {
                                             // 沒有設置任何的重定向
-                                            sender.sendMessage(ChatColor.YELLOW + configData.getLanguage("not_set_any_redirect"));
+                                            sender.sendMessage(ChatColor.YELLOW + mapServer.getLang(sender, "command.not_set_any_redirect"));
                                         } else {
                                             // 重定向清單
-                                            sender.sendMessage(ChatColor.YELLOW + configData.getLanguage("redirect_list"));
+                                            sender.sendMessage(ChatColor.YELLOW + mapServer.getLang(sender, "command.redirect_list"));
                                             for (MapRedirect redirect : redirects) {
                                                 sender.sendMessage(" - " + ChatColor.YELLOW + redirect.getPriority() + ": " + redirect.getPermission() + " => " + redirect.getRedirectId());
                                             }
@@ -427,10 +427,10 @@ public final class Command implements CommandExecutor {
                                 case "set":
                                     if (!sender.hasPermission("command.mapview.*") && !sender.hasPermission("command.mapview.redirect.*") && !sender.hasPermission("command.mapview.redirect.set")) {
                                         // 無權限
-                                        sender.sendMessage(ChatColor.RED + configData.getLanguage("no_permission"));
+                                        sender.sendMessage(ChatColor.RED + mapServer.getLang(sender, "command.no_permission"));
                                     } else if (!mapDatabase.existMapData(mapId)) {
                                         // 地圖資料不存在: ?
-                                        sender.sendMessage(ChatColor.RED + configData.getLanguage("map_data_not_exist") + mapId);
+                                        sender.sendMessage(ChatColor.RED + mapServer.getLang(sender, "command.map_data_not_exist") + mapId);
                                     } else {
                                         if (parameters.length >= 6) {
                                             try {
@@ -445,22 +445,22 @@ public final class Command implements CommandExecutor {
                                                         mapServer.createCache(mapId);
                                                         mapDatabase.markMapUpdate(mapId);
                                                         // 重導向設置成功
-                                                        sender.sendMessage(ChatColor.YELLOW + configData.getLanguage("redirect_set_successfully"));
+                                                        sender.sendMessage(ChatColor.YELLOW + mapServer.getLang(sender, "command.redirect_set_successfully"));
                                                     } else {
                                                         // 地圖資料不存在
-                                                        sender.sendMessage(ChatColor.RED + configData.getLanguage("map_data_not_exist") + redirect.getRedirectId());
+                                                        sender.sendMessage(ChatColor.RED + mapServer.getLang(sender, "command.map_data_not_exist") + redirect.getRedirectId());
                                                     }
                                                 } catch (NumberFormatException exception) {
                                                     // 參數不是數字
-                                                    sender.sendMessage(ChatColor.RED + configData.getLanguage("parameter_not_number") + parameters[5]);
+                                                    sender.sendMessage(ChatColor.RED + mapServer.getLang(sender, "command.parameter_not_number") + parameters[5]);
                                                 }
                                             } catch (NumberFormatException exception) {
                                                 // 參數不是數字
-                                                sender.sendMessage(ChatColor.RED + configData.getLanguage("parameter_not_number") + parameters[3]);
+                                                sender.sendMessage(ChatColor.RED + mapServer.getLang(sender, "command.parameter_not_number") + parameters[3]);
                                             }
                                         } else {
                                             // 缺少參數
-                                            sender.sendMessage(ChatColor.RED + configData.getLanguage("missing_parameters"));
+                                            sender.sendMessage(ChatColor.RED + mapServer.getLang(sender, "command.missing_parameters"));
                                         }
                                     }
                                     break;
@@ -468,20 +468,20 @@ public final class Command implements CommandExecutor {
                                 case "delete":
                                     if (!sender.hasPermission("command.mapview.*") && !sender.hasPermission("command.mapview.redirect.*") && !sender.hasPermission("command.mapview.redirect.delete")) {
                                         // 無權限
-                                        sender.sendMessage(ChatColor.RED + configData.getLanguage("no_permission"));
+                                        sender.sendMessage(ChatColor.RED + mapServer.getLang(sender, "command.no_permission"));
                                     } else if (!mapDatabase.existMapData(mapId)) {
                                         // 地圖資料不存在: ?
-                                        sender.sendMessage(ChatColor.RED + configData.getLanguage("map_data_not_exist") + mapId);
+                                        sender.sendMessage(ChatColor.RED + mapServer.getLang(sender, "command.map_data_not_exist") + mapId);
                                     } else {
                                         if (parameters.length >= 4) {
                                             mapDatabase.removeMapRedirect(mapId, parameters[3]);
                                             mapServer.createCache(mapId);
                                             mapDatabase.markMapUpdate(mapId);
                                             // 重導向刪除成功
-                                            sender.sendMessage(ChatColor.YELLOW + configData.getLanguage("redirect_delete_successfully"));
+                                            sender.sendMessage(ChatColor.YELLOW + mapServer.getLang(sender, "command.redirect_delete_successfully"));
                                         } else {
                                             // 缺少參數
-                                            sender.sendMessage(ChatColor.RED + configData.getLanguage("missing_parameters"));
+                                            sender.sendMessage(ChatColor.RED + mapServer.getLang(sender, "command.missing_parameters"));
                                         }
                                     }
                                     break;
@@ -489,35 +489,35 @@ public final class Command implements CommandExecutor {
                                 case "delete_all":
                                     if (!sender.hasPermission("command.mapview.*") && !sender.hasPermission("command.mapview.redirect.*") && !sender.hasPermission("command.mapview.redirect.delete_all")) {
                                         // 無權限
-                                        sender.sendMessage(ChatColor.RED + configData.getLanguage("no_permission"));
+                                        sender.sendMessage(ChatColor.RED + mapServer.getLang(sender, "command.no_permission"));
                                     } else if (!mapDatabase.existMapData(mapId)) {
                                         // 地圖資料不存在: ?
-                                        sender.sendMessage(ChatColor.RED + configData.getLanguage("map_data_not_exist") + mapId);
+                                        sender.sendMessage(ChatColor.RED + mapServer.getLang(sender, "command.map_data_not_exist") + mapId);
                                     } else {
                                         mapDatabase.removeMapRedirect(mapId);
                                         mapServer.createCache(mapId);
                                         mapDatabase.markMapUpdate(mapId);
                                         // 重導向刪除成功
-                                        sender.sendMessage(ChatColor.YELLOW + configData.getLanguage("redirect_delete_successfully"));
+                                        sender.sendMessage(ChatColor.YELLOW + mapServer.getLang(sender, "command.redirect_delete_successfully"));
                                     }
                                     break;
 
                                 default:
                                     // 未知的參數類型
-                                    sender.sendMessage(ChatColor.RED + configData.getLanguage("unknown_parameter_type") + " " + parameters[0]);
+                                    sender.sendMessage(ChatColor.RED + mapServer.getLang(sender, "command.unknown_parameter_type") + " " + parameters[0]);
                                     break;
                             }
                         } catch (NumberFormatException exception) {
                             // 參數不是數字
-                            sender.sendMessage(ChatColor.RED + configData.getLanguage("parameter_not_number") + parameters[1]);
+                            sender.sendMessage(ChatColor.RED + mapServer.getLang(sender, "command.parameter_not_number") + parameters[1]);
                         } catch (SQLException exception) {
                             // 資料庫錯誤
-                            sender.sendMessage(ChatColor.RED + configData.getLanguage("database_error"));
+                            sender.sendMessage(ChatColor.RED + mapServer.getLang(sender, "command.database_error"));
                             exception.printStackTrace();
                         }
                     } else {
                         // 缺少參數
-                        sender.sendMessage(ChatColor.RED + configData.getLanguage("missing_parameters"));
+                        sender.sendMessage(ChatColor.RED + mapServer.getLang(sender, "command.missing_parameters"));
                     }
                     break;
 
@@ -527,10 +527,10 @@ public final class Command implements CommandExecutor {
                             case "set":
                                 if (!sender.hasPermission("command.mapview.*") && !sender.hasPermission("command.mapview.limit.*") && !sender.hasPermission("command.mapview.limit.set")) {
                                     // 無權限
-                                    sender.sendMessage(ChatColor.RED + configData.getLanguage("no_permission"));
+                                    sender.sendMessage(ChatColor.RED + mapServer.getLang(sender, "command.no_permission"));
                                 } else if (parameters.length < 4) {
                                     // 缺少參數
-                                    sender.sendMessage(ChatColor.RED + configData.getLanguage("missing_parameters"));
+                                    sender.sendMessage(ChatColor.RED + mapServer.getLang(sender, "command.missing_parameters"));
                                 } else {
                                     UUID playerUUID = parseUUID(sender, parameters[2]);
                                     if (playerUUID != null) {
@@ -542,14 +542,14 @@ public final class Command implements CommandExecutor {
                                             if (statistics == null)
                                                 statistics = new int[] {0, 0};
                                             // 設置完畢, 當前的上傳限制: ?
-                                            sender.sendMessage(ChatColor.YELLOW + configData.getLanguage("set_successfully_now_limit") + statistics[1] + " / " + statistics[2]);
+                                            sender.sendMessage(ChatColor.YELLOW + mapServer.getLang(sender, "command.set_successfully_now_limit") + statistics[1] + " / " + statistics[2]);
                                         } catch (SQLException exception) {
                                             // 資料庫錯誤
-                                            sender.sendMessage(ChatColor.RED + configData.getLanguage("database_error"));
+                                            sender.sendMessage(ChatColor.RED + mapServer.getLang(sender, "command.database_error"));
                                             exception.printStackTrace();
                                         } catch (NumberFormatException exception) {
                                             // 參數不是數字
-                                            sender.sendMessage(ChatColor.RED + configData.getLanguage("parameter_not_number") + parameters[4]);
+                                            sender.sendMessage(ChatColor.RED + mapServer.getLang(sender, "command.parameter_not_number") + parameters[4]);
                                         }
                                     }
                                 }
@@ -558,10 +558,10 @@ public final class Command implements CommandExecutor {
                             case "increase":
                                 if (!sender.hasPermission("command.mapview.*") && !sender.hasPermission("command.mapview.limit.*") && !sender.hasPermission("command.mapview.limit.increase")) {
                                     // 無權限
-                                    sender.sendMessage(ChatColor.RED + configData.getLanguage("no_permission"));
+                                    sender.sendMessage(ChatColor.RED + mapServer.getLang(sender, "command.no_permission"));
                                 } else if (parameters.length < 4) {
                                     // 缺少參數
-                                    sender.sendMessage(ChatColor.RED + configData.getLanguage("missing_parameters"));
+                                    sender.sendMessage(ChatColor.RED + mapServer.getLang(sender, "command.missing_parameters"));
                                 } else {
                                     UUID playerUUID = parseUUID(sender, parameters[2]);
                                     if (playerUUID != null) {
@@ -573,14 +573,14 @@ public final class Command implements CommandExecutor {
                                             if (statistics == null)
                                                 statistics = new int[] {0, configData.getDefaultPlayerLimit()};
                                             // 設置完畢, 當前的上傳限制: ?
-                                            sender.sendMessage(ChatColor.YELLOW + configData.getLanguage("set_successfully_now_limit") + statistics[1] + " / " + statistics[2]);
+                                            sender.sendMessage(ChatColor.YELLOW + mapServer.getLang(sender, "command.set_successfully_now_limit") + statistics[1] + " / " + statistics[2]);
                                         } catch (SQLException exception) {
                                             // 資料庫錯誤
-                                            sender.sendMessage(ChatColor.RED + configData.getLanguage("database_error"));
+                                            sender.sendMessage(ChatColor.RED + mapServer.getLang(sender, "command.database_error"));
                                             exception.printStackTrace();
                                         } catch (NumberFormatException exception) {
                                             // 參數不是數字
-                                            sender.sendMessage(ChatColor.RED + configData.getLanguage("parameter_not_number") + parameters[4]);
+                                            sender.sendMessage(ChatColor.RED + mapServer.getLang(sender, "command.parameter_not_number") + parameters[4]);
                                         }
                                     }
                                 }
@@ -589,10 +589,10 @@ public final class Command implements CommandExecutor {
                             case "subtract":
                                 if (!sender.hasPermission("command.mapview.*") && !sender.hasPermission("command.mapview.limit.*") && !sender.hasPermission("command.mapview.limit.subtract")) {
                                     // 無權限
-                                    sender.sendMessage(ChatColor.RED + configData.getLanguage("no_permission"));
+                                    sender.sendMessage(ChatColor.RED + mapServer.getLang(sender, "command.no_permission"));
                                 } else if (parameters.length < 4) {
                                     // 缺少參數
-                                    sender.sendMessage(ChatColor.RED + configData.getLanguage("missing_parameters"));
+                                    sender.sendMessage(ChatColor.RED + mapServer.getLang(sender, "command.missing_parameters"));
                                 } else {
                                     UUID playerUUID = parseUUID(sender, parameters[2]);
                                     if (playerUUID != null) {
@@ -609,14 +609,14 @@ public final class Command implements CommandExecutor {
                                             if (statistics == null)
                                                 statistics = new int[] {0, configData.getDefaultPlayerLimit()};
                                             // 設置完畢, 當前的上傳限制: ?
-                                            sender.sendMessage(ChatColor.YELLOW + configData.getLanguage("set_successfully_now_limit") + statistics[1] + " / " + statistics[2]);
+                                            sender.sendMessage(ChatColor.YELLOW + mapServer.getLang(sender, "command.set_successfully_now_limit") + statistics[1] + " / " + statistics[2]);
                                         } catch (SQLException exception) {
                                             // 資料庫錯誤
-                                            sender.sendMessage(ChatColor.RED + configData.getLanguage("database_error"));
+                                            sender.sendMessage(ChatColor.RED + mapServer.getLang(sender, "command.database_error"));
                                             exception.printStackTrace();
                                         } catch (NumberFormatException exception) {
                                             // 參數不是數字
-                                            sender.sendMessage(ChatColor.RED + configData.getLanguage("parameter_not_number") + parameters[4]);
+                                            sender.sendMessage(ChatColor.RED + mapServer.getLang(sender, "command.parameter_not_number") + parameters[4]);
                                         }
                                     }
                                 }
@@ -626,27 +626,27 @@ public final class Command implements CommandExecutor {
                                 if (parameters.length < 3) {
                                     if (!sender.hasPermission("command.mapview.*") && !sender.hasPermission("command.mapview.limit.*") && !sender.hasPermission("command.mapview.limit.check_own")) {
                                         // 無權限
-                                        sender.sendMessage(ChatColor.RED + configData.getLanguage("no_permission"));
+                                        sender.sendMessage(ChatColor.RED + mapServer.getLang(sender, "command.no_permission"));
                                     } else if (!(sender instanceof Player)) {
                                         // 只能以玩家身分執行此指令
-                                        sender.sendMessage(ChatColor.RED + configData.getLanguage("only_be_used_by_player"));
+                                        sender.sendMessage(ChatColor.RED + mapServer.getLang(sender, "command.only_be_used_by_player"));
                                     } else {
                                         try {
                                             int[] statistics = mapDatabase.getStatistics(((Player) sender).getUniqueId());
                                             if (statistics == null)
                                                 statistics = new int[] {0, configData.getDefaultPlayerLimit()};
                                             // 上傳限制: ?
-                                            sender.sendMessage(ChatColor.YELLOW + configData.getLanguage("now_limit") + statistics[1] + " / " + statistics[2]);
+                                            sender.sendMessage(ChatColor.YELLOW + mapServer.getLang(sender, "command.now_limit") + statistics[1] + " / " + statistics[2]);
                                         } catch (SQLException exception) {
                                             // 資料庫錯誤
-                                            sender.sendMessage(ChatColor.RED + configData.getLanguage("database_error"));
+                                            sender.sendMessage(ChatColor.RED + mapServer.getLang(sender, "command.database_error"));
                                             exception.printStackTrace();
                                         }
                                     }
                                 } else {
                                     if (!sender.hasPermission("command.mapview.*") && !sender.hasPermission("command.mapview.limit.*") && !sender.hasPermission("command.mapview.limit.check_all")) {
                                         // 無權限
-                                        sender.sendMessage(ChatColor.RED + configData.getLanguage("no_permission"));
+                                        sender.sendMessage(ChatColor.RED + mapServer.getLang(sender, "command.no_permission"));
                                     } else {
                                         UUID playerUUID = parseUUID(sender, parameters[2]);
                                         if (playerUUID != null) {
@@ -655,10 +655,10 @@ public final class Command implements CommandExecutor {
                                                 if (statistics == null)
                                                     statistics = new int[] {0, configData.getDefaultPlayerLimit()};
                                                 // 上傳限制: ?
-                                                sender.sendMessage(ChatColor.YELLOW + configData.getLanguage("now_limit") + statistics[1] + " / " + statistics[2]);
+                                                sender.sendMessage(ChatColor.YELLOW + mapServer.getLang(sender, "command.now_limit") + statistics[1] + " / " + statistics[2]);
                                             } catch (SQLException exception) {
                                                 // 資料庫錯誤
-                                                sender.sendMessage(ChatColor.RED + configData.getLanguage("database_error"));
+                                                sender.sendMessage(ChatColor.RED + mapServer.getLang(sender, "command.database_error"));
                                                 exception.printStackTrace();
                                             }
                                         }
@@ -668,13 +668,13 @@ public final class Command implements CommandExecutor {
                         }
                     } else {
                         // 缺少參數
-                        sender.sendMessage(ChatColor.RED + configData.getLanguage("missing_parameters"));
+                        sender.sendMessage(ChatColor.RED + mapServer.getLang(sender, "command.missing_parameters"));
                     }
                     break;
 
                 default:
                     // 未知的參數類型
-                    sender.sendMessage(ChatColor.RED + configData.getLanguage("unknown_parameter_type") + " " + parameters[0]);
+                    sender.sendMessage(ChatColor.RED + mapServer.getLang(sender, "command.unknown_parameter_type") + " " + parameters[0]);
                     break;
             }
         }
@@ -686,13 +686,13 @@ public final class Command implements CommandExecutor {
     public UUID parseUUID(CommandSender sender, String parameter) {
         if (parameter == null) {
             // 缺少參數
-            sender.sendMessage(ChatColor.RED + configData.getLanguage("missing_parameters"));
+            sender.sendMessage(ChatColor.RED + mapServer.getLang(sender, "command.missing_parameters"));
         } else if (isPlayerUUID.matcher(parameter).matches()) {
             try {
                 return UUID.fromString(parameter);
             } catch (IllegalArgumentException exception) {
                 // 參數不是玩家名稱或UUID
-                sender.sendMessage(ChatColor.RED + configData.getLanguage("parameter_not_player_name_or_uuid") + parameter);
+                sender.sendMessage(ChatColor.RED + mapServer.getLang(sender, "command.parameter_not_player_name_or_uuid") + parameter);
             }
         } else if (isPlayerName.matcher(parameter).matches()) {
             Player player = Bukkit.getPlayer(parameter);
@@ -700,11 +700,11 @@ public final class Command implements CommandExecutor {
                 return player.getUniqueId();
             } else {
                 // 此玩家沒有在線上, 使用 UUID
-                sender.sendMessage(ChatColor.RED + configData.getLanguage("player_not_online_use_uuid"));
+                sender.sendMessage(ChatColor.RED + mapServer.getLang(sender, "command.player_not_online_use_uuid"));
             }
         } else {
             // 參數不是 玩家名稱 或 UUID
-            sender.sendMessage(ChatColor.RED + configData.getLanguage("parameter_not_player_name_or_uuid") + parameter);
+            sender.sendMessage(ChatColor.RED + mapServer.getLang(sender, "command.parameter_not_player_name_or_uuid") + parameter);
         }
         return null;
     }
@@ -732,7 +732,7 @@ public final class Command implements CommandExecutor {
         String[] saveRatios = saveRatio.split(":", 2);
         if (saveRatios.length != 2) {
             // 參數不是長寬比:
-            sender.sendMessage(ChatColor.YELLOW + configData.getLanguage("parameter_not_aspect_ratio") + saveRatio);
+            sender.sendMessage(ChatColor.YELLOW + mapServer.getLang(sender, "command.parameter_not_aspect_ratio") + saveRatio);
         } else {
             try {
                 int spaceRow = Math.max(1, saveRatios[0].length() == 0 ? 1 : Integer.parseInt(saveRatios[0]));
@@ -742,7 +742,7 @@ public final class Command implements CommandExecutor {
                     int spaceHeight = spaceColumn * 128;
                     if (!sender.hasPermission("mapview.ignore_size_restrictions") && (spaceRow > configData.getMaximumRowAllowed() || spaceColumn > configData.getMaximumColumnAllowed())) {
                         // 超出允許的尺寸
-                        sender.sendMessage(ChatColor.RED + configData.getLanguage("exceeding_allowed_size") + configData.getMaximumRowAllowed() + ":" + configData.getMaximumColumnAllowed());
+                        sender.sendMessage(ChatColor.RED + mapServer.getLang(sender, "command.exceeding_allowed_size") + configData.getMaximumRowAllowed() + ":" + configData.getMaximumColumnAllowed());
                     } else {
                         if (sender instanceof Player) {
                             Player player = (Player) sender;
@@ -751,12 +751,12 @@ public final class Command implements CommandExecutor {
                                 if (statistics != null) {
                                     if (!player.hasPermission("mapview.ignore_upload_limit")) {
                                         // 超出允許的數量
-                                        sender.sendMessage(ChatColor.RED + configData.getLanguage("your_upload_has_reached_limit") + statistics[1] + " + " + (spaceRow * spaceColumn) + " / " + statistics[2]);
+                                        sender.sendMessage(ChatColor.RED + mapServer.getLang(sender, "command.your_upload_has_reached_limit") + statistics[1] + " + " + (spaceRow * spaceColumn) + " / " + statistics[2]);
                                         return null;
                                     }
                                 } else if ((spaceRow * spaceColumn) > configData.getDefaultPlayerLimit() && !player.hasPermission("mapview.ignore_upload_limit")) {
                                     // 超出允許的數量
-                                    sender.sendMessage(ChatColor.RED + configData.getLanguage("your_upload_has_reached_limit") + " 0 + " + (spaceRow * spaceColumn) + " / " + configData.getDefaultPlayerLimit());
+                                    sender.sendMessage(ChatColor.RED + mapServer.getLang(sender, "command.your_upload_has_reached_limit") + " 0 + " + (spaceRow * spaceColumn) + " / " + configData.getDefaultPlayerLimit());
                                     return null;
                                 } else {
                                     // 加入資料紀錄
@@ -834,7 +834,7 @@ public final class Command implements CommandExecutor {
                                 }
 
                                 // 創建完畢, 資料庫地圖編號為:
-                                sender.sendMessage(ChatColor.YELLOW + configData.getLanguage("created_successfully") + stringIds);
+                                sender.sendMessage(ChatColor.YELLOW + mapServer.getLang(sender, "command.created_successfully") + stringIds);
                                 if (sender instanceof Player) {
                                     Bukkit.getScheduler().runTask(plugin, () -> {
                                         for (ItemStack item : itemList)
@@ -843,18 +843,18 @@ public final class Command implements CommandExecutor {
                                 }
                             } catch (SQLException exception) {
                                 // 資料庫錯誤
-                                sender.sendMessage(ChatColor.RED + configData.getLanguage("database_error"));
+                                sender.sendMessage(ChatColor.RED + mapServer.getLang(sender, "command.database_error"));
                                 exception.printStackTrace();
                             }
                         };
                     }
                 } catch (NumberFormatException exception) {
                     // 參數不是數字
-                    sender.sendMessage(ChatColor.RED + configData.getLanguage("parameter_not_number") + saveRatios[1]);
+                    sender.sendMessage(ChatColor.RED + mapServer.getLang(sender, "command.parameter_not_number") + saveRatios[1]);
                 }
             } catch (NumberFormatException exception) {
                 // 參數不是數字
-                sender.sendMessage(ChatColor.RED + configData.getLanguage("parameter_not_number") + saveRatios[0]);
+                sender.sendMessage(ChatColor.RED + mapServer.getLang(sender, "command.parameter_not_number") + saveRatios[0]);
             }
         }
         return null;
