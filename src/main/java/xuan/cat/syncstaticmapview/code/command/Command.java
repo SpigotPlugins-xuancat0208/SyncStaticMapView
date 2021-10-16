@@ -821,7 +821,7 @@ public final class Command implements CommandExecutor {
                                             int mapId = mapDatabase.addMapData(mapData, uploaderId);
                                             createIds.add(mapId);
                                             if (spaceRow > 1 || spaceColumn > 1) {
-                                                itemList.add(branchMinecraft.saveItemNBT(new ItemStack(Material.FILLED_MAP), configData.itemMultipleTag.replaceAll("%mapview.id%", String.valueOf(-mapId)).replaceAll("%mapview.column%", String.valueOf(readColumn)).replaceAll("%mapview.row%", String.valueOf(readRow))));
+                                                itemList.add(branchMinecraft.saveItemNBT(new ItemStack(Material.FILLED_MAP), configData.itemMultipleTag.replaceAll("%mapview.id%", String.valueOf(-mapId)).replaceAll("%mapview.column%", String.valueOf(readColumn + 1)).replaceAll("%mapview.row%", String.valueOf(readRow + 1))));
                                             } else {
                                                 itemList.add(branchMinecraft.saveItemNBT(new ItemStack(Material.FILLED_MAP), configData.itemSingleTag.replaceAll("%mapview.id%", String.valueOf(-mapId))));
                                             }
