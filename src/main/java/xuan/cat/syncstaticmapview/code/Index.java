@@ -10,15 +10,15 @@ import xuan.cat.syncstaticmapview.api.branch.BranchMapColor;
 import xuan.cat.syncstaticmapview.api.branch.BranchMapConversion;
 import xuan.cat.syncstaticmapview.api.branch.BranchMinecraft;
 import xuan.cat.syncstaticmapview.api.branch.BranchPacket;
-import xuan.cat.syncstaticmapview.code.branch.v14_R1.Branch_14_R1_BranchMinecraft;
+import xuan.cat.syncstaticmapview.code.branch.v14_R1.Branch_14_R1_Minecraft;
 import xuan.cat.syncstaticmapview.code.branch.v14_R1.Branch_14_R1_MapColor;
 import xuan.cat.syncstaticmapview.code.branch.v14_R1.Branch_14_R1_MapConversion;
 import xuan.cat.syncstaticmapview.code.branch.v14_R1.Branch_14_R1_Packet;
-import xuan.cat.syncstaticmapview.code.branch.v15_R1.Branch_15_R1_BranchMinecraft;
+import xuan.cat.syncstaticmapview.code.branch.v15_R1.Branch_15_R1_Minecraft;
 import xuan.cat.syncstaticmapview.code.branch.v15_R1.Branch_15_R1_MapColor;
 import xuan.cat.syncstaticmapview.code.branch.v15_R1.Branch_15_R1_MapConversion;
 import xuan.cat.syncstaticmapview.code.branch.v15_R1.Branch_15_R1_Packet;
-import xuan.cat.syncstaticmapview.code.branch.v16_R3.Branch_16_R3_BranchMinecraft;
+import xuan.cat.syncstaticmapview.code.branch.v16_R3.Branch_16_R3_Minecraft;
 import xuan.cat.syncstaticmapview.code.branch.v16_R3.Branch_16_R3_MapColor;
 import xuan.cat.syncstaticmapview.code.branch.v16_R3.Branch_16_R3_MapConversion;
 import xuan.cat.syncstaticmapview.code.branch.v16_R3.Branch_16_R3_Packet;
@@ -53,19 +53,19 @@ public final class Index extends JavaPlugin {
                 // 1.14
                 branchMapColor      = new Branch_14_R1_MapColor();
                 branchMapConversion = new Branch_14_R1_MapConversion(branchMapColor, branchMapConversion);
-                branchMinecraft     = new Branch_14_R1_BranchMinecraft();
+                branchMinecraft     = new Branch_14_R1_Minecraft();
                 branchPacket        = new Branch_14_R1_Packet();
             } else if (bukkitVersion.matches("1\\.15.*\\-R0\\.1.*")) {
                 // 1.15
                 branchMapColor      = new Branch_15_R1_MapColor();
                 branchMapConversion = new Branch_15_R1_MapConversion(branchMapColor, branchMapConversion);
-                branchMinecraft     = new Branch_15_R1_BranchMinecraft();
+                branchMinecraft     = new Branch_15_R1_Minecraft();
                 branchPacket        = new Branch_15_R1_Packet();
             } else if (bukkitVersion.matches("1\\.16.*\\-R0\\.1.*")) {
                 // 1.16
                 branchMapColor      = new Branch_16_R3_MapColor();
                 branchMapConversion = new Branch_16_R3_MapConversion(branchMapColor, branchMapConversion);
-                branchMinecraft     = new Branch_16_R3_BranchMinecraft();
+                branchMinecraft     = new Branch_16_R3_Minecraft();
                 branchPacket        = new Branch_16_R3_Packet();
             } else if (bukkitVersion.matches("1\\.17.*\\-R0\\.1.*")) {
                 // 1.17

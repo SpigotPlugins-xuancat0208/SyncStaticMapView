@@ -71,7 +71,7 @@ public final class MapDatabase {
                     .field(TABLE.MAP_DATA.field_MapPixels)
                     .field(TABLE.MAP_DATA.field_SaveTime)
                     .field(TABLE.MAP_DATA.field_UploaderID)
-                    .partition(configData.isCreateTableCanPartition() ? TABLE.MAP_DATA.field_MapID.partitionKey().rows(20) : null)
+                    .partition(configData.createTableCanPartition ? TABLE.MAP_DATA.field_MapID.partitionKey().rows(20) : null)
                     .callSQL(configData.getDatabaseConnection())
                     .UC();
         } else {
@@ -89,7 +89,7 @@ public final class MapDatabase {
                     .field(TABLE.MAP_REDIRECT.field_Permission)
                     .field(TABLE.MAP_REDIRECT.field_RedirectID)
                     .index(TABLE.MAP_REDIRECT.field_MapID.index().type(IndexType.INDEX))
-                    .partition(configData.isCreateTableCanPartition() ? TABLE.MAP_REDIRECT.field_MapID.partitionKey().rows(4) : null)
+                    .partition(configData.createTableCanPartition ? TABLE.MAP_REDIRECT.field_MapID.partitionKey().rows(4) : null)
                     .callSQL(configData.getDatabaseConnection())
                     .UC();
         }
@@ -291,7 +291,7 @@ public final class MapDatabase {
     public boolean markMapUpdate(int mapId) throws SQLException {
         SQL sql = TABLE.table_MapUpdate.insertData()
                 .insertOrUpdate(TABLE.MAP_UPDATE.field_MapID, (long) mapId)
-                .insertOrUpdate(TABLE.MAP_UPDATE.field_TimeMark, new Value.NOW_TIME_ADD(configData.getCacheVitalityTime() * 2))
+                .insertOrUpdate(TABLE.MAP_UPDATE.field_TimeMark, new Value.NOW_TIME_ADD(configData.cacheVitalityTime * 2))
                 .callSQL(configData.getDatabaseConnection());
         return sql.UC() > 0;
     }

@@ -49,3 +49,11 @@ create-rate-limit: 2000
 # List of allowed URL sources
 allowed-url-source-list:
   - "https://i.imgur.com/"
+  -
+
+# 如果裁切只有 1:1 則會獲得的地圖物品標籤
+# If the crop is only 1:1, will get the map item tag
+item-single-tag: "{map:%mapview.id%}"
+# 如果裁切大於 1:1 則會獲得的地圖物品標籤
+# If the crop is greater than 1:1, will get the map item label
+item-multiple-tag: "{display:{Lore:['{\"extra\":[{\"italic\":false,\"color\":\"white\",\"text\":\"%mapview.column%-%mapview.row%\"}],\"text\":\"\"}']},map:%mapview.id%}"

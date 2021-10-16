@@ -178,7 +178,7 @@ public final class MapServer {
                     }
                 }
                 if (runnable != null) {
-                    delaySpeedLimitURL = configData.getUrlRateLimit();
+                    delaySpeedLimitURL = configData.urlRateLimit;
                     runnable.run();
                 }
             } else {
@@ -203,20 +203,20 @@ public final class MapServer {
     public MapRedirectsCache cacheMapRedirects(int mapId) {
         return mapRedirectsCaches.computeIfAbsent(mapId, key -> {
             try {
-                return new MapRedirectsCache(mapDatabase.getMapRedirects(key), System.currentTimeMillis() + configData.getCacheVitalityTime());
+                return new MapRedirectsCache(mapDatabase.getMapRedirects(key), System.currentTimeMillis() + configData.cacheVitalityTime);
             } catch (Exception exception) {
                 exception.printStackTrace();
-                return new MapRedirectsCache(new ArrayList<>(), System.currentTimeMillis() + configData.getCacheVitalityTime());
+                return new MapRedirectsCache(new ArrayList<>(), System.currentTimeMillis() + configData.cacheVitalityTime);
             }
         });
     }
     public MapDataCache cacheMapData(int mapId) {
         return mapDataCaches.computeIfAbsent(mapId, key -> {
             try {
-                return new MapDataCache(mapDatabase.loadMapData(key), System.currentTimeMillis() + configData.getCacheVitalityTime());
+                return new MapDataCache(mapDatabase.loadMapData(key), System.currentTimeMillis() + configData.cacheVitalityTime);
             } catch (Exception exception) {
                 exception.printStackTrace();
-                return new MapDataCache(null, System.currentTimeMillis() + configData.getCacheVitalityTime());
+                return new MapDataCache(null, System.currentTimeMillis() + configData.cacheVitalityTime);
             }
         });
     }

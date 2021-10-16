@@ -1,5 +1,6 @@
 package xuan.cat.syncstaticmapview.code.branch.v15_R1;
 
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import net.minecraft.server.v1_15_R1.*;
 import org.bukkit.World;
@@ -13,12 +14,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public final class Branch_15_R1_BranchMinecraft implements BranchMinecraft {
+public final class Branch_15_R1_Minecraft implements BranchMinecraft {
     private final Field field_CraftItemStack_handle;
     private final Field field_ItemStack_tag;
 
 
-    public Branch_15_R1_BranchMinecraft() throws NoSuchFieldException {
+    public Branch_15_R1_Minecraft() throws NoSuchFieldException {
         field_CraftItemStack_handle = CraftItemStack.class.getDeclaredField("handle");
         field_ItemStack_tag = ItemStack.class.getDeclaredField("tag");
         field_CraftItemStack_handle.setAccessible(true);
@@ -56,21 +57,21 @@ public final class Branch_15_R1_BranchMinecraft implements BranchMinecraft {
             return 0;
         }
     }
-    public org.bukkit.inventory.ItemStack setMapId(org.bukkit.inventory.ItemStack item, int mapId) {
-        CraftItemStack craftItem = CraftItemStack.asCraftCopy(item);
-        try {
-            ItemStack itemNMS = (ItemStack) field_CraftItemStack_handle.get(craftItem);
-            NBTTagCompound nbt = (NBTTagCompound) field_ItemStack_tag.get(itemNMS);
-            if (nbt == null) {
-                nbt = new NBTTagCompound();
-                field_ItemStack_tag.set(itemNMS, nbt);
-            }
-            nbt.setInt("map", mapId);
-        } catch (Exception exception) {
-            exception.printStackTrace();
-        }
-        return craftItem;
-    }
+//    public org.bukkit.inventory.ItemStack setMapId(org.bukkit.inventory.ItemStack item, int mapId) {
+//        CraftItemStack craftItem = CraftItemStack.asCraftCopy(item);
+//        try {
+//            ItemStack itemNMS = (ItemStack) field_CraftItemStack_handle.get(craftItem);
+//            NBTTagCompound nbt = (NBTTagCompound) field_ItemStack_tag.get(itemNMS);
+//            if (nbt == null) {
+//                nbt = new NBTTagCompound();
+//                field_ItemStack_tag.set(itemNMS, nbt);
+//            }
+//            nbt.setInt("map", mapId);
+//        } catch (Exception exception) {
+//            exception.printStackTrace();
+//        }
+//        return craftItem;
+//    }
 
 
     public List<Player> getTracking(org.bukkit.entity.Entity entity) {
@@ -91,6 +92,19 @@ public final class Branch_15_R1_BranchMinecraft implements BranchMinecraft {
             }
         }
         return playerList;
+    }
+
+
+    public org.bukkit.inventory.ItemStack saveItemNBT(org.bukkit.inventory.ItemStack item, String nbt) throws CommandSyntaxException {
+        NBTTagCompound tag = MojangsonParser.parse(nbt);
+        CraftItemStack craftItem = CraftItemStack.asCraftCopy(item);
+        try {
+            ItemStack itemNMS = (ItemStack) field_CraftItemStack_handle.get(craftItem);
+            field_ItemStack_tag.set(itemNMS, tag);
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
+        return craftItem;
     }
 }
 

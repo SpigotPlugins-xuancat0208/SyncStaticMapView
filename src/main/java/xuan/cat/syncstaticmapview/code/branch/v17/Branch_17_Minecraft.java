@@ -1,5 +1,7 @@
 package xuan.cat.syncstaticmapview.code.branch.v17;
 
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import net.minecraft.nbt.MojangsonParser;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.level.ChunkProviderServer;
 import net.minecraft.server.level.EntityPlayer;
@@ -63,21 +65,21 @@ public final class Branch_17_Minecraft implements BranchMinecraft {
             return 0;
         }
     }
-    public org.bukkit.inventory.ItemStack setMapId(org.bukkit.inventory.ItemStack item, int mapId) {
-        CraftItemStack craftItem = CraftItemStack.asCraftCopy(item);
-        try {
-            ItemStack itemNMS = (ItemStack) field_CraftItemStack_handle.get(craftItem);
-            NBTTagCompound nbt = (NBTTagCompound) field_ItemStack_tag.get(itemNMS);
-            if (nbt == null) {
-                nbt = new NBTTagCompound();
-                field_ItemStack_tag.set(itemNMS, nbt);
-            }
-            nbt.setInt("map", mapId);
-        } catch (Exception exception) {
-            exception.printStackTrace();
-        }
-        return craftItem;
-    }
+//    public org.bukkit.inventory.ItemStack setMapId(org.bukkit.inventory.ItemStack item, int mapId) {
+//        CraftItemStack craftItem = CraftItemStack.asCraftCopy(item);
+//        try {
+//            ItemStack itemNMS = (ItemStack) field_CraftItemStack_handle.get(craftItem);
+//            NBTTagCompound nbt = (NBTTagCompound) field_ItemStack_tag.get(itemNMS);
+//            if (nbt == null) {
+//                nbt = new NBTTagCompound();
+//                field_ItemStack_tag.set(itemNMS, nbt);
+//            }
+//            nbt.setInt("map", mapId);
+//        } catch (Exception exception) {
+//            exception.printStackTrace();
+//        }
+//        return craftItem;
+//    }
 
 
     public List<Player> getTracking(org.bukkit.entity.Entity entity) {
@@ -97,5 +99,18 @@ public final class Branch_17_Minecraft implements BranchMinecraft {
             }
         }
         return playerList;
+    }
+
+
+    public org.bukkit.inventory.ItemStack saveItemNBT(org.bukkit.inventory.ItemStack item, String nbt) throws CommandSyntaxException {
+        NBTTagCompound tag = MojangsonParser.parse(nbt);
+        CraftItemStack craftItem = CraftItemStack.asCraftCopy(item);
+        try {
+            ItemStack itemNMS = (ItemStack) field_CraftItemStack_handle.get(craftItem);
+            field_ItemStack_tag.set(itemNMS, tag);
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
+        return craftItem;
     }
 }

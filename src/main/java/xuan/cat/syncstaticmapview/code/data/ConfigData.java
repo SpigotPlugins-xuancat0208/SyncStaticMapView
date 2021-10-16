@@ -17,14 +17,17 @@ public final class ConfigData {
     private MySQL mySQL;
     private String databaseName;
     private DatabaseConnection databaseConnection;
-    private long cacheVitalityTime;
-    private boolean createTableCanPartition;
-    private int maximumRowAllowed;
-    private int maximumColumnAllowed;
-    private int defaultPlayerLimit;
-    private int urlRateLimit;
-    private int createRateLimit;
-    private List<String> allowedUrlSourceList;
+    public long cacheVitalityTime;
+    public boolean createTableCanPartition;
+    public int maximumRowAllowed;
+    public int maximumColumnAllowed;
+    public int defaultPlayerLimit;
+    public int urlRateLimit;
+    public int createRateLimit;
+    public List<String> allowedUrlSourceList;
+    public String itemSingleTag;
+    public String itemMultipleTag;
+
 
     public ConfigData(JavaPlugin plugin, FileConfiguration fileConfiguration) throws SQLException {
         this.plugin = plugin;
@@ -32,11 +35,13 @@ public final class ConfigData {
         load();
     }
 
+
     public void reload() throws SQLException {
         plugin.reloadConfig();
         fileConfiguration = plugin.getConfig();
         load();
     }
+
 
     private void load() throws SQLException {
         ConfigurationSection database = fileConfiguration.getConfigurationSection("database");
@@ -58,6 +63,8 @@ public final class ConfigData {
         int urlRateLimit = fileConfiguration.getInt("url-rate-limit", 4);
         int createRateLimit = fileConfiguration.getInt("create-rate-limit", 2000);
         List<String> allowedUrlSourceList = fileConfiguration.getStringList("allowed-url-source-list");
+        String itemSingleTag = fileConfiguration.getString("create-rate-limit", "{map:%mapview.id%}");
+        String itemMultipleTag = fileConfiguration.getString("create-rate-limit", "{display:{Lore:['{\"extra\":[{\"italic\":false,\"color\":\"white\",\"text\":\"%mapview.column%-%mapview.row%\"}],\"text\":\"\"}']},map:%mapview.id%}");
 
 
         DatabaseConnection databaseConnection = mySQL.getOrCreateDatabase(databaseName);
@@ -73,42 +80,12 @@ public final class ConfigData {
         this.urlRateLimit = urlRateLimit;
         this.createRateLimit = createRateLimit;
         this.allowedUrlSourceList = allowedUrlSourceList;
+        this.itemSingleTag = itemSingleTag;
+        this.itemMultipleTag = itemMultipleTag;
     }
 
 
     public DatabaseConnection getDatabaseConnection() throws SQLException {
         return databaseConnection.isConnected() ? databaseConnection : (databaseConnection = mySQL.getOrCreateDatabase(databaseName));
-    }
-
-    public long getCacheVitalityTime() {
-        return cacheVitalityTime;
-    }
-
-    public boolean isCreateTableCanPartition() {
-        return createTableCanPartition;
-    }
-
-    public int getDefaultPlayerLimit() {
-        return defaultPlayerLimit;
-    }
-
-    public int getMaximumColumnAllowed() {
-        return maximumColumnAllowed;
-    }
-
-    public int getMaximumRowAllowed() {
-        return maximumRowAllowed;
-    }
-
-    public int getUrlRateLimit() {
-        return urlRateLimit;
-    }
-
-    public List<String> getAllowedUrlSourceList() {
-        return allowedUrlSourceList;
-    }
-
-    public int getCreateRateLimit() {
-        return createRateLimit;
     }
 }

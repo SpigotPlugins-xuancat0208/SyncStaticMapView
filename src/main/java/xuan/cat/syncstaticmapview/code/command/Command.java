@@ -1,5 +1,6 @@
 package xuan.cat.syncstaticmapview.code.command;
 
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -101,7 +102,7 @@ public final class Command implements CommandExecutor {
                                             // 你無法獲取此地圖
                                             sender.sendMessage(ChatColor.RED + mapServer.getLang(sender, "command.can_not_get_this_map"));
                                         } else {
-                                            giveMapItem(player, branchMinecraft.setMapId(new ItemStack(Material.FILLED_MAP), -mapId));
+                                            giveMapItem(player, branchMinecraft.saveItemNBT(new ItemStack(Material.FILLED_MAP), configData.itemSingleTag.replaceAll("%mapview.id%", String.valueOf(-mapId))));
                                             // 已給予: ?
                                             sender.sendMessage(ChatColor.YELLOW + mapServer.getLang(sender, "command.given") + mapId);
                                         }
@@ -110,7 +111,7 @@ public final class Command implements CommandExecutor {
                                             // 你無法獲取此地圖
                                             sender.sendMessage(ChatColor.RED + mapServer.getLang(sender, "command.can_not_get_this_map"));
                                         } else {
-                                            giveMapItem(player, branchMinecraft.setMapId(new ItemStack(Material.FILLED_MAP), -mapId));
+                                            giveMapItem(player, branchMinecraft.saveItemNBT(new ItemStack(Material.FILLED_MAP), configData.itemSingleTag.replaceAll("%mapview.id%", String.valueOf(-mapId))));
                                             // 已給予: ?
                                             sender.sendMessage(ChatColor.YELLOW + mapServer.getLang(sender, "command.given") + mapId);
                                         }
@@ -119,6 +120,9 @@ public final class Command implements CommandExecutor {
                                     // 地圖資料不存在: ?
                                     sender.sendMessage(ChatColor.RED + mapServer.getLang(sender, "command.map_data_not_exist") + mapId);
                                 }
+                            } catch (CommandSyntaxException exception) {
+                                sender.sendMessage("NBT Error: " + exception.getMessage());
+                                exception.printStackTrace();
                             } catch (NumberFormatException exception) {
                                 // 參數不是數字
                                 sender.sendMessage(ChatColor.RED + mapServer.getLang(sender, "command.parameter_not_number") + parameters[1]);
@@ -209,7 +213,7 @@ public final class Command implements CommandExecutor {
                                             if (sender.hasPermission("mapview.ignore_url_allowed")) {
                                                 allowed = true;
                                             } else {
-                                                for (String allowedUrl : configData.getAllowedUrlSourceList()) {
+                                                for (String allowedUrl : configData.allowedUrlSourceList) {
                                                     if (stitched.startsWith(allowedUrl)) {
                                                         allowed = true;
                                                         break;
@@ -222,7 +226,7 @@ public final class Command implements CommandExecutor {
                                                     try {
                                                         Consumer<BufferedImage> toAsync = cropImageSave(sender, parameters[2]);
                                                         if (toAsync != null) {
-                                                            if (sender instanceof Player && !sender.hasPermission("mapview.ignore_create_rate_limit") && !mapServer.markCoolingTime((Player) sender, configData.getCreateRateLimit())) {
+                                                            if (sender instanceof Player && !sender.hasPermission("mapview.ignore_create_rate_limit") && !mapServer.markCoolingTime((Player) sender, configData.createRateLimit)) {
                                                                 // 創建的速度太快了, 等一下
                                                                 sender.sendMessage(ChatColor.RED + mapServer.getLang(sender, "command.creation_speed_too_fast"));
                                                             } else {
@@ -287,7 +291,7 @@ public final class Command implements CommandExecutor {
                                             try {
                                                 Consumer<BufferedImage> toAsync = cropImageSave(sender, parameters[2]);
                                                 if (toAsync != null) {
-                                                    if (sender instanceof Player && !sender.hasPermission("mapview.ignore_create_rate_limit") && !mapServer.markCoolingTime((Player) sender, configData.getCreateRateLimit())) {
+                                                    if (sender instanceof Player && !sender.hasPermission("mapview.ignore_create_rate_limit") && !mapServer.markCoolingTime((Player) sender, configData.createRateLimit)) {
                                                         // 創建的速度太快了, 等一下
                                                         sender.sendMessage(ChatColor.RED + mapServer.getLang(sender, "command.creation_speed_too_fast"));
                                                     } else {
@@ -332,7 +336,7 @@ public final class Command implements CommandExecutor {
                                             // 此地圖不可複製
                                             sender.sendMessage(ChatColor.RED + mapServer.getLang(sender, "command.map_cannot_copy"));
                                         } else if (mapView != null) {
-                                            if (!player.hasPermission("mapview.ignore_create_rate_limit") && !mapServer.markCoolingTime(player, configData.getCreateRateLimit())) {
+                                            if (!player.hasPermission("mapview.ignore_create_rate_limit") && !mapServer.markCoolingTime(player, configData.createRateLimit)) {
                                                 // 創建的速度太快了, 等一下
                                                 sender.sendMessage(ChatColor.RED + mapServer.getLang(sender, "command.creation_speed_too_fast"));
                                             } else {
@@ -345,13 +349,13 @@ public final class Command implements CommandExecutor {
                                                                 sender.sendMessage(ChatColor.RED + mapServer.getLang(sender, "command.your_upload_has_reached_limit") + statistics[1] + " + 1 / " + statistics[2]);
                                                                 return true;
                                                             }
-                                                        } else if (1 > configData.getDefaultPlayerLimit() && !player.hasPermission("mapview.ignore_upload_limit")) {
+                                                        } else if (1 > configData.defaultPlayerLimit && !player.hasPermission("mapview.ignore_upload_limit")) {
                                                             // 超出允許的數量
-                                                            sender.sendMessage(ChatColor.RED + mapServer.getLang(sender, "command.your_upload_has_reached_limit") + " 0 + 1 / " + configData.getDefaultPlayerLimit());
+                                                            sender.sendMessage(ChatColor.RED + mapServer.getLang(sender, "command.your_upload_has_reached_limit") + " 0 + 1 / " + configData.defaultPlayerLimit);
                                                             return true;
                                                         } else {
                                                             // 加入資料紀錄
-                                                            mapDatabase.createStatistics(player.getUniqueId(), configData.getDefaultPlayerLimit(), 1);
+                                                            mapDatabase.createStatistics(player.getUniqueId(), configData.defaultPlayerLimit, 1);
                                                         }
                                                     }
 
@@ -361,7 +365,10 @@ public final class Command implements CommandExecutor {
                                                             int mapId = mapDatabase.addMapData(mapData, mapDatabase.getPlayerId(player.getUniqueId()));
                                                             // 創建完畢, 資料庫地圖編號為:
                                                             sender.sendMessage(ChatColor.YELLOW + mapServer.getLang(sender, "command.created_successfully") + mapId);
-                                                            giveMapItem(player, branchMinecraft.setMapId(new ItemStack(Material.FILLED_MAP), -mapId));
+                                                            giveMapItem(player, branchMinecraft.saveItemNBT(new ItemStack(Material.FILLED_MAP), configData.itemSingleTag.replaceAll("%mapview.id%", String.valueOf(-mapId))));
+                                                        } catch (CommandSyntaxException exception) {
+                                                            sender.sendMessage("NBT Error: " + exception.getMessage());
+                                                            exception.printStackTrace();
                                                         } catch (SQLException exception) {
                                                             // 資料庫錯誤
                                                             sender.sendMessage(ChatColor.RED + mapServer.getLang(sender, "command.database_error"));
@@ -568,10 +575,10 @@ public final class Command implements CommandExecutor {
                                         try {
                                             int capacity = Integer.parseInt(parameters[3]);
                                             if (!mapDatabase.increaseStatisticsCapacity(playerUUID, capacity))
-                                                mapDatabase.createStatistics(playerUUID, configData.getDefaultPlayerLimit() + capacity, 0);
+                                                mapDatabase.createStatistics(playerUUID, configData.defaultPlayerLimit + capacity, 0);
                                             int[] statistics = mapDatabase.getStatistics(playerUUID);
                                             if (statistics == null)
-                                                statistics = new int[] {0, configData.getDefaultPlayerLimit()};
+                                                statistics = new int[] {0, configData.defaultPlayerLimit};
                                             // 設置完畢, 當前的上傳限制: ?
                                             sender.sendMessage(ChatColor.YELLOW + mapServer.getLang(sender, "command.set_successfully_now_limit") + statistics[1] + " / " + statistics[2]);
                                         } catch (SQLException exception) {
@@ -600,14 +607,14 @@ public final class Command implements CommandExecutor {
                                             int capacity = Integer.parseInt(parameters[3]);
                                             try {
                                                 if (!mapDatabase.subtractStatisticsCapacity(playerUUID, capacity))
-                                                    mapDatabase.createStatistics(playerUUID, configData.getDefaultPlayerLimit() - capacity, 0);
+                                                    mapDatabase.createStatistics(playerUUID, configData.defaultPlayerLimit - capacity, 0);
                                             } catch (SQLException exception) {
                                                 if (!mapDatabase.setStatisticsCapacity(playerUUID, 0))
                                                     mapDatabase.createStatistics(playerUUID, 0, 0);
                                             }
                                             int[] statistics = mapDatabase.getStatistics(playerUUID);
                                             if (statistics == null)
-                                                statistics = new int[] {0, configData.getDefaultPlayerLimit()};
+                                                statistics = new int[] {0, configData.defaultPlayerLimit};
                                             // 設置完畢, 當前的上傳限制: ?
                                             sender.sendMessage(ChatColor.YELLOW + mapServer.getLang(sender, "command.set_successfully_now_limit") + statistics[1] + " / " + statistics[2]);
                                         } catch (SQLException exception) {
@@ -634,7 +641,7 @@ public final class Command implements CommandExecutor {
                                         try {
                                             int[] statistics = mapDatabase.getStatistics(((Player) sender).getUniqueId());
                                             if (statistics == null)
-                                                statistics = new int[] {0, configData.getDefaultPlayerLimit()};
+                                                statistics = new int[] {0, configData.defaultPlayerLimit};
                                             // 上傳限制: ?
                                             sender.sendMessage(ChatColor.YELLOW + mapServer.getLang(sender, "command.now_limit") + statistics[1] + " / " + statistics[2]);
                                         } catch (SQLException exception) {
@@ -653,7 +660,7 @@ public final class Command implements CommandExecutor {
                                             try {
                                                 int[] statistics = mapDatabase.getStatistics(playerUUID);
                                                 if (statistics == null)
-                                                    statistics = new int[] {0, configData.getDefaultPlayerLimit()};
+                                                    statistics = new int[] {0, configData.defaultPlayerLimit};
                                                 // 上傳限制: ?
                                                 sender.sendMessage(ChatColor.YELLOW + mapServer.getLang(sender, "command.now_limit") + statistics[1] + " / " + statistics[2]);
                                             } catch (SQLException exception) {
@@ -740,9 +747,9 @@ public final class Command implements CommandExecutor {
                 try {
                     int spaceColumn = Math.max(1, saveRatios[1].length() == 0 ? 1 : Integer.parseInt(saveRatios[1]));
                     int spaceHeight = spaceColumn * 128;
-                    if (!sender.hasPermission("mapview.ignore_size_restrictions") && (spaceRow > configData.getMaximumRowAllowed() || spaceColumn > configData.getMaximumColumnAllowed())) {
+                    if (!sender.hasPermission("mapview.ignore_size_restrictions") && (spaceRow > configData.maximumRowAllowed || spaceColumn > configData.maximumColumnAllowed)) {
                         // 超出允許的尺寸
-                        sender.sendMessage(ChatColor.RED + mapServer.getLang(sender, "command.exceeding_allowed_size") + configData.getMaximumRowAllowed() + ":" + configData.getMaximumColumnAllowed());
+                        sender.sendMessage(ChatColor.RED + mapServer.getLang(sender, "command.exceeding_allowed_size") + configData.maximumRowAllowed + ":" + configData.maximumColumnAllowed);
                     } else {
                         if (sender instanceof Player) {
                             Player player = (Player) sender;
@@ -754,13 +761,13 @@ public final class Command implements CommandExecutor {
                                         sender.sendMessage(ChatColor.RED + mapServer.getLang(sender, "command.your_upload_has_reached_limit") + statistics[1] + " + " + (spaceRow * spaceColumn) + " / " + statistics[2]);
                                         return null;
                                     }
-                                } else if ((spaceRow * spaceColumn) > configData.getDefaultPlayerLimit() && !player.hasPermission("mapview.ignore_upload_limit")) {
+                                } else if ((spaceRow * spaceColumn) > configData.defaultPlayerLimit && !player.hasPermission("mapview.ignore_upload_limit")) {
                                     // 超出允許的數量
-                                    sender.sendMessage(ChatColor.RED + mapServer.getLang(sender, "command.your_upload_has_reached_limit") + " 0 + " + (spaceRow * spaceColumn) + " / " + configData.getDefaultPlayerLimit());
+                                    sender.sendMessage(ChatColor.RED + mapServer.getLang(sender, "command.your_upload_has_reached_limit") + " 0 + " + (spaceRow * spaceColumn) + " / " + configData.defaultPlayerLimit);
                                     return null;
                                 } else {
                                     // 加入資料紀錄
-                                    mapDatabase.createStatistics(player.getUniqueId(), configData.getDefaultPlayerLimit(), spaceRow * spaceColumn);
+                                    mapDatabase.createStatistics(player.getUniqueId(), configData.defaultPlayerLimit, spaceRow * spaceColumn);
                                 }
                             }
                         }
@@ -804,25 +811,25 @@ public final class Command implements CommandExecutor {
                                 int uploaderId = sender instanceof Player ? mapDatabase.getPlayerId(((Player) sender).getUniqueId()) : 0;
                                 Set<Integer> createIds = new LinkedHashSet<>();
                                 List<ItemStack> itemList = new ArrayList<>();
-                                for (int readColumn = 0 ; readColumn < spaceColumn ; readColumn++) {
-                                    for (int readRow = 0 ; readRow < spaceRow ; readRow++) {
-                                        MapData mapData = new CodeMapData(branchMapColor, branchMapConversion);
-                                        for (int x = 0 ; x < 128 ; x++)
-                                            for (int y = 0 ; y < 128 ; y++)
-                                                mapData.setColor(x, y, new Color(spaceImage.getRGB(readRow << 7 | x, readColumn << 7 | y), true));
-                                        int mapId = mapDatabase.addMapData(mapData, uploaderId);
-                                        createIds.add(mapId);
-                                        if (spaceRow > 1 || spaceColumn > 1) {
-                                            ItemStack item = branchMinecraft.setMapId(new ItemStack(Material.FILLED_MAP), -mapId);
-                                            ItemMeta meta = item.getItemMeta();
-                                            assert meta != null;
-                                            meta.setLore(Collections.singletonList("" + ChatColor.WHITE + (readColumn + 1) + "-" + (readRow + 1)));
-                                            item.setItemMeta(meta);
-                                            itemList.add(item);
-                                        } else {
-                                            itemList.add(branchMinecraft.setMapId(new ItemStack(Material.FILLED_MAP), -mapId));
+                                try {
+                                    for (int readColumn = 0 ; readColumn < spaceColumn ; readColumn++) {
+                                        for (int readRow = 0 ; readRow < spaceRow ; readRow++) {
+                                            MapData mapData = new CodeMapData(branchMapColor, branchMapConversion);
+                                            for (int x = 0 ; x < 128 ; x++)
+                                                for (int y = 0 ; y < 128 ; y++)
+                                                    mapData.setColor(x, y, new Color(spaceImage.getRGB(readRow << 7 | x, readColumn << 7 | y), true));
+                                            int mapId = mapDatabase.addMapData(mapData, uploaderId);
+                                            createIds.add(mapId);
+                                            if (spaceRow > 1 || spaceColumn > 1) {
+                                                itemList.add(branchMinecraft.saveItemNBT(new ItemStack(Material.FILLED_MAP), configData.itemMultipleTag.replaceAll("%mapview.id%", String.valueOf(-mapId)).replaceAll("%mapview.column%", String.valueOf(readColumn)).replaceAll("%mapview.row%", String.valueOf(readRow))));
+                                            } else {
+                                                itemList.add(branchMinecraft.saveItemNBT(new ItemStack(Material.FILLED_MAP), configData.itemSingleTag.replaceAll("%mapview.id%", String.valueOf(-mapId))));
+                                            }
                                         }
                                     }
+                                } catch (CommandSyntaxException exception) {
+                                    sender.sendMessage("NBT Error: " + exception.getMessage());
+                                    exception.printStackTrace();
                                 }
 
                                 StringBuilder stringIds = new StringBuilder();
