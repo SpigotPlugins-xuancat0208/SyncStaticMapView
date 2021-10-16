@@ -8,7 +8,6 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.MapMeta;
 import org.bukkit.map.MapView;
 import org.bukkit.plugin.Plugin;
@@ -121,7 +120,7 @@ public final class Command implements CommandExecutor {
                                     sender.sendMessage(ChatColor.RED + mapServer.getLang(sender, "command.map_data_not_exist") + mapId);
                                 }
                             } catch (CommandSyntaxException exception) {
-                                sender.sendMessage("NBT Error: " + exception.getMessage());
+                                sender.sendMessage(ChatColor.RED + "NBT Error: " + exception.getMessage());
                                 exception.printStackTrace();
                             } catch (NumberFormatException exception) {
                                 // 參數不是數字
@@ -367,7 +366,7 @@ public final class Command implements CommandExecutor {
                                                             sender.sendMessage(ChatColor.YELLOW + mapServer.getLang(sender, "command.created_successfully") + mapId);
                                                             giveMapItem(player, branchMinecraft.saveItemNBT(new ItemStack(Material.FILLED_MAP), configData.itemSingleTag.replaceAll("%mapview.id%", String.valueOf(-mapId))));
                                                         } catch (CommandSyntaxException exception) {
-                                                            sender.sendMessage("NBT Error: " + exception.getMessage());
+                                                            sender.sendMessage(ChatColor.RED + "NBT Error: " + exception.getMessage());
                                                             exception.printStackTrace();
                                                         } catch (SQLException exception) {
                                                             // 資料庫錯誤
@@ -828,7 +827,7 @@ public final class Command implements CommandExecutor {
                                         }
                                     }
                                 } catch (CommandSyntaxException exception) {
-                                    sender.sendMessage("NBT Error: " + exception.getMessage());
+                                    sender.sendMessage(ChatColor.RED + "NBT Error: " + exception.getMessage());
                                     exception.printStackTrace();
                                 }
 
