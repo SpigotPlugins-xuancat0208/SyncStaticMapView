@@ -57,7 +57,7 @@ public final class MySQL {
         if (sql.Q("SHOW DATABASES;"))
             while (sql.N()) {
                 // 是否已經存在資料庫
-                if (database.equals(sql.getString("Database"))) {
+                if (database.equalsIgnoreCase(sql.getString("Database"))) {
                     connection.close();
                     sql.C();
                     return true;
