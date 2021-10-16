@@ -32,7 +32,7 @@ maximum-column-allowed: 8
 default-player-limit: 400
 
 # 網址訪問速度限制 (秒)
-#   全部網址共享一個速率限制棄
+#   全部網址共享一個速率限制器
 #   避免遭受到大量上傳請求的駭客攻擊
 #   未處理完畢卻關機, 會導致當前列隊全部消失
 # URL access speed limit (second)
