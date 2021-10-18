@@ -6,6 +6,7 @@ database:
   database: "!! YOUR_DATABASE_NAME !!"
   user: "!! YOUR_USER_NAME !!"
   password: "!! YOUR_USER_PASSWORD !!"
+
   # MariaDB https://mariadb.com/kb/en/about-mariadb-connector-j/#optional-url-parameters
   # MySQL   https://dev.mysql.com/doc/connector-j/8.0/en/connector-j-reference-configuration-properties.html
   options:
