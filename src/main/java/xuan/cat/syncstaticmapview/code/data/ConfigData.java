@@ -56,12 +56,7 @@ public final class ConfigData {
                 databaseOptions.put(key, databaseOptionsConfiguration.get(key));
         }
         MySQL mySQL = Database.createMySQL(databaseConfiguration.getString("ip"), databaseConfiguration.getInt("port"), databaseConfiguration.getString("user"), databaseConfiguration.getString("password"), databaseOptions);
-        String databaseName;
-        try {
-            databaseName = databaseConfiguration.getString("database").toLowerCase(Locale.ROOT);
-        } catch (NullPointerException exception) {
-            throw new NullPointerException("config.yml>database->database");
-        }
+        String databaseName = databaseConfiguration.getString("database");
 
         boolean createTableCanPartition = fileConfiguration.getBoolean("create-table-can-partition", true);
         long cacheVitalityTime = fileConfiguration.getLong("cache-vitality-time", 60000L);
