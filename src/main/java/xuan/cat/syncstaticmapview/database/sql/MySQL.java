@@ -27,16 +27,6 @@ public final class MySQL {
      * @param port 資料庫端口
      * @param user 資料庫帳號
      * @param password 資料庫密碼
-     */
-    public MySQL(String ip, int port, String user, String password) {
-        this(ip, port, user, password, new HashMap<>());
-    }
-    /**
-     * 資料庫
-     * @param ip 資料庫地址
-     * @param port 資料庫端口
-     * @param user 資料庫帳號
-     * @param password 資料庫密碼
      * @param options 額外選項
      */
     public MySQL(String ip, int port, String user, String password, Map<String, Object> options) {
