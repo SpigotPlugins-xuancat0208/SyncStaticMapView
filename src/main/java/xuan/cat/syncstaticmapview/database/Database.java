@@ -5,6 +5,8 @@ import xuan.cat.syncstaticmapview.database.sql.MySQL;
 import xuan.cat.syncstaticmapview.database.sql.builder.Field;
 import xuan.cat.syncstaticmapview.database.sql.builder.FieldStyle;
 
+import java.util.Map;
+
 /**
  * 資料庫的一切操作
  */
@@ -18,10 +20,11 @@ public final class Database {
      * @param port 端口
      * @param user 用戶
      * @param password 密碼
+     * @param options 額外選項
      * @return 資料庫連線
      */
-    public static MySQL createMySQL(String ip, int port, String user, String password) {
-        return new MySQL(ip, port, user, password);
+    public static MySQL createMySQL(String ip, int port, String user, String password, Map<String, Object> options) {
+        return new MySQL(ip, port, user, password, options);
     }
 
     /**

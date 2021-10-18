@@ -8,8 +8,10 @@ import xuan.cat.syncstaticmapview.database.sql.DatabaseConnection;
 import xuan.cat.syncstaticmapview.database.sql.MySQL;
 
 import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 public final class ConfigData {
     private FileConfiguration fileConfiguration;
@@ -44,13 +46,19 @@ public final class ConfigData {
 
 
     private void load() throws SQLException {
-        ConfigurationSection database = fileConfiguration.getConfigurationSection("database");
-        if (database == null)
+        ConfigurationSection databaseConfiguration = fileConfiguration.getConfigurationSection("database");
+        if (databaseConfiguration == null)
             throw new NullPointerException("config.yml>database");
-        MySQL mySQL = Database.createMySQL(database.getString("ip"), database.getInt("port"), database.getString("user"), database.getString("password"));
+        ConfigurationSection databaseOptionsConfiguration = databaseConfiguration.getConfigurationSection("options");
+        Map<String, Object> databaseOptions = new HashMap<>();
+        if (databaseOptionsConfiguration != null) {
+            for (String key : databaseOptionsConfiguration.getKeys(false))
+                databaseOptions.put(key, databaseOptionsConfiguration.get(key));
+        }
+        MySQL mySQL = Database.createMySQL(databaseConfiguration.getString("ip"), databaseConfiguration.getInt("port"), databaseConfiguration.getString("user"), databaseConfiguration.getString("password"), databaseOptions);
         String databaseName;
         try {
-            databaseName = database.getString("database").toLowerCase(Locale.ROOT);
+            databaseName = databaseConfiguration.getString("database").toLowerCase(Locale.ROOT);
         } catch (NullPointerException exception) {
             throw new NullPointerException("config.yml>database->database");
         }

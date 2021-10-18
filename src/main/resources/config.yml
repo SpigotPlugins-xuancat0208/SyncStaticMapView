@@ -6,6 +6,11 @@ database:
   database: "!! YOUR_DATABASE_NAME !!"
   user: "!! YOUR_USER_NAME !!"
   password: "!! YOUR_USER_PASSWORD !!"
+  options:
+    useUnicode: true
+    characterEncoding: "UTF-8"
+    useSSL: false
+    serverTimezone: "GMT+8"
 
 # 快取能保留多少時間 (毫秒)
 # How long can the cache be retained (milliseconds)
