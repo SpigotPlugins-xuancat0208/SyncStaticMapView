@@ -10,7 +10,6 @@ import xuan.cat.syncstaticmapview.database.sql.MySQL;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 public final class ConfigData {
