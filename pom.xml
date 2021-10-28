@@ -6,7 +6,7 @@
 
     <groupId>xuan.cat</groupId>
     <artifactId>SyncStaticMapView</artifactId>
-    <version>3.2.1</version>
+    <version>3.2.2</version>
 
     <properties>
         <java.version>1.8</java.version>
@@ -93,36 +93,39 @@
         <dependency>
             <groupId>paper</groupId>
             <artifactId>1.16.5</artifactId>
-            <version>775</version>
+            <version>790</version>
         </dependency>
         <dependency>
-            <groupId>patched</groupId>
+            <groupId>paper</groupId>
             <artifactId>1.16.5</artifactId>
-            <version>r3.3</version>
+            <version>790</version>
+            <classifier>patched</classifier>
         </dependency>
 
         <!-- 1.15 -->
         <dependency>
             <groupId>paper</groupId>
-            <artifactId>1.15</artifactId>
-            <version>387</version>
+            <artifactId>1.15.2</artifactId>
+            <version>391</version>
         </dependency>
         <dependency>
-            <groupId>patched</groupId>
-            <artifactId>1.15</artifactId>
-            <version>r1</version>
+            <groupId>paper</groupId>
+            <artifactId>1.15.2</artifactId>
+            <version>391</version>
+            <classifier>patched</classifier>
         </dependency>
 
         <!-- 1.14 -->
         <dependency>
             <groupId>paper</groupId>
-            <artifactId>1.14</artifactId>
+            <artifactId>1.14.4</artifactId>
             <version>243</version>
         </dependency>
         <dependency>
-            <groupId>patched</groupId>
-            <artifactId>1.14</artifactId>
-            <version>r1</version>
+            <groupId>paper</groupId>
+            <artifactId>1.14.4</artifactId>
+            <version>243</version>
+            <classifier>patched</classifier>
         </dependency>
     </dependencies>
 </project>
