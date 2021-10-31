@@ -345,7 +345,7 @@ public final class Command implements CommandExecutor {
                                                         if (statistics != null) {
                                                             if (!player.hasPermission("mapview.ignore_upload_limit")) {
                                                                 // 超出允許的數量
-                                                                sender.sendMessage(ChatColor.RED + mapServer.getLang(sender, "command.your_upload_has_reached_limit") + statistics[1] + " + 1 / " + statistics[2]);
+                                                                sender.sendMessage(ChatColor.RED + mapServer.getLang(sender, "command.your_upload_has_reached_limit") + statistics[0] + " + 1 / " + statistics[1]);
                                                                 return true;
                                                             }
                                                         } else if (1 > configData.defaultPlayerLimit && !player.hasPermission("mapview.ignore_upload_limit")) {
@@ -548,7 +548,7 @@ public final class Command implements CommandExecutor {
                                             if (statistics == null)
                                                 statistics = new int[] {0, 0};
                                             // 設置完畢, 當前的上傳限制: ?
-                                            sender.sendMessage(ChatColor.YELLOW + mapServer.getLang(sender, "command.set_successfully_now_limit") + statistics[1] + " / " + statistics[2]);
+                                            sender.sendMessage(ChatColor.YELLOW + mapServer.getLang(sender, "command.set_successfully_now_limit") + statistics[0] + " / " + statistics[1]);
                                         } catch (SQLException exception) {
                                             // 資料庫錯誤
                                             sender.sendMessage(ChatColor.RED + mapServer.getLang(sender, "command.database_error"));
@@ -579,7 +579,7 @@ public final class Command implements CommandExecutor {
                                             if (statistics == null)
                                                 statistics = new int[] {0, configData.defaultPlayerLimit};
                                             // 設置完畢, 當前的上傳限制: ?
-                                            sender.sendMessage(ChatColor.YELLOW + mapServer.getLang(sender, "command.set_successfully_now_limit") + statistics[1] + " / " + statistics[2]);
+                                            sender.sendMessage(ChatColor.YELLOW + mapServer.getLang(sender, "command.set_successfully_now_limit") + statistics[0] + " / " + statistics[1]);
                                         } catch (SQLException exception) {
                                             // 資料庫錯誤
                                             sender.sendMessage(ChatColor.RED + mapServer.getLang(sender, "command.database_error"));
@@ -615,7 +615,7 @@ public final class Command implements CommandExecutor {
                                             if (statistics == null)
                                                 statistics = new int[] {0, configData.defaultPlayerLimit};
                                             // 設置完畢, 當前的上傳限制: ?
-                                            sender.sendMessage(ChatColor.YELLOW + mapServer.getLang(sender, "command.set_successfully_now_limit") + statistics[1] + " / " + statistics[2]);
+                                            sender.sendMessage(ChatColor.YELLOW + mapServer.getLang(sender, "command.set_successfully_now_limit") + statistics[0] + " / " + statistics[1]);
                                         } catch (SQLException exception) {
                                             // 資料庫錯誤
                                             sender.sendMessage(ChatColor.RED + mapServer.getLang(sender, "command.database_error"));
@@ -642,7 +642,7 @@ public final class Command implements CommandExecutor {
                                             if (statistics == null)
                                                 statistics = new int[] {0, configData.defaultPlayerLimit};
                                             // 上傳限制: ?
-                                            sender.sendMessage(ChatColor.YELLOW + mapServer.getLang(sender, "command.now_limit") + statistics[1] + " / " + statistics[2]);
+                                            sender.sendMessage(ChatColor.YELLOW + mapServer.getLang(sender, "command.now_limit") + statistics[0] + " / " + statistics[1]);
                                         } catch (SQLException exception) {
                                             // 資料庫錯誤
                                             sender.sendMessage(ChatColor.RED + mapServer.getLang(sender, "command.database_error"));
@@ -661,7 +661,7 @@ public final class Command implements CommandExecutor {
                                                 if (statistics == null)
                                                     statistics = new int[] {0, configData.defaultPlayerLimit};
                                                 // 上傳限制: ?
-                                                sender.sendMessage(ChatColor.YELLOW + mapServer.getLang(sender, "command.now_limit") + statistics[1] + " / " + statistics[2]);
+                                                sender.sendMessage(ChatColor.YELLOW + mapServer.getLang(sender, "command.now_limit") + statistics[0] + " / " + statistics[1]);
                                             } catch (SQLException exception) {
                                                 // 資料庫錯誤
                                                 sender.sendMessage(ChatColor.RED + mapServer.getLang(sender, "command.database_error"));
@@ -757,7 +757,7 @@ public final class Command implements CommandExecutor {
                                 if (statistics != null) {
                                     if (!player.hasPermission("mapview.ignore_upload_limit")) {
                                         // 超出允許的數量
-                                        sender.sendMessage(ChatColor.RED + mapServer.getLang(sender, "command.your_upload_has_reached_limit") + statistics[1] + " + " + (spaceRow * spaceColumn) + " / " + statistics[2]);
+                                        sender.sendMessage(ChatColor.RED + mapServer.getLang(sender, "command.your_upload_has_reached_limit") + statistics[0] + " + " + (spaceRow * spaceColumn) + " / " + statistics[1]);
                                         return null;
                                     }
                                 } else if ((spaceRow * spaceColumn) > configData.defaultPlayerLimit && !player.hasPermission("mapview.ignore_upload_limit")) {
