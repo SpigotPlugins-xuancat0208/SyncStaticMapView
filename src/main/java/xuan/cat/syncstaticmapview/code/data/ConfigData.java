@@ -65,8 +65,8 @@ public final class ConfigData {
         int urlRateLimit = fileConfiguration.getInt("url-rate-limit", 4);
         int createRateLimit = fileConfiguration.getInt("create-rate-limit", 2000);
         List<String> allowedUrlSourceList = fileConfiguration.getStringList("allowed-url-source-list");
-        String itemSingleTag = fileConfiguration.getString("create-rate-limit", "{map:%mapview.id%}");
-        String itemMultipleTag = fileConfiguration.getString("create-rate-limit", "{display:{Lore:['{\"extra\":[{\"italic\":false,\"color\":\"white\",\"text\":\"%mapview.column%-%mapview.row%\"}],\"text\":\"\"}']},map:%mapview.id%}");
+        String itemSingleTag = fileConfiguration.getString("item-single-tag", "{map:%mapview.id%}");
+        String itemMultipleTag = fileConfiguration.getString("item-multiple-tag", "{display:{Lore:['{\"extra\":[{\"italic\":false,\"color\":\"white\",\"text\":\"%mapview.column%-%mapview.row%\"}],\"text\":\"\"}']},map:%mapview.id%}");
 
 
         DatabaseConnection databaseConnection = mySQL.getOrCreateDatabase(databaseName);
