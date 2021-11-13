@@ -1,14 +1,9 @@
 package xuan.cat.syncstaticmapview.code;
 
 import com.comphenix.protocol.events.PacketEvent;
-import com.google.gson.Gson;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import net.kyori.adventure.translation.Translator;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.World;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.ItemFrame;
 import org.bukkit.entity.Player;
@@ -22,14 +17,10 @@ import xuan.cat.syncstaticmapview.api.branch.BranchMinecraft;
 import xuan.cat.syncstaticmapview.api.branch.BranchPacket;
 import xuan.cat.syncstaticmapview.api.data.MapRedirect;
 import xuan.cat.syncstaticmapview.code.data.ConfigData;
+import xuan.cat.syncstaticmapview.code.data.LangFiles;
 import xuan.cat.syncstaticmapview.code.data.MapDataCache;
 import xuan.cat.syncstaticmapview.code.data.MapRedirectsCache;
 
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.URL;
-import java.net.URLConnection;
-import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -62,10 +53,8 @@ public final class MapServer {
     private int delaySpeedLimitURL = 0;
     /** 玩家個別速率限制 */
     private final Map<Player, Long> playerCoolingTime = new ConcurrentHashMap<>();
-    /** 語言文件 */
-    private final Map<Locale, JsonObject> langFileMap = new ConcurrentHashMap<>();
-    /** 預設語言文件 */
-    private final JsonObject langFileDefault = loadLang(Locale.ENGLISH);
+    /** 語言 */
+    public final LangFiles lang = new LangFiles();
 
 
     public MapServer(Plugin plugin, ConfigData configData, MapDatabase mapDatabase, BranchMapConversion branchMapConversion, BranchMapColor branchMapColor, BranchMinecraft branchMinecraft, BranchPacket branchPacket) {
@@ -255,54 +244,6 @@ public final class MapServer {
         }
     }
 
-
-    /**
-     * @param sender 執行人
-     * @param key 條目鑰匙
-     * @return 語言條目
-     */
-    public String getLang(CommandSender sender, String key) {
-        if (sender instanceof Player) {
-            try {
-                // 1.16 以上
-                return getLang(((Player) sender).locale(), key);
-            } catch (NoSuchMethodError noSuchMethodError) {
-                return getLang(Translator.parseLocale(((Player) sender).getLocale()), key);
-            }
-        } else {
-            return getLang(Locale.ENGLISH, key);
-        }
-    }
-    /**
-     * @param locale 語言類型
-     * @param key 條目鑰匙
-     * @return 語言條目
-     */
-    public String getLang(Locale locale, String key) {
-        JsonObject lang = langFileMap.computeIfAbsent(locale, v -> loadLang(locale));
-        JsonElement element = lang.get(key);
-        if (element != null && !element.isJsonNull()) {
-            return element.getAsString();
-        } else {
-            return langFileDefault.get(key).getAsString();
-        }
-    }
-    /**
-     * @param locale 語言類型
-     * @return 讀取語言文件
-     */
-    private JsonObject loadLang(Locale locale) {
-        URL url = getClass().getClassLoader().getResource("lang/" + locale.toString().toLowerCase(Locale.ROOT) + ".json");
-        if (url == null)
-            return new JsonObject();
-        try {
-            URLConnection connection = url.openConnection();
-            connection.setUseCaches(true);
-            return new Gson().fromJson(new InputStreamReader(connection.getInputStream(), StandardCharsets.UTF_8), JsonObject.class);
-        } catch (IOException exception) {
-            return new JsonObject();
-        }
-    }
 
 
     public void createCache(Player player) {
