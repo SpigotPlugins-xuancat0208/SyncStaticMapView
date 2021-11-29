@@ -1,8 +1,6 @@
 package xuan.cat.syncstaticmapview.code.data;
 
-import xuan.cat.syncstaticmapview.api.data.MapRedirect;
-
-public final class MapRedirectEntry implements MapRedirect {
+public final class MapRedirectEntry {
     private final String permission;
     private final int priority;
     private final int redirectId;

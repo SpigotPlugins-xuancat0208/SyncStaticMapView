@@ -1,4 +1,4 @@
-package xuan.cat.syncstaticmapview.code.branch.v17;
+package xuan.cat.syncstaticmapview.code.branch.v18;
 
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import org.bukkit.World;
@@ -9,7 +9,7 @@ import xuan.cat.syncstaticmapview.api.branch.BranchMinecraft;
 
 import java.util.List;
 
-public final class Branch_17_Minecraft implements BranchMinecraft {
+public final class Branch_18_Minecraft implements BranchMinecraft {
     @Override
     public Entity getEntityFromId(World world, int entityId) {
         throw new UnsupportedOperationException();

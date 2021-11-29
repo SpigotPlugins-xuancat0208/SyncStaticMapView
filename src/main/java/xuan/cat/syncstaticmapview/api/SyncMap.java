@@ -3,16 +3,12 @@ package xuan.cat.syncstaticmapview.api;
 import org.bukkit.Bukkit;
 import org.bukkit.map.MapView;
 import xuan.cat.syncstaticmapview.api.data.MapData;
-import xuan.cat.syncstaticmapview.api.data.MapRedirect;
 import xuan.cat.syncstaticmapview.code.Index;
 import xuan.cat.syncstaticmapview.code.MapDatabase;
-import xuan.cat.syncstaticmapview.code.data.CodeMapData;
-import xuan.cat.syncstaticmapview.code.data.MapRedirectEntry;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.sql.SQLException;
-import java.util.List;
 
 public final class SyncMap {
     private SyncMap() {
@@ -20,12 +16,12 @@ public final class SyncMap {
 
 
     public static MapData createData() {
-        return new CodeMapData(Index.getBranchMapColor(), Index.getBranchMapConversion());
+        return new MapData(Index.getBranchMapColor(), Index.getBranchMapConversion());
     }
 
-    public static MapRedirect createRedirect(int priority, String permission, int redirectId) {
-        return new MapRedirectEntry(priority, permission, redirectId);
-    }
+//    public static MapRedirect createRedirect(int priority, String permission, int redirectId) {
+//        return new MapRedirect(priority, permission, redirectId);
+//    }
 
 
     public static MapData fromBukkit(MapView mapView) {
@@ -100,25 +96,25 @@ public final class SyncMap {
 //    }
 
 
-    public static boolean setRedirect(int mapId, MapRedirect mapRedirect) throws SQLException {
-//        checkAsync();
-        checkMapId(mapId);
-        if (existData(mapId)) {
-            MapDatabase database = Index.getMapDatabase();
-            database.removeMapRedirect(mapId, mapRedirect.getPermission());
-            database.removeMapRedirect(mapId, mapRedirect.getPriority());
-            boolean successfully = database.addMapRedirects(mapId, mapRedirect);
-            database.markMapUpdate(mapId);
-            return successfully;
-        } else {
-            return false;
-        }
-    }
-    public static List<MapRedirect> getRedirects(int mapId) throws SQLException {
-//        checkAsync();
-        checkMapId(mapId);
-        return Index.getMapDatabase().getMapRedirects(mapId);
-    }
+//    public static boolean setRedirect(int mapId, MapRedirect mapRedirect) throws SQLException {
+////        checkAsync();
+//        checkMapId(mapId);
+//        if (existData(mapId)) {
+//            MapDatabase database = Index.getMapDatabase();
+//            database.removeMapRedirect(mapId, mapRedirect.getPermission());
+//            database.removeMapRedirect(mapId, mapRedirect.getPriority());
+//            boolean successfully = database.addMapRedirects(mapId, mapRedirect);
+//            database.markMapUpdate(mapId);
+//            return successfully;
+//        } else {
+//            return false;
+//        }
+//    }
+//    public static List<MapRedirect> getRedirects(int mapId) throws SQLException {
+////        checkAsync();
+//        checkMapId(mapId);
+//        return Index.getMapDatabase().getMapRedirects(mapId);
+//    }
 
     public static boolean deleteRedirects(int mapId) throws SQLException {
 //        checkAsync();

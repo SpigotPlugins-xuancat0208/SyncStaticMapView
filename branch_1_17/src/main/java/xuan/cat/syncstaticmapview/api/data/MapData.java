@@ -1,22 +1,21 @@
-package xuan.cat.syncstaticmapview.code.data;
+package xuan.cat.syncstaticmapview.api.data;
 
 import xuan.cat.syncstaticmapview.api.branch.BranchMapColor;
 import xuan.cat.syncstaticmapview.api.branch.BranchMapConversion;
-import xuan.cat.syncstaticmapview.api.data.MapData;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
-public final class CodeMapData implements MapData {
+public final class MapData {
     private final BranchMapColor branchMapColor;
     private final BranchMapConversion branchMapConversion;
     private final byte[] pixels;
 
 
-    public CodeMapData(BranchMapColor branchMapColor, BranchMapConversion branchMapConversion) {
+    public MapData(BranchMapColor branchMapColor, BranchMapConversion branchMapConversion) {
         this(branchMapColor, branchMapConversion, new byte[16384]);
     }
-    public CodeMapData(BranchMapColor branchMapColor, BranchMapConversion branchMapConversion, byte[] pixels) {
+    public MapData(BranchMapColor branchMapColor, BranchMapConversion branchMapConversion, byte[] pixels) {
         this.branchMapColor = branchMapColor;
         this.branchMapConversion = branchMapConversion;
         this.pixels = pixels;

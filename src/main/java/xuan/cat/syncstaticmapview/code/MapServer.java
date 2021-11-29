@@ -15,11 +15,7 @@ import xuan.cat.syncstaticmapview.api.branch.BranchMapColor;
 import xuan.cat.syncstaticmapview.api.branch.BranchMapConversion;
 import xuan.cat.syncstaticmapview.api.branch.BranchMinecraft;
 import xuan.cat.syncstaticmapview.api.branch.BranchPacket;
-import xuan.cat.syncstaticmapview.api.data.MapRedirect;
-import xuan.cat.syncstaticmapview.code.data.ConfigData;
-import xuan.cat.syncstaticmapview.code.data.LangFiles;
-import xuan.cat.syncstaticmapview.code.data.MapDataCache;
-import xuan.cat.syncstaticmapview.code.data.MapRedirectsCache;
+import xuan.cat.syncstaticmapview.code.data.*;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -130,7 +126,7 @@ public final class MapServer {
             queueShowMapId.forEach((player, mapIds) -> mapIds.removeIf(mapId -> {
                 MapRedirectsCache mapRedirectsCache = cacheMapRedirects(mapId);
                 int targetMapID = mapId;
-                for (MapRedirect redirect : mapRedirectsCache.redirects) {
+                for (MapRedirectEntry redirect : mapRedirectsCache.redirects) {
                    if (player.hasPermission(redirect.getPermission())) {
                        targetMapID = redirect.getRedirectId();
                        break;

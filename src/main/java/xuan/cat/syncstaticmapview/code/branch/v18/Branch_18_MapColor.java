@@ -1,10 +1,10 @@
-package xuan.cat.syncstaticmapview.code.branch.v17;
+package xuan.cat.syncstaticmapview.code.branch.v18;
 
 import xuan.cat.syncstaticmapview.api.branch.BranchMapColor;
 
 import java.awt.*;
 
-public final class Branch_17_MapColor implements BranchMapColor {
+public final class Branch_18_MapColor implements BranchMapColor {
     @Override
     public byte matchColor(Color color) {
         throw new UnsupportedOperationException();

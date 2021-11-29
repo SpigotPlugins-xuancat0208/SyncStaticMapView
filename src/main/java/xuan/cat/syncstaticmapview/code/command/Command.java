@@ -15,10 +15,8 @@ import xuan.cat.syncstaticmapview.api.branch.BranchMapColor;
 import xuan.cat.syncstaticmapview.api.branch.BranchMapConversion;
 import xuan.cat.syncstaticmapview.api.branch.BranchMinecraft;
 import xuan.cat.syncstaticmapview.api.data.MapData;
-import xuan.cat.syncstaticmapview.api.data.MapRedirect;
 import xuan.cat.syncstaticmapview.code.MapDatabase;
 import xuan.cat.syncstaticmapview.code.MapServer;
-import xuan.cat.syncstaticmapview.code.data.CodeMapData;
 import xuan.cat.syncstaticmapview.code.data.ConfigData;
 import xuan.cat.syncstaticmapview.code.data.MapRedirectEntry;
 
@@ -416,14 +414,14 @@ public final class Command implements CommandExecutor {
                                         // 地圖資料不存在: ?
                                         sender.sendMessage(ChatColor.RED + mapServer.lang.get(sender, "command.map_data_not_exist") + mapId);
                                     } else {
-                                        List<MapRedirect> redirects = mapServer.cacheMapRedirects(mapId).redirects;
+                                        List<MapRedirectEntry> redirects = mapServer.cacheMapRedirects(mapId).redirects;
                                         if (redirects.size() == 0) {
                                             // 沒有設置任何的重定向
                                             sender.sendMessage(ChatColor.YELLOW + mapServer.lang.get(sender, "command.not_set_any_redirect"));
                                         } else {
                                             // 重定向清單
                                             sender.sendMessage(ChatColor.YELLOW + mapServer.lang.get(sender, "command.redirect_list"));
-                                            for (MapRedirect redirect : redirects) {
+                                            for (MapRedirectEntry redirect : redirects) {
                                                 sender.sendMessage(" - " + ChatColor.YELLOW + redirect.getPriority() + ": " + redirect.getPermission() + " => " + redirect.getRedirectId());
                                             }
                                         }
@@ -443,7 +441,7 @@ public final class Command implements CommandExecutor {
                                                 int priority = Integer.parseInt(parameters[3]);
                                                 try {
                                                     int redirectId = Integer.parseInt(parameters[5]);
-                                                    MapRedirect redirect = new MapRedirectEntry(priority, parameters[4], redirectId);
+                                                    MapRedirectEntry redirect = new MapRedirectEntry(priority, parameters[4], redirectId);
                                                     if (mapDatabase.existMapData(redirect.getRedirectId())) {
                                                         mapDatabase.removeMapRedirect(mapId, redirect.getPermission());
                                                         mapDatabase.removeMapRedirect(mapId, redirect.getPriority());
@@ -813,7 +811,7 @@ public final class Command implements CommandExecutor {
                                 try {
                                     for (int readColumn = 0 ; readColumn < spaceColumn ; readColumn++) {
                                         for (int readRow = 0 ; readRow < spaceRow ; readRow++) {
-                                            MapData mapData = new CodeMapData(branchMapColor, branchMapConversion);
+                                            MapData mapData = new MapData(branchMapColor, branchMapConversion);
                                             for (int x = 0 ; x < 128 ; x++)
                                                 for (int y = 0 ; y < 128 ; y++)
                                                     mapData.setColor(x, y, new Color(spaceImage.getRGB(readRow << 7 | x, readColumn << 7 | y), true));

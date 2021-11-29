@@ -3,8 +3,6 @@ package xuan.cat.syncstaticmapview.code;
 import xuan.cat.syncstaticmapview.api.branch.BranchMapColor;
 import xuan.cat.syncstaticmapview.api.branch.BranchMapConversion;
 import xuan.cat.syncstaticmapview.api.data.MapData;
-import xuan.cat.syncstaticmapview.api.data.MapRedirect;
-import xuan.cat.syncstaticmapview.code.data.CodeMapData;
 import xuan.cat.syncstaticmapview.code.data.ConfigData;
 import xuan.cat.syncstaticmapview.code.data.MapRedirectEntry;
 import xuan.cat.syncstaticmapview.database.Database;
@@ -155,7 +153,7 @@ public final class MapDatabase {
                 .callSQL(configData.getDatabaseConnection());
         if (sql.Q()) {
             sql.N();
-            return new CodeMapData(branchMapColor, branchMapConversion, unzipDataBytes(sql.getThenClose(TABLE.MAP_DATA.field_MapPixels)));
+            return new MapData(branchMapColor, branchMapConversion, unzipDataBytes(sql.getThenClose(TABLE.MAP_DATA.field_MapPixels)));
         } else {
             sql.C();
             return null;
@@ -213,8 +211,8 @@ public final class MapDatabase {
     }
 
 
-    public List<MapRedirect> getMapRedirects(int mapId) throws SQLException {
-        List<MapRedirect> list = new ArrayList<>();
+    public List<MapRedirectEntry> getMapRedirects(int mapId) throws SQLException {
+        List<MapRedirectEntry> list = new ArrayList<>();
         SQL sql = TABLE.table_MapRedirect.selectData()
                 .select(TABLE.MAP_REDIRECT.field_Priority)
                 .select(TABLE.MAP_REDIRECT.field_Permission)
@@ -227,7 +225,7 @@ public final class MapDatabase {
             }
         }
         sql.C();
-        list.sort(Comparator.comparingInt(MapRedirect::getPriority));
+        list.sort(Comparator.comparingInt(MapRedirectEntry::getPriority));
         return list;
     }
 
@@ -248,7 +246,7 @@ public final class MapDatabase {
         return sql.QC();
     }
 
-    public boolean addMapRedirects(int mapId, MapRedirect permissionEntry) throws SQLException {
+    public boolean addMapRedirects(int mapId, MapRedirectEntry permissionEntry) throws SQLException {
         SQL sql = TABLE.table_MapRedirect.insertData()
                 .insert(TABLE.MAP_REDIRECT.field_MapID, (long) mapId)
                 .insert(TABLE.MAP_REDIRECT.field_Permission, permissionEntry.getPermission())
