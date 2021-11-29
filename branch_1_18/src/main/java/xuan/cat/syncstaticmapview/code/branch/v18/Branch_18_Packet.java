@@ -1,4 +1,4 @@
-package xuan.cat.syncstaticmapview.v18;
+package xuan.cat.syncstaticmapview.code.branch.v18;
 
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;

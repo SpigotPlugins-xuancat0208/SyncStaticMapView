@@ -1,4 +1,4 @@
-package xuan.cat.syncstaticmapview.v18;
+package xuan.cat.syncstaticmapview.code.branch.v18;
 
 import net.minecraft.world.level.saveddata.maps.WorldMap;
 import org.bukkit.craftbukkit.v1_18_R1.map.CraftMapView;

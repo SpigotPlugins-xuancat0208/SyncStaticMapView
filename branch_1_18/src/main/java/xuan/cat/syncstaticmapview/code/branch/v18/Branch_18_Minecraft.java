@@ -1,4 +1,4 @@
-package xuan.cat.syncstaticmapview.v18;
+package xuan.cat.syncstaticmapview.code.branch.v18;
 
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.nbt.MojangsonParser;
