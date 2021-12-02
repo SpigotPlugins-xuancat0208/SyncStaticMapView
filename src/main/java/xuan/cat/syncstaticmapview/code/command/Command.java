@@ -536,7 +536,7 @@ public final class Command implements CommandExecutor {
                                     // 缺少參數
                                     sender.sendMessage(ChatColor.RED + mapServer.lang.get(sender, "command.missing_parameters"));
                                 } else {
-                                    UUID playerUUID = parseUUID(sender, parameters[2]);
+                                    UUID playerUUID = parseNameOrUUID(sender, parameters[2]);
                                     if (playerUUID != null) {
                                         try {
                                             int capacity = Integer.parseInt(parameters[3]);
@@ -567,7 +567,7 @@ public final class Command implements CommandExecutor {
                                     // 缺少參數
                                     sender.sendMessage(ChatColor.RED + mapServer.lang.get(sender, "command.missing_parameters"));
                                 } else {
-                                    UUID playerUUID = parseUUID(sender, parameters[2]);
+                                    UUID playerUUID = parseNameOrUUID(sender, parameters[2]);
                                     if (playerUUID != null) {
                                         try {
                                             int capacity = Integer.parseInt(parameters[3]);
@@ -598,7 +598,7 @@ public final class Command implements CommandExecutor {
                                     // 缺少參數
                                     sender.sendMessage(ChatColor.RED + mapServer.lang.get(sender, "command.missing_parameters"));
                                 } else {
-                                    UUID playerUUID = parseUUID(sender, parameters[2]);
+                                    UUID playerUUID = parseNameOrUUID(sender, parameters[2]);
                                     if (playerUUID != null) {
                                         try {
                                             int capacity = Integer.parseInt(parameters[3]);
@@ -652,7 +652,7 @@ public final class Command implements CommandExecutor {
                                         // 無權限
                                         sender.sendMessage(ChatColor.RED + mapServer.lang.get(sender, "command.no_permission"));
                                     } else {
-                                        UUID playerUUID = parseUUID(sender, parameters[2]);
+                                        UUID playerUUID = parseNameOrUUID(sender, parameters[2]);
                                         if (playerUUID != null) {
                                             try {
                                                 int[] statistics = mapDatabase.getStatistics(playerUUID);
@@ -687,7 +687,7 @@ public final class Command implements CommandExecutor {
     }
 
 
-    public UUID parseUUID(CommandSender sender, String parameter) {
+    private UUID parseNameOrUUID(CommandSender sender, String parameter) {
         if (parameter == null) {
             // 缺少參數
             sender.sendMessage(ChatColor.RED + mapServer.lang.get(sender, "command.missing_parameters"));
@@ -714,7 +714,7 @@ public final class Command implements CommandExecutor {
     }
 
 
-    public void giveMapItem(Player player, ItemStack item) {
+    private void giveMapItem(Player player, ItemStack item) {
         if (player.isOnline())
             for (ItemStack drop : player.getInventory().addItem(item).values())
                 player.getWorld().dropItem(player.getLocation(), drop).setOwner(player.getUniqueId());
@@ -730,7 +730,7 @@ public final class Command implements CommandExecutor {
         return builder.toString();
     }
 
-    public Consumer<BufferedImage> cropImageSave(CommandSender sender, String saveRatio) throws SQLException {
+    private Consumer<BufferedImage> cropImageSave(CommandSender sender, String saveRatio) throws SQLException {
         if (saveRatio == null || saveRatio.length() == 0)
             saveRatio = "1:1";
         String[] saveRatios = saveRatio.split(":", 2);
