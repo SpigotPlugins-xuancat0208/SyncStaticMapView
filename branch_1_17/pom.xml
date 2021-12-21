@@ -44,7 +44,7 @@
 
         <repository>
             <id>minecraft_environment</id>
-            <url>http://xuancat.app:8081/repository/minecraft_environment/</url>
+            <url>https://xuancat.app:8443/repository/minecraft_environment/</url>
         </repository>
     </repositories>
 
@@ -60,12 +60,12 @@
         <dependency>
             <groupId>paper</groupId>
             <artifactId>1.17.1</artifactId>
-            <version>259</version>
+            <version>368</version>
         </dependency>
         <dependency>
             <groupId>paper</groupId>
             <artifactId>1.17.1</artifactId>
-            <version>259</version>
+            <version>368</version>
             <classifier>patched</classifier>
         </dependency>
     </dependencies>

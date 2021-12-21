@@ -43,7 +43,7 @@
 
         <repository>
             <id>minecraft_environment</id>
-            <url>http://xuancat.app:8081/repository/minecraft_environment/</url>
+            <url>https://xuancat.app:8443/repository/minecraft_environment/</url>
         </repository>
     </repositories>
 
@@ -129,20 +129,19 @@
         <dependency>
             <groupId>paper</groupId>
             <artifactId>1.18</artifactId>
-            <version>rc3</version>
+            <version>42</version>
             <classifier>api</classifier>
         </dependency>
         <dependency>
             <groupId>paper</groupId>
             <artifactId>1.18</artifactId>
-            <version>rc3</version>
+            <version>42</version>
             <classifier>mojangapi</classifier>
         </dependency>
         <dependency>
             <groupId>paper</groupId>
             <artifactId>1.18</artifactId>
-            <version>rc3</version>
-            <classifier>patched</classifier>
+            <version>42</version>
         </dependency>
     </dependencies>
 </project>
