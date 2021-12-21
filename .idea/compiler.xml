@@ -9,8 +9,11 @@
         <module name="SyncStaticMapView" />
         <module name="branch_1_18" />
         <module name="branch_1_17" />
-        <module name="SyncStaticMapView-1.17" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="branch_1_17" target="1.5" />
+      <module name="branch_1_18" target="1.5" />
+    </bytecodeTargetLevel>
   </component>
 </project>
