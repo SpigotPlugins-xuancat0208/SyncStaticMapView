@@ -41,20 +41,20 @@ public final class Index extends JavaPlugin {
         try {
             // 檢測版本
             String bukkitVersion = Bukkit.getBukkitVersion();
-            if (bukkitVersion.matches("1\\.17.*\\-R0\\.1.*")) {
+            if (bukkitVersion.matches("^1\\.17\\.[0-9]*")) {
                 // 1.17
                 branchMapColor      = new Branch_17_MapColor();
                 branchMapConversion = new Branch_17_MapConversion(branchMapColor, branchMapConversion);
                 branchMinecraft     = new Branch_17_Minecraft();
                 branchPacket        = new Branch_17_Packet();
-            } else if (bukkitVersion.matches("1\\.18.*\\-R0\\.1.*")) {
+            } else if (bukkitVersion.matches("^1\\.18\\.[0-9]*")) {
                 // 1.18
                 branchMapColor      = new Branch_18_MapColor();
                 branchMapConversion = new Branch_18_MapConversion(branchMapColor, branchMapConversion);
                 branchMinecraft     = new Branch_18_Minecraft();
                 branchPacket        = new Branch_18_Packet();
             } else {
-                throw new NullPointerException("Unsupported MC version");
+                throw new IllegalArgumentException("Unsupported MC version: " + bukkitVersion);
             }
 
             protocolManager = ProtocolLibrary.getProtocolManager();
