@@ -1,7 +1,5 @@
 package xuan.cat.syncstaticmapview.code;
 
-import com.comphenix.protocol.ProtocolLibrary;
-import com.comphenix.protocol.ProtocolManager;
 import org.bukkit.Bukkit;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.plugin.Plugin;
@@ -24,7 +22,6 @@ import xuan.cat.syncstaticmapview.code.data.ConfigData;
 
 public final class Index extends JavaPlugin {
 
-    private static ProtocolManager      protocolManager;
     private static Plugin               plugin;
     private static MapServer            mapServer;
     private static ConfigData           configData;
@@ -57,8 +54,6 @@ public final class Index extends JavaPlugin {
                 throw new IllegalArgumentException("Unsupported MC version: " + bukkitVersion);
             }
 
-            protocolManager = ProtocolLibrary.getProtocolManager();
-
             saveDefaultConfig();
 
             configData      = new ConfigData(this, getConfig());
@@ -66,7 +61,6 @@ public final class Index extends JavaPlugin {
             mapServer       = new MapServer(this, configData, mapDatabase, branchMapConversion, branchMapColor, branchMinecraft, branchPacket);
 
         Bukkit.getPluginManager().registerEvents(new MapEvent(this, mapServer), this);
-        protocolManager.addPacketListener(new MapPacketEvent(plugin, mapServer));
 
         // 指令
         PluginCommand command = getCommand("mapview");
