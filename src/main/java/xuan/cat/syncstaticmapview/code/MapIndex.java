@@ -20,7 +20,7 @@ import xuan.cat.syncstaticmapview.code.command.Command;
 import xuan.cat.syncstaticmapview.code.command.CommandSuggest;
 import xuan.cat.syncstaticmapview.code.data.ConfigData;
 
-public final class Index extends JavaPlugin {
+public final class MapIndex extends JavaPlugin {
 
     private static Plugin               plugin;
     private static MapServer            mapServer;

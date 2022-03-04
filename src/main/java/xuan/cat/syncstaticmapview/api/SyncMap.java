@@ -3,7 +3,7 @@ package xuan.cat.syncstaticmapview.api;
 import org.bukkit.Bukkit;
 import org.bukkit.map.MapView;
 import xuan.cat.syncstaticmapview.api.data.MapData;
-import xuan.cat.syncstaticmapview.code.Index;
+import xuan.cat.syncstaticmapview.code.MapIndex;
 import xuan.cat.syncstaticmapview.code.MapDatabase;
 
 import java.awt.*;
@@ -16,7 +16,7 @@ public final class SyncMap {
 
 
     public static MapData createData() {
-        return new MapData(Index.getBranchMapColor(), Index.getBranchMapConversion());
+        return new MapData(MapIndex.getBranchMapColor(), MapIndex.getBranchMapConversion());
     }
 
 //    public static MapRedirect createRedirect(int priority, String permission, int redirectId) {
@@ -25,7 +25,7 @@ public final class SyncMap {
 
 
     public static MapData fromBukkit(MapView mapView) {
-        return Index.getBranchMapConversion().ofBukkit(mapView);
+        return MapIndex.getBranchMapConversion().ofBukkit(mapView);
     }
 
     public static MapData fromImage(BufferedImage image) {
@@ -65,7 +65,7 @@ public final class SyncMap {
     public static boolean existData(int mapId) throws SQLException {
         checkAsync();
         checkMapId(mapId);
-        return Index.getMapDatabase().existMapData(mapId);
+        return MapIndex.getMapDatabase().existMapData(mapId);
     }
 
     public static int createData(MapData mapData) throws SQLException {
@@ -73,7 +73,7 @@ public final class SyncMap {
     }
     private static int createData(MapData mapData, int uploaderId) throws SQLException {
         checkAsync();
-        return Index.getMapDatabase().addMapData(mapData, uploaderId);
+        return MapIndex.getMapDatabase().addMapData(mapData, uploaderId);
     }
 
 //    @Deprecated
@@ -86,7 +86,7 @@ public final class SyncMap {
     public static MapData getData(int mapId) throws SQLException {
         checkAsync();
         checkMapId(mapId);
-        return Index.getMapDatabase().loadMapData(mapId);
+        return MapIndex.getMapDatabase().loadMapData(mapId);
     }
 
 //    public static boolean deleteData(int mapId) throws SQLException {
@@ -119,7 +119,7 @@ public final class SyncMap {
     public static boolean deleteRedirects(int mapId) throws SQLException {
 //        checkAsync();
         checkMapId(mapId);
-        MapDatabase database = Index.getMapDatabase();
+        MapDatabase database = MapIndex.getMapDatabase();
         boolean successfully = database.removeMapRedirect(mapId);
         database.markMapUpdate(mapId);
         return successfully;
@@ -127,7 +127,7 @@ public final class SyncMap {
     public static boolean deleteRedirect(int mapId, String permission) throws SQLException {
 //        checkAsync();
         checkMapId(mapId);
-        MapDatabase database = Index.getMapDatabase();
+        MapDatabase database = MapIndex.getMapDatabase();
         boolean successfully = database.removeMapRedirect(mapId, permission);
         database.markMapUpdate(mapId);
         return successfully;
@@ -135,7 +135,7 @@ public final class SyncMap {
     public static boolean deleteRedirect(int mapId, int priority) throws SQLException {
 //        checkAsync();
         checkMapId(mapId);
-        MapDatabase database = Index.getMapDatabase();
+        MapDatabase database = MapIndex.getMapDatabase();
         boolean successfully = database.removeMapRedirect(mapId, priority);
         database.markMapUpdate(mapId);
         return successfully;
