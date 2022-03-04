@@ -119,7 +119,7 @@ public final class Branch_18_Minecraft implements BranchMinecraft {
      * 參考 XuanCatAPI.ExtendPlayer#replacePlayerCode
      */
     public void injectPlayer(Player player) {
-        EntityPlayer entityPlayer = ((CraftPlayer)player).getHandle();
+        EntityPlayer entityPlayer = ((CraftPlayer) player).getHandle();
         PlayerConnection connection = entityPlayer.b;
         entityPlayer.b = new Branch_18_ProxyPlayerConnection(connection, entityPlayer);
     }
