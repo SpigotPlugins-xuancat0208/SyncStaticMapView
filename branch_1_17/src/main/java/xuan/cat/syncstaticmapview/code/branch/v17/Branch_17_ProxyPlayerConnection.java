@@ -51,6 +51,7 @@ public final class Branch_17_ProxyPlayerConnection extends PlayerConnection {
     static {
         try {
             field_PacketPlayOutSpawnEntity_entityId = PacketPlayOutSpawnEntity.class.getDeclaredField("c");
+            field_PacketPlayOutSpawnEntity_entityId.setAccessible(true);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
