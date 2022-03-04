@@ -60,7 +60,7 @@ public final class MapIndex extends JavaPlugin {
             mapDatabase     = new MapDatabase(configData, branchMapConversion, branchMapColor);
             mapServer       = new MapServer(this, configData, mapDatabase, branchMapConversion, branchMapColor, branchMinecraft, branchPacket);
 
-        Bukkit.getPluginManager().registerEvents(new MapEvent(this, mapServer), this);
+        Bukkit.getPluginManager().registerEvents(new MapEvent(this, mapServer, branchMinecraft), this);
 
         // 指令
         PluginCommand command = getCommand("mapview");
