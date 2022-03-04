@@ -11,15 +11,15 @@ import xuan.cat.syncstaticmapview.api.branch.BranchMinecraft;
 import xuan.cat.syncstaticmapview.api.branch.packet.PacketSpawnEntityEvent;
 
 public final class MapEvent implements Listener {
-    private final Plugin            plugin;
-    private final MapServer         mapServer;
-    private final BranchMinecraft   branchMinecraft;
+    private final Plugin plugin;
+    private final MapServer mapServer;
+    private final BranchMinecraft branchMinecraft;
 
 
     public MapEvent(Plugin plugin, MapServer mapServer, BranchMinecraft branchMinecraft) {
-        this.plugin             = plugin;
-        this.mapServer          = mapServer;
-        this.branchMinecraft    = branchMinecraft;
+        this.plugin = plugin;
+        this.mapServer = mapServer;
+        this.branchMinecraft = branchMinecraft;
     }
 
 
