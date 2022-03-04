@@ -1,6 +1,5 @@
 package xuan.cat.syncstaticmapview.code;
 
-import com.comphenix.protocol.events.PacketEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -207,9 +206,8 @@ public final class MapServer {
     }
 
 
-    public void trySendMap(Player player, PacketEvent event) {
+    public void trySendMap(Player player, int entityId) {
         World world = player.getWorld();
-        int entityId = branchPacket.readEntityIdSpawn(event.getPacket());
         Entity entity = branchMinecraft.getEntityFromId(world, entityId);
         if (entity instanceof ItemFrame) {
             ItemFrame itemFrame = (ItemFrame) entity;

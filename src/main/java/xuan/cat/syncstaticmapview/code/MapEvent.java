@@ -7,6 +7,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.plugin.Plugin;
+import xuan.cat.syncstaticmapview.api.branch.packet.PacketSpawnEntityEvent;
 
 public final class MapEvent implements Listener {
     private final Plugin    plugin;
@@ -35,5 +36,14 @@ public final class MapEvent implements Listener {
     public void on(PlayerQuitEvent event) {
         Player player = event.getPlayer();
         mapServer.cleanCache(player);
+    }
+
+    /**
+     * @param event 實體生成
+     */
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+    public void on(PacketSpawnEntityEvent event) {
+        Player player = event.getPlayer();
+        mapServer.trySendMap(player, event.getEntityId());
     }
 }

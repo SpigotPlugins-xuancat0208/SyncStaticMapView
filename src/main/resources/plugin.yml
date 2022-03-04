@@ -2,7 +2,6 @@ name: SyncStaticMapView
 version: ${project.version}
 main: xuan.cat.syncstaticmapview.code.Index
 api-version: 1.13
-depend: [ProtocolLib]
 authors: [xuancat0208]
 commands:
   mapview:

@@ -34,4 +34,9 @@ public final class Branch_18_Minecraft implements BranchMinecraft {
     public ItemStack saveItemNBT(ItemStack item, String nbt) throws CommandSyntaxException {
         throw new UnsupportedOperationException();
     }
+
+    @Override
+    public void injectPlayer(Player player) {
+        throw new UnsupportedOperationException();
+    }
 }

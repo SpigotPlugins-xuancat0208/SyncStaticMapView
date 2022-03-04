@@ -3,13 +3,16 @@ package xuan.cat.syncstaticmapview.code.branch.v18;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.nbt.MojangsonParser;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.server.level.EntityPlayer;
+import net.minecraft.server.network.PlayerConnection;
 import net.minecraft.server.network.ServerPlayerConnection;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.ItemStack;
 import org.bukkit.World;
-import org.bukkit.craftbukkit.v1_18_R1.CraftWorld;
-import org.bukkit.craftbukkit.v1_18_R1.entity.CraftEntity;
-import org.bukkit.craftbukkit.v1_18_R1.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_18_R2.CraftWorld;
+import org.bukkit.craftbukkit.v1_18_R2.entity.CraftEntity;
+import org.bukkit.craftbukkit.v1_18_R2.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_18_R2.inventory.CraftItemStack;
 import org.bukkit.entity.Player;
 import xuan.cat.syncstaticmapview.api.branch.BranchMinecraft;
 
@@ -92,7 +95,7 @@ public final class Branch_18_Minecraft implements BranchMinecraft {
     public List<Player> getTracking(org.bukkit.entity.Entity entity) {
         List<Player> playerList = new ArrayList<>();
         for (ServerPlayerConnection seen : ((CraftEntity) entity).getHandle().tracker.f) {
-            playerList.add(seen.d().getBukkitEntity());
+            playerList.add(seen.e().getBukkitEntity());
         }
         return playerList;
     }
@@ -110,5 +113,14 @@ public final class Branch_18_Minecraft implements BranchMinecraft {
             exception.printStackTrace();
         }
         return craftItem;
+    }
+
+    /**
+     * 參考 XuanCatAPI.ExtendPlayer#replacePlayerCode
+     */
+    public void injectPlayer(Player player) {
+        EntityPlayer entityPlayer = ((CraftPlayer)player).getHandle();
+        PlayerConnection connection = entityPlayer.b;
+        entityPlayer.b = new Branch_18_ProxyPlayerConnection(connection, entityPlayer);
     }
 }

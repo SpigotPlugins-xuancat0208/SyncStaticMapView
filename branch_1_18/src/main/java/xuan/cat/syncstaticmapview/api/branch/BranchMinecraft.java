@@ -22,4 +22,6 @@ public interface BranchMinecraft {
     List<Player> getTracking(Entity entity);
 
     ItemStack saveItemNBT(ItemStack item, String nbt) throws CommandSyntaxException;
+
+    void injectPlayer(Player player);
 }

@@ -8,11 +8,13 @@ import net.minecraft.server.level.ChunkProviderServer;
 import net.minecraft.server.level.EntityPlayer;
 import net.minecraft.server.level.PlayerChunkMap;
 import net.minecraft.server.level.WorldServer;
+import net.minecraft.server.network.PlayerConnection;
 import net.minecraft.server.network.ServerPlayerConnection;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.ItemStack;
 import org.bukkit.World;
 import org.bukkit.craftbukkit.v1_17_R1.CraftWorld;
+import org.bukkit.craftbukkit.v1_17_R1.entity.CraftPlayer;
 import org.bukkit.craftbukkit.v1_17_R1.inventory.CraftItemStack;
 import org.bukkit.entity.Player;
 import xuan.cat.syncstaticmapview.api.branch.BranchMinecraft;
@@ -112,5 +114,14 @@ public final class Branch_17_Minecraft implements BranchMinecraft {
             exception.printStackTrace();
         }
         return craftItem;
+    }
+
+    /**
+     * 參考 XuanCatAPI.ExtendPlayer#replacePlayerCode
+     */
+    public void injectPlayer(Player player) {
+        EntityPlayer entityPlayer = ((CraftPlayer)player).getHandle();
+        PlayerConnection connection = entityPlayer.b;
+        entityPlayer.b = new Branch_17_ProxyPlayerConnection(connection, entityPlayer);
     }
 }

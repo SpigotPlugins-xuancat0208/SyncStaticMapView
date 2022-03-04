@@ -119,12 +119,6 @@
             <scope>provided</scope>
         </dependency>
 
-        <dependency>
-            <groupId>com.comphenix.protocol</groupId>
-            <artifactId>ProtocolLib</artifactId>
-            <version>4.6.0</version>
-        </dependency>
-
         <!-- 1.18 paper -->
         <dependency>
             <groupId>paper</groupId>
