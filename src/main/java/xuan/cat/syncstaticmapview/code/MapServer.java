@@ -207,11 +207,15 @@ public final class MapServer {
 
 
     public void trySendMap(Player player, int entityId) {
-        World world = player.getWorld();
-        Entity entity = branchMinecraft.getEntityFromId(world, entityId);
-        if (entity instanceof ItemFrame) {
-            ItemFrame itemFrame = (ItemFrame) entity;
-            trySendMap(player, itemFrame.getItem());
+        if (!Bukkit.isPrimaryThread()) {
+            Bukkit.getScheduler().runTask(plugin, () -> trySendMap(player, entityId));
+        } else {
+            World world = player.getWorld();
+            Entity entity = branchMinecraft.getEntityFromId(world, entityId);
+            if (entity instanceof ItemFrame) {
+                ItemFrame itemFrame = (ItemFrame) entity;
+                trySendMap(player, itemFrame.getItem());
+            }
         }
     }
 
