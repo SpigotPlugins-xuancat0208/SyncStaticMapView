@@ -3,8 +3,8 @@ package xuan.cat.syncstaticmapview.api;
 import org.bukkit.Bukkit;
 import org.bukkit.map.MapView;
 import xuan.cat.syncstaticmapview.api.data.MapData;
-import xuan.cat.syncstaticmapview.code.MapIndex;
 import xuan.cat.syncstaticmapview.code.MapDatabase;
+import xuan.cat.syncstaticmapview.code.MapIndex;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
