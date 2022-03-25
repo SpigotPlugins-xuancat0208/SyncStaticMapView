@@ -230,7 +230,6 @@ public final class MapServer {
     }
 
 
-
     public boolean markCoolingTime(Player player, int cooling) {
         Long oldTime = playerCoolingTime.get(player);
         long nowTime = System.currentTimeMillis();
