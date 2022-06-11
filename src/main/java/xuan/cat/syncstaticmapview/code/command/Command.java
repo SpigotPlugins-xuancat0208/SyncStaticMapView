@@ -229,7 +229,7 @@ public final class Command implements CommandExecutor {
                                                             } else {
                                                                 mapServer.processURL(() -> {
                                                                     try {
-                                                                        HttpURLConnection connection    = (HttpURLConnection) url.openConnection();
+                                                                        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
                                                                         connection.setRequestMethod("GET");
                                                                         connection.setDoInput(true);
                                                                         connection.setDoOutput(false);
@@ -299,7 +299,13 @@ public final class Command implements CommandExecutor {
                                                     } else {
                                                         Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
                                                             try {
-                                                                toAsync.accept(ImageIO.read(file));
+                                                                BufferedImage bufferedImage = ImageIO.read(file);
+                                                                if (bufferedImage != null) {
+                                                                    toAsync.accept(bufferedImage);
+                                                                } else {
+                                                                    // 圖片讀取失敗
+                                                                    sender.sendMessage(ChatColor.RED + mapServer.lang.get(sender, "command.image_read_failed"));
+                                                                }
                                                             } catch (IOException exception) {
                                                                 // 圖片讀取失敗
                                                                 sender.sendMessage(ChatColor.RED + mapServer.lang.get(sender, "command.image_read_failed") + exception.getMessage());
