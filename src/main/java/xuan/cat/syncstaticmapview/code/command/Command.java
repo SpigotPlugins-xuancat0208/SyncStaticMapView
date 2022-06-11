@@ -240,7 +240,12 @@ public final class Command implements CommandExecutor {
                                                                             InputStream inputStream = connection.getInputStream();
                                                                             BufferedImage bufferedImage = ImageIO.read(inputStream);
                                                                             inputStream.close();
-                                                                            toAsync.accept(bufferedImage);
+                                                                            if (bufferedImage != null) {
+                                                                                toAsync.accept(bufferedImage);
+                                                                            } else {
+                                                                                // 圖片下載失敗
+                                                                                sender.sendMessage(ChatColor.RED + mapServer.lang.get(sender, "command.image_download_failed"));
+                                                                            }
                                                                         } else {
                                                                             throw new IOException(connection.getResponseCode() + " " + connection.getResponseMessage());
                                                                         }
