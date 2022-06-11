@@ -1,4 +1,4 @@
-package xuan.cat.syncstaticmapview.code.branch.v18;
+package xuan.cat.syncstaticmapview.code.branch.v19;
 
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
@@ -8,7 +8,7 @@ import xuan.cat.syncstaticmapview.api.branch.packet.PacketSpawnEntityEvent;
 
 import java.lang.reflect.Field;
 
-public final class Branch_18_ProxyPlayerConnection {
+public final class Branch_19_ProxyPlayerConnection {
     public static boolean read(Player player, Packet<?> packet) {
         return true;
     }

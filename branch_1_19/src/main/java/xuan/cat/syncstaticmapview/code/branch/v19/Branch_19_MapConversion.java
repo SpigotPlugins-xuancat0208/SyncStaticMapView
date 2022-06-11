@@ -1,7 +1,7 @@
-package xuan.cat.syncstaticmapview.code.branch.v18;
+package xuan.cat.syncstaticmapview.code.branch.v19;
 
 import net.minecraft.world.level.saveddata.maps.MapItemSavedData;
-import org.bukkit.craftbukkit.v1_18_R2.map.CraftMapView;
+import org.bukkit.craftbukkit.v1_19_R1.map.CraftMapView;
 import org.bukkit.map.MapView;
 import xuan.cat.syncstaticmapview.api.branch.BranchMapColor;
 import xuan.cat.syncstaticmapview.api.branch.BranchMapConversion;
@@ -10,13 +10,13 @@ import xuan.cat.syncstaticmapview.api.data.MapData;
 import java.awt.image.BufferedImage;
 import java.lang.reflect.Field;
 
-public final class Branch_18_MapConversion implements BranchMapConversion {
+public final class Branch_19_MapConversion implements BranchMapConversion {
     private final BranchMapColor branchMapColor;
     private final BranchMapConversion branchMapConversion;
     private final Field field_CraftMapView_WorldMap;
 
 
-    public Branch_18_MapConversion(BranchMapColor branchMapColor, BranchMapConversion branchMapConversion) throws NoSuchFieldException {
+    public Branch_19_MapConversion(BranchMapColor branchMapColor, BranchMapConversion branchMapConversion) throws NoSuchFieldException {
         this.branchMapColor = branchMapColor;
         this.branchMapConversion = branchMapConversion;
 

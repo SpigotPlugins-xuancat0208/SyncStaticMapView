@@ -1,4 +1,4 @@
-package xuan.cat.syncstaticmapview.code.branch.v18;
+package xuan.cat.syncstaticmapview.code.branch.v19;
 
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import io.netty.channel.*;
@@ -11,10 +11,10 @@ import net.minecraft.server.network.ServerPlayerConnection;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.ItemStack;
 import org.bukkit.World;
-import org.bukkit.craftbukkit.v1_18_R2.CraftWorld;
-import org.bukkit.craftbukkit.v1_18_R2.entity.CraftEntity;
-import org.bukkit.craftbukkit.v1_18_R2.entity.CraftPlayer;
-import org.bukkit.craftbukkit.v1_18_R2.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_19_R1.CraftWorld;
+import org.bukkit.craftbukkit.v1_19_R1.entity.CraftEntity;
+import org.bukkit.craftbukkit.v1_19_R1.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_19_R1.inventory.CraftItemStack;
 import org.bukkit.entity.Player;
 import xuan.cat.syncstaticmapview.api.branch.BranchMinecraft;
 
@@ -22,12 +22,12 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
-public final class Branch_18_Minecraft implements BranchMinecraft {
+public final class Branch_19_Minecraft implements BranchMinecraft {
     private final Field field_CraftItemStack_handle;
     private final Field field_ItemStack_tag;
 
 
-   public Branch_18_Minecraft() throws NoSuchFieldException {
+   public Branch_19_Minecraft() throws NoSuchFieldException {
        field_CraftItemStack_handle = CraftItemStack.class.getDeclaredField("handle");
        field_ItemStack_tag = ItemStack.class.getDeclaredField("u");
        field_CraftItemStack_handle.setAccessible(true);
@@ -110,7 +110,7 @@ public final class Branch_18_Minecraft implements BranchMinecraft {
             @Override
             public void write(ChannelHandlerContext ctx, Object msg, ChannelPromise promise) throws Exception {
                 if (msg instanceof Packet) {
-                    if (!Branch_18_ProxyPlayerConnection.write(player, (Packet<?>) msg))
+                    if (!Branch_19_ProxyPlayerConnection.write(player, (Packet<?>) msg))
                         return;
                 }
                 super.write(ctx, msg, promise);
@@ -120,7 +120,7 @@ public final class Branch_18_Minecraft implements BranchMinecraft {
             @Override
             public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
                 if (msg instanceof Packet) {
-                    if (!Branch_18_ProxyPlayerConnection.read(player, (Packet<?>) msg))
+                    if (!Branch_19_ProxyPlayerConnection.read(player, (Packet<?>) msg))
                         return;
                 }
                 super.channelRead(ctx, msg);
