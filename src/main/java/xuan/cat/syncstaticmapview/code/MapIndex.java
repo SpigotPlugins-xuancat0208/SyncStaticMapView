@@ -42,13 +42,13 @@ public final class MapIndex extends JavaPlugin {
         try {
             // 檢測版本
             String bukkitVersion = Bukkit.getBukkitVersion();
-            if (bukkitVersion.matches("^1\\.17[^0-9].*$")) {
+            if (bukkitVersion.matches("^1\\.17\\D.*$")) {
                 // 1.17
                 branchMapColor      = new Branch_17_MapColor();
                 branchMapConversion = new Branch_17_MapConversion(branchMapColor, branchMapConversion);
                 branchMinecraft     = new Branch_17_Minecraft();
                 branchPacket        = new Branch_17_Packet();
-            } else if (bukkitVersion.matches("^1\\.18[^0-9].*$")) {
+            } else if (bukkitVersion.matches("^1\\.18\\D.*$")) {
                 // 1.18
                 branchMapColor      = new Branch_18_MapColor();
                 branchMapConversion = new Branch_18_MapConversion(branchMapColor, branchMapConversion);
