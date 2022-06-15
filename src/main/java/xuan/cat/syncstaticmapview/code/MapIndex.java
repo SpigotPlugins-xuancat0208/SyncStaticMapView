@@ -16,6 +16,10 @@ import xuan.cat.syncstaticmapview.code.branch.v18.Branch_18_MapColor;
 import xuan.cat.syncstaticmapview.code.branch.v18.Branch_18_MapConversion;
 import xuan.cat.syncstaticmapview.code.branch.v18.Branch_18_Minecraft;
 import xuan.cat.syncstaticmapview.code.branch.v18.Branch_18_Packet;
+import xuan.cat.syncstaticmapview.code.branch.v19.Branch_19_MapColor;
+import xuan.cat.syncstaticmapview.code.branch.v19.Branch_19_MapConversion;
+import xuan.cat.syncstaticmapview.code.branch.v19.Branch_19_Minecraft;
+import xuan.cat.syncstaticmapview.code.branch.v19.Branch_19_Packet;
 import xuan.cat.syncstaticmapview.code.command.Command;
 import xuan.cat.syncstaticmapview.code.command.CommandSuggest;
 import xuan.cat.syncstaticmapview.code.data.ConfigData;
@@ -50,6 +54,12 @@ public final class MapIndex extends JavaPlugin {
                 branchMapConversion = new Branch_18_MapConversion(branchMapColor, branchMapConversion);
                 branchMinecraft     = new Branch_18_Minecraft();
                 branchPacket        = new Branch_18_Packet();
+            } else if (bukkitVersion.matches("^1\\.19\\D.*$")) {
+                // 1.19
+                branchMapColor      = new Branch_19_MapColor();
+                branchMapConversion = new Branch_19_MapConversion(branchMapColor, branchMapConversion);
+                branchMinecraft     = new Branch_19_Minecraft();
+                branchPacket        = new Branch_19_Packet();
             } else {
                 throw new IllegalArgumentException("Unsupported MC version: " + bukkitVersion);
             }
