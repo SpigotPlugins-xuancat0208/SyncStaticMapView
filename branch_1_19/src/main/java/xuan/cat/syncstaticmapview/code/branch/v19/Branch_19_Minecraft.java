@@ -5,6 +5,7 @@ import io.netty.channel.*;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.TagParser;
 import net.minecraft.network.protocol.Packet;
+import net.minecraft.server.level.ChunkMap;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.network.ServerGamePacketListenerImpl;
 import net.minecraft.server.network.ServerPlayerConnection;
@@ -80,8 +81,11 @@ public final class Branch_19_Minecraft implements BranchMinecraft {
      */
     public List<Player> getTracking(org.bukkit.entity.Entity entity) {
         List<Player> playerList = new ArrayList<>();
-        for (ServerPlayerConnection seen : ((CraftEntity) entity).getHandle().tracker.seenBy) {
-            playerList.add(seen.getPlayer().getBukkitEntity());
+        ChunkMap.TrackedEntity tracker =((CraftEntity) entity).getHandle().tracker;
+        if (tracker != null) {
+            for (ServerPlayerConnection seen : tracker.seenBy) {
+                playerList.add(seen.f().getBukkitEntity()); // TODO 原始 getPlayer
+            }
         }
         return playerList;
     }

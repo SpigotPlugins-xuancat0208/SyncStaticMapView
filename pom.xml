@@ -6,7 +6,7 @@
 
     <groupId>xuan.cat</groupId>
     <artifactId>SyncStaticMapView</artifactId>
-    <version>4.3.4</version>
+    <version>4.3.5</version>
 
     <properties>
         <java.version>1.8</java.version>
