@@ -30,7 +30,7 @@ public final class Branch_19_Minecraft implements BranchMinecraft {
 
    public Branch_19_Minecraft() throws NoSuchFieldException {
        field_CraftItemStack_handle = CraftItemStack.class.getDeclaredField("handle");
-       field_ItemStack_tag = ItemStack.class.getDeclaredField("u");
+       field_ItemStack_tag = ItemStack.class.getDeclaredField("v"); // TODO tag
        field_CraftItemStack_handle.setAccessible(true);
        field_ItemStack_tag.setAccessible(true);
    }
