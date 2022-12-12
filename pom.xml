@@ -6,7 +6,7 @@
 
     <groupId>xuan.cat</groupId>
     <artifactId>SyncStaticMapView</artifactId>
-    <version>4.3.5</version>
+    <version>4.3.6</version>
 
     <properties>
         <java.version>1.8</java.version>
@@ -119,17 +119,17 @@
             <scope>provided</scope>
         </dependency>
 
-        <!-- 1.18 paper -->
+        <!-- 1.19.3 -->
         <dependency>
             <groupId>paper</groupId>
-            <artifactId>1.18</artifactId>
-            <version>42</version>
+            <artifactId>1.19.3</artifactId>
+            <version>321</version>
             <classifier>api</classifier>
         </dependency>
         <dependency>
             <groupId>paper</groupId>
-            <artifactId>1.18</artifactId>
-            <version>42</version>
+            <artifactId>1.19.3</artifactId>
+            <version>321</version>
             <classifier>mojangapi</classifier>
         </dependency>
     </dependencies>

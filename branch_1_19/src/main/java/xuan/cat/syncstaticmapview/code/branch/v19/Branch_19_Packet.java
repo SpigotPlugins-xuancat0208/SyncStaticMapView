@@ -4,7 +4,7 @@ import net.minecraft.network.Connection;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientboundMapItemDataPacket;
 import net.minecraft.world.level.saveddata.maps.MapItemSavedData;
-import org.bukkit.craftbukkit.v1_19_R1.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_19_R2.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import xuan.cat.syncstaticmapview.api.branch.BranchPacket;
 import xuan.cat.syncstaticmapview.api.data.MapData;

@@ -12,10 +12,10 @@ import net.minecraft.server.network.ServerPlayerConnection;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.ItemStack;
 import org.bukkit.World;
-import org.bukkit.craftbukkit.v1_19_R1.CraftWorld;
-import org.bukkit.craftbukkit.v1_19_R1.entity.CraftEntity;
-import org.bukkit.craftbukkit.v1_19_R1.entity.CraftPlayer;
-import org.bukkit.craftbukkit.v1_19_R1.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_19_R2.CraftWorld;
+import org.bukkit.craftbukkit.v1_19_R2.entity.CraftEntity;
+import org.bukkit.craftbukkit.v1_19_R2.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_19_R2.inventory.CraftItemStack;
 import org.bukkit.entity.Player;
 import xuan.cat.syncstaticmapview.api.branch.BranchMinecraft;
 
@@ -84,7 +84,7 @@ public final class Branch_19_Minecraft implements BranchMinecraft {
         ChunkMap.TrackedEntity tracker =((CraftEntity) entity).getHandle().tracker;
         if (tracker != null) {
             for (ServerPlayerConnection seen : tracker.seenBy) {
-                playerList.add(seen.f().getBukkitEntity()); // TODO 原始 getPlayer
+                playerList.add(seen.getPlayer().getBukkitEntity());
             }
         }
         return playerList;

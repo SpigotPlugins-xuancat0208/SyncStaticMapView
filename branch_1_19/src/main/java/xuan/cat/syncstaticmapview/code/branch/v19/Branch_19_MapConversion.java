@@ -1,7 +1,7 @@
 package xuan.cat.syncstaticmapview.code.branch.v19;
 
 import net.minecraft.world.level.saveddata.maps.MapItemSavedData;
-import org.bukkit.craftbukkit.v1_19_R1.map.CraftMapView;
+import org.bukkit.craftbukkit.v1_19_R2.map.CraftMapView;
 import org.bukkit.map.MapView;
 import xuan.cat.syncstaticmapview.api.branch.BranchMapColor;
 import xuan.cat.syncstaticmapview.api.branch.BranchMapConversion;
